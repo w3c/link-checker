@@ -5,7 +5,7 @@
 # (c) 1999-2004 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 3.35 2004-04-12 15:38:12 ville Exp $
+# $Id: checklink,v 3.36 2004-04-19 20:10:38 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -73,6 +73,9 @@ sub redirect_ok
 {
   my ($self, $request, $response) = @_;
   if ($self->{Checklink_verbose_progress}) {
+    # @@@ TODO: when an LWP internal robots.txt request gets redirected,
+    # this will a bit confusingly print out info about it.  Would need a
+    # robust way of determining whether something is a LWP "internal" request.
     &W3C::LinkChecker::hprintf("\n%s %s ", $request->method(),$request->uri());
   }
   return $self->SUPER::redirect_ok($request, $response);
@@ -98,6 +101,9 @@ use URI::Escape          qw();
 use URI::file            qw();
 # @@@ Needs also W3C::UserAgent but can't use() it here.
 
+use constant RC_ROBOTS_TXT => -1;
+use constant RC_DNS_ERROR  => -2;
+
 @W3C::LinkChecker::ISA =  qw(HTML::Parser);
 
 BEGIN
@@ -106,7 +112,7 @@ BEGIN
   $PACKAGE       = 'W3C Link Checker';
   $PROGRAM       = 'W3C-checklink';
   $VERSION       = '3.9.3-dev';
-  my ($cvsver)   = q$Revision: 3.35 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver)   = q$Revision: 3.36 $ =~ /(\d+[\d\.]*\.\d+)/;
   $REVISION      = sprintf('version %s [%s] (c) 1999-2004 W3C',
                            $VERSION, $cvsver);
   $AGENT         = sprintf('%s/%s [%s] %s',
@@ -1022,6 +1028,12 @@ sub record_results ($$$)
   $results{$uri}{response} = $response;
   $results{$uri}{method} = $method;
   $results{$uri}{location}{code} = $response->code();
+  $results{$uri}{location}{code} = RC_ROBOTS_TXT()
+    if ($results{$uri}{location}{code} == 403 &&
+        $response->message() =~ /Forbidden by robots\.txt/);
+  $results{$uri}{location}{code} = RC_DNS_ERROR()
+    if ($results{$uri}{location}{code} == 500 &&
+        $response->message() =~ /Bad hostname '[^\']*'/);
   $results{$uri}{location}{type} = $response->header('Content-type');
   $results{$uri}{location}{display} = $results{$uri}{location}{code};
   # Rewind, check for the original code and message.
@@ -1573,19 +1585,9 @@ on how to solve this</a>.';
         } else {
           $whattodo = 'Change this link: people using a browser without Javascript support will not be able to follow this link.';
         }
-      } elsif ($c == 500) {
-        # 500's could be a real 500 or a DNS lookup problem
-        if ($currmsg =~ /Bad hostname '[^\']*'/) {
-          $whattodo = 'The hostname could not be resolved. This link needs to be fixed.';
-        } else {
-          $whattodo = 'This is a server-side problem. Check the URI.';
-        }
-      } elsif ($c == 403 && $currmsg =~ /Forbidden by robots\.txt/) {
-        if ($Opts{HTML}) {
-          $whattodo = 'The link was not checked due to <a href="http://www.robotstxt.org/wc/exclusion.html#robotstxt">robots exclusion</a> rules, check the link manually.';
-        } else {
-          $whattodo = 'Check the link manually.';
-        }
+      } elsif ($c == RC_ROBOTS_TXT()) {
+        $whattodo = 'The link was not checked due to robots exclusion ' .
+          'rules. Check the link manually.';
       } elsif ($redirect_loop) {
         $whattodo =
           'Retrieving the URI results in a redirect loop, that should be ' .
@@ -1611,6 +1613,7 @@ on how to solve this</a>.';
 
     my @http_codes = ($currloc->{code});
     unshift(@http_codes, $currloc->{orig}) if $currloc->{orig};
+    @http_codes = map { $_ < 0 ? '(N/A)' : $_ } @http_codes;
 
     if ($Opts{HTML}) {
       # Style stuff
@@ -1787,9 +1790,13 @@ sub links_summary (\%\%\%\%)
                408 => 'The request timed out.',
                410 => 'The resource is gone. You should remove this link.',
                415 => 'The media type is not supported.',
-               500 => 'Either the hostname is incorrect or it is a server side problem. Check the detailed list.',
+               500 => 'This is a server side problem. Check the URI.',
                501 => 'Could not check this link: method not implemented or scheme not supported.',
-               503 => 'The server cannot service the request, for some unknown reason.');
+               503 => 'The server cannot service the request, for some unknown reason.',
+               # Non-HTTP codes:
+               RC_ROBOTS_TXT() => 'The link was not checked due to <a href="http://www.robotstxt.org/wc/exclusion.html#robotstxt">robots exclusion rules</a>. Check the link manually.',
+               RC_DNS_ERROR() => 'The hostname could not be resolved. This link needs to be fixed.',
+             );
   my %priority = ( 410 => 1,
                    404 => 2,
                    403 => 5,
@@ -1880,7 +1887,7 @@ EOF
       foreach my $code (sort(keys(%code_summary))) {
         printf('<tr%s>', &bgcolor($code));
         printf('<td><a href="#d%scode_%s">%s</a></td>',
-               $doc_count, $code, $code);
+               $doc_count, $code, $code < 0 ? '(N/A)' : $code);
         printf('<td>%s</td>', $code_summary{$code});
         printf('<td>%s</td>', $todo{$code});
         print "</tr>\n";
@@ -2033,6 +2040,9 @@ dt.report {
 .multiple {
   background-color: fuchsia;
 }
+.dubious {
+  background-color: lightgray;
+}
 div#settings {
   font-size: smaller;
   float: right;
@@ -2054,6 +2064,8 @@ sub bgcolor ($)
   my $r = HTTP::Response->new($code);
   if ($r->is_success()) {
     return '';
+  } elsif ($code == RC_ROBOTS_TXT()) {
+    $class = 'dubious';
   } elsif ($code == 300) {
     $class = 'multiple';
   } elsif ($code == 401) {
