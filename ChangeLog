@@ -1,5 +1,7 @@
 2004-03-27  Ville Skyttä  <ville.skytta@iki.fi>
 
+	* Release 3.9.1.
+
 	* Appease Perl 5.6.1's taint mode.
 
 	* Improve command line mode usability: -h is now an alias for
