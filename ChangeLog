@@ -1,3 +1,338 @@
+2004-07-20  ville
+
+	* bin/checklink: Release 4.0.
+
+2004-07-11  ville
+
+	* bin/checklink: Small comment clarifications related to the
+	previous fix.
+
+2004-07-11  ville
+
+	* bin/checklink: Fix bug in recursion logic: when parsing a
+	document in recursive mode, we are interested in links in it if
+	it's in recursion scope, even if the document retrieval is "only"
+	caused by an anchor in a referring document.
+	http://lists.w3.org/Archives/Public/www-validator/2004Jun/0181.html
+
+2004-07-11  ville
+
+	* docs/checklink.html: Bump version numbers.
+
+2004-07-11  ville
+
+	* bin/checklink: $TNV will be 4.0.
+
+2004-06-12  ville
+
+	* bin/checklink: Okay, I give up.  Use "text/javascript" as the
+	content type for JavaScript.
+
+2004-06-11  ville
+
+	* docs/linkchecker.css: Fix Opera/MSIE menubar ugliness by
+	importing line-height from Markup Validator.
+
+2004-06-09  ville
+
+	* docs/linkchecker.css: Restore "address img" for the valid XHTML
+	badge.
+
+2004-06-09  ville
+
+	* docs/checklink.html: Add blurb about robots exclusion
+	implementation details.
+
+2004-06-08  ville
+
+	* bin/checklink.pod: Document Doc_URI and Style_URI.
+
+2004-06-08  ville
+
+	* docs/linkchecker.css: Remove some unused properties, and do a
+	gratuitous whitespace cleanup.
+
+2004-06-08  ville
+
+	* bin/checklink, docs/linkchecker.css: Restore some lost CSS
+	properties, and selectively sync some of the new layout stuff from
+	the current markup validator.
+
+2004-06-08  ville
+
+	* bin/checklink: Avoid warning when no realm is given in
+	WWW-Authenticate.
+
+2004-06-08  ville
+
+	* docs/linkchecker.css: Use JPEG versions of header and footer
+	images.
+
+2004-06-08  ville
+
+	* bin/checklink, docs/checklink.html, docs/linkchecker.css: Remove
+	the "Skip navigation" link as it is not too useful at the moment.
+
+2004-06-02  ville
+
+	* bin/checklink, docs/checklink.html: Add/revise accesskeys.
+	(l=linkchecker,i=download/install,d=docs,m=markup validator,s=skip
+	navigation)
+
+2004-06-02  ville
+
+	* bin/checklink: Switch to HTML 4.01 strict, and make related
+	adjustments and layout consistency improvements mainly to error
+	message views.
+
+2004-06-02  ville
+
+	* bin/checklink: Work around a bug in URI::sip(s) in URI 1.22-1.30.
+
+	http://lists.w3.org/Archives/Public/www-validator/2004Jun/0003.html
+
+2004-06-01  ville
+
+	* bin/checklink: More markup improvements.
+
+2004-06-01  ville
+
+	* bin/checklink: Avoid error log warning when no Content-Type is
+	received, improve markup.
+
+2004-06-01  ville
+
+	* bin/checklink, bin/checklink.pod, etc/checklink.conf: Typo and
+	consistency fixes.
+
+2004-06-01  ville
+
+	* bin/checklink: Apply parameters from cookie only when loading the
+	"front" page.  Also, only load the cookie we set (not all possibly
+	sent to us), when deciding how to output the cookie options on the
+	front page.  This should make the effect of the cookie more
+	predictable.
+
+2004-06-01  ville
+
+	* bin/checklink: Avoid warning from invalid (non-numeric) recursion
+	depth.
+
+2004-05-31  ot
+
+	* bin/checklink: fixing some silliness in my recent patches -
+	thanks Ville for the catch
+
+2004-05-31  ot
+
+	* docs/linkchecker.css: adding style specific to linkchecker
+	results
+
+2004-05-31  ot
+
+	* bin/checklink, docs/checklink.html, etc/checklink.conf: Changing
+	the layout of checklink (script) to math the one for the
+	documentation.	 - adding Style_URI configuration parameter   - The
+	layout now uses default links pointing to the instance on v.w.o
+
+2004-05-16  ville
+
+	* bin/checklink: HTML-escape given URI in the "you cannot check
+	such a URI" message.
+
+2004-05-14  ot
+
+	* docs/checklink.html, docs/linkchecker.css: quick attempt at
+	styling link checker as the Markup Validator.  Fr the actial
+	service, an idea would be to keep some of its inline style + a link
+	to the stylesheet in the repository.
+
+2004-05-10  ville
+
+	* bin/checklink: Treat non-empty URI's "ok" again with JavaScript
+	implementations without String.search().
+
+2004-05-10  ville
+
+	* bin/checklink: Tweak fieldset padding.
+
+2004-05-10  ville
+
+	* bin/checklink: Don't send Content-Script-Type as a real HTTP
+	header, use <meta http-equiv> instead.	Also make uriOk() focus the
+	URI field if it was not 'ok'.
+
+2004-05-07  ville
+
+	* bin/checklink: Use relative self-referencing URL without the
+	query string for the form action.
+
+2004-05-07  ville
+
+	* bin/checklink: Associate all labels explicitly with their
+	controls as recommended by WCAG 1.0.  Thanks to Hugo Silveira da
+	Cunha for the heads up.
+
+2004-05-03  ville
+
+	* bin/checklink.pod: Always point to
+	http://www.w3.org/2000/07/checklink for docs, small POD entity
+	tweaks.
+
+2004-04-28  ville
+
+	* bin/checklink: Set "self URI" to
+	http://validator.w3.org/checklink in command line HTML mode.
+	Thanks to James Gallagher for the report.
+
+2004-04-20  ville
+
+	* bin/checklink, docs/checklink.html, docs/linkchecker.css: Add
+	instructions how to allow us in /robots.txt, and include a link to
+	it in the results.
+
+2004-04-19  ville
+
+	* bin/checklink: Implement "better" (yet somewhat hacky) handling
+	of non-HTTP error codes, currently used for "forbidden by
+	robots.txt" and "bad hostname" messages from LWP.  While at it,
+	display "forbidden by robots.txt" with a light gray background (CVS
+	class "dubious") instead of screaming-red-403.
+
+2004-04-17  ville
+
+	* t/00compile.t: Add a _very_ basic "test suite".
+
+2004-04-12  ville
+
+	* bin/checklink: Fix broken fragment UI (was broken in revision
+	3.30).
+
+2004-04-12  ville
+
+	* bin/checklink: Small wording improvements.
+
+2004-04-11  ville
+
+	* bin/checklink: Use "(no message)" if for some reason we do not
+	receive a reason phrase in the response status line.
+
+2004-04-11  ville
+
+	* docs/checklink.html: Redirect loops are no longer a problem with
+	the link checker and libwww-perl 5.76 (but redirects to file: URLs
+	still are).
+
+2004-04-11  ville
+
+	* bin/checklink, bin/checklink.pod, docs/checklink.html: Make sleep
+	time between requests to each server configurable in command line
+	use (-S/--sleep, defaults to 1 second), remove old "sleep 3 seconds
+	between documents" feature, and show used settings in the results.
+
+2004-04-11  ville
+
+	* bin/checklink: Fix typo in results CSS.
+
+2004-04-11  ville
+
+	* bin/checklink: Reimplement/replace internal redirect tracking
+	logic using the response chaining feature of libwww-perl
+	(HTTP::Response->previous()).  Should be more robust and
+	RobotUA-friendly now.
+
+2004-04-10  ville
+
+	* bin/checklink: Code cleanups.
+
+2004-04-10  ville
+
+	* bin/checklink: Eliminate a couple of recently introduced printf()
+	warnings.
+
+2004-04-10  ville
+
+	* docs/checklink.html: RobotUA/RobotRules works for local files
+	from command line in LWP 5.66+, bump the required version.
+
+2004-04-10  ville
+
+	* bin/checklink: Don't mask LWP's default redirect_ok()
+	functionality, remove some dead code.
+
+2004-04-09  ville
+
+	* bin/checklink, etc/checklink.conf: New configuration parameter
+	(Doc_URI) to aid local doc installations.
+
+2004-04-09  ville
+
+	* docs/checklink.html, docs/linkchecher.css, docs/linkchecker.css:
+	Rename the doc CSS once more (to linkchecker.css).
+
+2004-04-08  ot
+
+	* docs/checklink.css, docs/linkchecher.css: changing name to avoid
+	conneg issues
+
+2004-04-08  ville
+
+	* bin/checklink: Make sure default configuration options are set
+	also when there is no configuration file.  D'oh!  Thanks to Rafael
+	Gieschke for the report.
+
+2004-04-07  ville
+
+	* bin/checklink, docs/checklink.html: Initial (partial)
+	implementation for support for robots exclusion standard.  The UI
+	still needs some work: the results view should be fixed and some
+	new configuration options (admin address, minimum delay) should be
+	added.	As a side effect, we now require libwww-perl >= 5.60.
+
+2004-04-04  ville
+
+	* bin/checklink, bin/checklink.pod: Do not send any Accept-Language
+	header by default in command line mode, and don't default to "*" in
+	CGI mode either (but still use the client-supplied value if
+	present).  In command line mode, -L auto now autodetects a value
+	from the environment, and the -n/--noacclanguage option is
+	deprecated and does nothing.
+
+2004-04-03  ville
+
+	* bin/checklink: Usage message improvements.
+
+2004-04-03  ville
+
+	* bin/checklink: Link to http://www.w3.org/2000/07/checklink for
+	docs again.
+
+2004-04-03  ville
+
+	* bin/checklink, bin/checklink.pod: Improve the "Trusted" domain
+	documentation.
+
+2004-04-03  ville
+
+	* bin/checklink: Compile trusted and exclude-docs regexps only
+	once.
+
+2004-04-03  ville
+
+	* bin/checklink, bin/checklink.pod: New command line option
+	(--exclude-docs) for excluding checking links in documents whose
+	URIs match a regexp; thanks to Michael Ernst.  Also, some
+	improvements to argument and configuration option checking and
+	error reporting.
+
+2004-04-02  ville
+
+	* README.cvs: Fix link to the online version.
+
+2004-04-01  ot
+
+	* README.cvs: adding download instructions
+
 2004-03-31  ville
 
 	* bin/checklink: Release 3.9.2.
