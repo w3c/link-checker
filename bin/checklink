@@ -5,7 +5,7 @@
 # (c) 1999-2004 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 3.45 2004-05-31 05:54:39 ot Exp $
+# $Id: checklink,v 3.46 2004-05-31 21:40:47 ot Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -112,7 +112,7 @@ BEGIN
   $PACKAGE       = 'W3C Link Checker';
   $PROGRAM       = 'W3C-checklink';
   $VERSION       = '3.9.3-dev';
-  my ($cvsver)   = q$Revision: 3.45 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver)   = q$Revision: 3.46 $ =~ /(\d+[\d\.]*\.\d+)/;
   $REVISION      = sprintf('version %s [%s] (c) 1999-2004 W3C',
                            $VERSION, $cvsver);
   $AGENT         = sprintf('%s/%s [%s] %s',
@@ -2038,7 +2038,7 @@ sub show_url ($;$)
 sub html_footer ()
 {
   printf("<p>%s</p>\n", &global_stats()) if ($doc_count > 0 && !$Opts{Quiet});
-  printf(<<'EOF', $PACKAGE, $REVISION, &encode);
+  printf(<<'EOF', $PACKAGE, $REVISION);
 <div>
 <address>
 %s<br> %s
