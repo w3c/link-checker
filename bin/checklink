@@ -5,7 +5,7 @@
 # (c) 1999-2004 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 3.26 2004-04-09 16:26:51 ville Exp $
+# $Id: checklink,v 3.27 2004-04-10 14:07:13 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -71,7 +71,7 @@ sub simple_request
 
 sub redirect_ok
 {
-  my ($self, $request) = @_;
+  my ($self, $request, $response) = @_;
 
   if ($self->{Checklink_verbose_progress}) {
     &W3C::LinkChecker::hprintf("\n%s %s ", $request->method(),$request->uri());
@@ -81,7 +81,7 @@ sub redirect_ok
   $self->{Redirects}{$self->{fetching}} = $request->uri();
   $self->{fetching} = $request->uri();
 
-  return ($request->method() eq 'POST') ? 0 : 1;
+  return $self->SUPER::redirect_ok($request, $response);
 }
 
 # -----------------------------------------------------------------------------
@@ -112,7 +112,7 @@ BEGIN
   $PACKAGE       = 'W3C Link Checker';
   $PROGRAM       = 'W3C-checklink';
   $VERSION       = '3.9.3-dev';
-  my ($cvsver)   = q$Revision: 3.26 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver)   = q$Revision: 3.27 $ =~ /(\d+[\d\.]*\.\d+)/;
   $REVISION      = sprintf('version %s [%s] (c) 1999-2004 W3C',
                            $VERSION, $cvsver);
   $AGENT         = sprintf('%s/%s [%s] %s',
@@ -1016,7 +1016,6 @@ sub record_results ($$$)
   # Did we get a redirect?
   if ($response->{OriginalCode} != $response->code()) {
     $results{$uri}{location}{orig_message} =  $response->{OriginalMessage};
-    $results{$uri}{location}{redirected} = 1;
   }
   $results{$uri}{location}{success} = $response->is_success();
   # Stores the authentication information
