@@ -5,7 +5,7 @@
 # (c) 1999-2004 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 3.12 2004-03-27 09:48:37 ville Exp $
+# $Id: checklink,v 3.13 2004-03-27 09:51:19 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -14,7 +14,7 @@
 #       http://www.w3.org/2000/07/checklink
 #
 # See the CVSweb interface at:
-#       http://dev.w3.org/cvsweb/validator/httpd/cgi-bin/checklink.pl
+#       http://dev.w3.org/cvsweb/perl/modules/W3C/LinkChecker/
 #
 # An online version is available at:
 #       http://validator.w3.org/checklink
@@ -92,7 +92,7 @@ BEGIN
   $PROGRAM       = 'W3C checklink';
   ($AGENT        = $PROGRAM) =~ s/\s+/-/g;
   $VERSION       = '3.9.1';
-  ($CVS_VERSION) = q$Revision: 3.12 $ =~ /(\d+[\d\.]*\.\d+)/;
+  ($CVS_VERSION) = q$Revision: 3.13 $ =~ /(\d+[\d\.]*\.\d+)/;
   $REVISION      = sprintf('version %s [%s] (c) 1999-2004 W3C',
                            $VERSION, $CVS_VERSION);
 
