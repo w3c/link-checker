@@ -2,11 +2,12 @@ ChangeLog               Recent changes
 ChangeLog.old           Older changes
 Makefile.PL
 MANIFEST
+META.yml
+NEWS                    Overview of changes between releases
 README                  Start by reading this
 SIGNATURE
 bin/checklink           The link checker
 bin/checklink.pod       Manual page for the link checker
-META.yml
 etc/checklink.conf      Optional configuration file
 docs/checklink.html     Additional documentation
 docs/linkchecker.css    Cascading style sheet for the documentation

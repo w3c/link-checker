@@ -1,0 +1,6 @@
+Version 4.1
+- Added workarounds against browser timeouts in "summary only" mode.
+- Improved caching and reuse of fetched /robots.txt information.
+- Fixed a bug where a complete protocol response (including headers)
+  was passed to the HTML parser, which caused unexpected behaviour.
+- Minor user interface and installation related improvements.
