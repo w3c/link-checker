@@ -1,14 +1,14 @@
 # http://module-build.sourceforge.net/META-spec.html
 #XXXXXXX This is a prototype!!!  It will change in the future!!! XXXXX#
 name:         W3C-LinkChecker
-version:      3.9.2
+version:      3.9.3-dev
 version_from: bin/checklink
 installdirs:  site
 requires:
     CGI:                           0
     Config::General:               2.06
     HTML::Parser:                  3
-    LWP::UserAgent:                0
+    LWP::RobotUA:                  0
     Net::IP:                       0
     Term::ReadKey:                 2
     Time::HiRes:                   0
