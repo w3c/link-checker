@@ -5,7 +5,7 @@
 # (c) 1999-2005 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.15 2005-01-09 20:43:36 ville Exp $
+# $Id: checklink,v 4.16 2005-02-05 18:48:20 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -78,7 +78,15 @@ sub redirect_ok
     # robust way of determining whether something is a LWP "internal" request.
     &W3C::LinkChecker::hprintf("\n%s %s ", $request->method(),$request->uri());
   }
-  return $self->SUPER::redirect_ok($request, $response);
+  return 0 unless $self->SUPER::redirect_ok($request, $response);
+  if (my $res = &W3C::LinkChecker::ip_allowed($request->uri())) {
+    $response->previous($response->clone());
+    $response->request($request);
+    $response->code($res->code());
+    $response->message($res->message());
+    return 0;
+  }
+  return 1;
 }
 
 # -----------------------------------------------------------------------------
@@ -110,7 +118,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.1';
   $REVISION    = sprintf('version %s (c) 1999-2005 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.15 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.16 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver, LWP::RobotUA->_agent());
 
