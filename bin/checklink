@@ -5,7 +5,7 @@
 # (c) 1999-2004 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.10 2004-11-07 09:47:43 ville Exp $
+# $Id: checklink,v 4.11 2004-11-07 10:23:44 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -106,14 +106,13 @@ use constant RC_DNS_ERROR  => -2;
 BEGIN
 {
   # Version info
-  $PACKAGE       = 'W3C Link Checker';
-  $PROGRAM       = 'W3C-checklink';
-  $VERSION       = '4.0';
-  my ($cvsver)   = q$Revision: 4.10 $ =~ /(\d+[\d\.]*\.\d+)/;
-  $REVISION      = sprintf('version %s [%s] (c) 1999-2004 W3C',
-                           $VERSION, $cvsver);
-  $AGENT         = sprintf('%s/%s [%s] %s',
-                           $PROGRAM, $VERSION, $cvsver,LWP::RobotUA->_agent());
+  $PACKAGE     = 'W3C Link Checker';
+  $PROGRAM     = 'W3C-checklink';
+  $VERSION     = '4.0';
+  $REVISION    = sprintf('version %s (c) 1999-2004 W3C', $VERSION);
+  my ($cvsver) = q$Revision: 4.11 $ =~ /(\d+[\d\.]*\.\d+)/;
+  $AGENT       = sprintf('%s/%s [%s] %s',
+                         $PROGRAM, $VERSION, $cvsver, LWP::RobotUA->_agent());
 
   # Pull in mod_perl modules if applicable.
   if ($ENV{MOD_PERL}) {
@@ -163,9 +162,10 @@ $@
     'http://validator.w3.org/docs/linkchecker.css';
 
   $DocType = '<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">';
-  $Head = <<EOF;
+  $Head = sprintf(<<'EOF', HTML::Entities::encode($AGENT), $Cfg{Style_URI});
 <meta http-equiv="Content-Script-Type" content="text/javascript">
-<link rel="stylesheet" type="text/css" href="$Cfg{Style_URI}">
+<meta name="generator" content="%s">
+<link rel="stylesheet" type="text/css" href="%s">
 EOF
 
   # Trusted environment variables that need laundering in taint mode.
