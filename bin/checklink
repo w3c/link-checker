@@ -5,7 +5,7 @@
 # (c) 1999-2004 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 3.46 2004-05-31 21:40:47 ot Exp $
+# $Id: checklink,v 3.47 2004-06-01 19:18:33 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -112,7 +112,7 @@ BEGIN
   $PACKAGE       = 'W3C Link Checker';
   $PROGRAM       = 'W3C-checklink';
   $VERSION       = '3.9.3-dev';
-  my ($cvsver)   = q$Revision: 3.46 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver)   = q$Revision: 3.47 $ =~ /(\d+[\d\.]*\.\d+)/;
   $REVISION      = sprintf('version %s [%s] (c) 1999-2004 W3C',
                            $VERSION, $cvsver);
   $AGENT         = sprintf('%s/%s [%s] %s',
@@ -198,7 +198,7 @@ my %Opts =
     Accept_Language   => $cmdline ? undef : $ENV{HTTP_ACCEPT_LANGUAGE},
     HTTP_Proxy        => undef,
     Hide_Same_Realm   => 0,
-    Depth             => 0,    # -1 means unlimited recursion.
+    Depth             => 0,    # < 0 means unlimited recursion.
     Sleep_Time        => 1,
     Max_Documents     => 150,  # For the online version.
     User              => undef,
@@ -316,8 +316,9 @@ if ($Opts{Command_Line}) {
   $Opts{Accept_Language} = undef if $query->param('no_accept_language');
 
   $Opts{Depth} = -1 if ($query->param('recursive') && $Opts{Depth} == 0);
-  if ($query->param('depth') && ($query->param('depth') != 0)) {
-    $Opts{Depth} = $query->param('depth');
+  if (my $depth = $query->param('depth')) {
+    # Ignore invalid depth silently for now.
+    $Opts{Depth} = $1 if ($depth =~ /(-?\d+)/);
   }
 
   # Save, clear or leave cookie as is.
