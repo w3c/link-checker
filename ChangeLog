@@ -1,7 +1,8 @@
 2004-03-23  Ville Skyttä  <ville.skytta@iki.fi>
 
-	* Make markup and CSS validator URIs configurable.
+	* Make markup and CSS validator URIs configurable, and make
+	self references in the results work whatever the script name is.
 
 2004-02-18  Ville Skyttä  <ville.skytta@iki.fi>
 
-	* First CPAN version.
+	* First CPANified version.
