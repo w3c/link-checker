@@ -5,7 +5,7 @@
 # (c) 1999-2004 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.5 2004-07-21 15:47:15 ville Exp $
+# $Id: checklink,v 4.6 2004-08-27 04:58:56 duerst Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -112,7 +112,7 @@ BEGIN
   $PACKAGE       = 'W3C Link Checker';
   $PROGRAM       = 'W3C-checklink';
   $VERSION       = '4.0';
-  my ($cvsver)   = q$Revision: 4.5 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver)   = q$Revision: 4.6 $ =~ /(\d+[\d\.]*\.\d+)/;
   $REVISION      = sprintf('version %s [%s] (c) 1999-2004 W3C',
                            $VERSION, $cvsver);
   $AGENT         = sprintf('%s/%s [%s] %s',
@@ -1406,7 +1406,7 @@ to specify trusted domains.
 EOF
   } else {
 
-    printf("Status: 401 Authorization Required\nWWW-Authenticate: %s\nConnection: close\nContent-Language: en\nContent-Type: text/html; charset=iso-8859-1\n\n", $r->headers->www_authenticate);
+    printf("Status: 401 Authorization Required\nWWW-Authenticate: %s\nConnection: close\nContent-Language: en\nContent-Type: text/html; charset=utf-8\n\n", $r->headers->www_authenticate);
 
     printf("%s
 <html lang=\"en\">
@@ -1967,7 +1967,7 @@ sub html_header ($;$$)
   my $headers = '';
   if (! $Opts{Command_Line}) {
     $headers .= "Cache-Control: no-cache\nPragma: no-cache\n" if $doform;
-    $headers .= "Content-Type: text/html; charset=iso-8859-1\n";
+    $headers .= "Content-Type: text/html; charset=utf-8\n";
     $headers .= "Set-Cookie: $cookie\n" if $cookie;
     $headers .= "Content-Language: en\n\n";
   }
