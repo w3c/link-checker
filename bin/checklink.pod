@@ -1,4 +1,4 @@
-$Id: checklink.pod,v 1.9 2004-04-11 19:33:39 ville Exp $
+$Id: checklink.pod,v 1.10 2004-05-03 20:49:07 ville Exp $
 
 =head1 NAME
 
@@ -199,11 +199,11 @@ L<LWP>, L<Net::FTP>, L<Net::NNTP>, L<Net::IP>, L<perlre>.
 
 =head1 AUTHOR
 
-This program was originally written by Hugo Haas <hugo@w3.org>, based on
-Renaud Bruyeron's F<checklink.pl>.  It has been enhanced by Ville Skyttä
-and many other volunteers since.  Use the <www-validator@w3.org> mailing list
-for feedback, see L<http://validator.w3.org/docs/checklink.html#csb> for more
-information.
+This program was originally written by Hugo Haas E<lt>hugo@w3.orgE<gt>, based
+on Renaud Bruyeron's F<checklink.pl>.  It has been enhanced by Ville Skyttä
+and many other volunteers since.  Use the E<lt>www-validator@w3.orgE<gt>
+mailing list for feedback, and see
+L<http://www.w3.org/2000/07/checklink#csb> for more information.
 
 This manual page was written by Frédéric Schütz <schutz@mathgen.ch>
 for the Debian GNU/Linux system (but may be used by others).
