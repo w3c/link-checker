@@ -5,7 +5,7 @@
 # (c) 1999-2004 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 3.25 2004-04-08 17:14:39 ville Exp $
+# $Id: checklink,v 3.26 2004-04-09 16:26:51 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -112,7 +112,7 @@ BEGIN
   $PACKAGE       = 'W3C Link Checker';
   $PROGRAM       = 'W3C-checklink';
   $VERSION       = '3.9.3-dev';
-  my ($cvsver)   = q$Revision: 3.25 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver)   = q$Revision: 3.26 $ =~ /(\d+[\d\.]*\.\d+)/;
   $REVISION      = sprintf('version %s [%s] (c) 1999-2004 W3C',
                            $VERSION, $cvsver);
   $AGENT         = sprintf('%s/%s [%s] %s',
@@ -162,6 +162,8 @@ $@
     'http://validator.w3.org/check?uri=%s';
   $Cfg{CSS_Validator_URI} ||=
     'http://jigsaw.w3.org/css-validator/validator?uri=%s';
+  $Cfg{Doc_URI} ||=
+    'http://www.w3.org/2000/07/checklink';
 
   # Trusted environment variables that need laundering in taint mode.
   foreach (qw(NNTPSERVER NEWSHOST)) {
@@ -496,7 +498,7 @@ The W3C_CHECKLINK_CFG environment variable can be used to set the
 configuration file to use.  See details in the full manual page, it can
 be displayed with: perldoc checklink
 
-More documentation at: http://www.w3.org/2000/07/checklink
+More documentation at: $Cfg{Doc_URI}
 Please send bug reports and comments to the www-validator mailing list:
   www-validator\@w3.org (with 'checklink' in the subject)
   Archives are at: http://lists.w3.org/Archives/Public/www-validator/
@@ -2072,17 +2074,17 @@ sub show_url ($;$)
 sub html_footer ()
 {
   printf("<p>%s</p>\n", &global_stats()) if ($doc_count > 0 && !$Opts{Quiet});
-  print <<EOF;
+  printf(<<'EOF', $PACKAGE, $REVISION, &encode($Cfg{Doc_URI}));
 <div>
 <address>
-$PACKAGE $REVISION,
+%s %s,
 by <a href="http://www.w3.org/People/Hugo/">Hugo Haas</a> and others.<br>
 Please send bug reports, suggestions and comments to the
-<a href="mailto:www-validator\@w3.org?subject=checklink%3A%20">www-validator
+<a href="mailto:www-validator@w3.org?subject=checklink%3A%20">www-validator
 mailing list</a>
 (<a href="http://lists.w3.org/Archives/Public/www-validator/">archives</a>).
 <br>
-Check out the <a href="http://www.w3.org/2000/07/checklink">documentation</a>.
+Check out the <a href="%s">documentation</a>.
 Download the
 <a href="http://search.cpan.org/dist/W3C-LinkChecker/">source code</a>.
 </address>
