@@ -5,7 +5,7 @@
 # (c) 1999-2004 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 3.10 2004-03-23 20:16:26 ville Exp $
+# $Id: checklink,v 3.11 2004-03-23 21:29:04 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -88,7 +88,7 @@ BEGIN
   $PROGRAM       = 'W3C checklink';
   ($AGENT        = $PROGRAM) =~ s/\s+/-/g;
   $VERSION       = '3.9.1';
-  ($CVS_VERSION) = q$Revision: 3.10 $ =~ /(\d+[\d\.]*\.\d+)/;
+  ($CVS_VERSION) = q$Revision: 3.11 $ =~ /(\d+[\d\.]*\.\d+)/;
   $REVISION      = sprintf('version %s [%s] (c) 1999-2004 W3C',
                            $VERSION, $CVS_VERSION);
 
@@ -235,6 +235,7 @@ if ($Opts{Command_Line}) {
   $Opts{Verbose}   = 0;
   $Opts{Progress}  = 0;
   $Opts{HTML}      = 1;
+  $Opts{_Self_URI} = $query->url(-relative => 1);
 
   # Backwards compatibility
   if ($query->param('hide_dir_redirects')) {
@@ -542,9 +543,10 @@ sub check_uri ($$$;$)
       printf("<p>For reliable link checking results, check
 <a href=\"%s\">HTML validity</a> first.  See also
 <a href=\"%s\">CSS validity</a>.</p>
-<p>Back to the <a href=\"checklink\">link checker</a>.</p>\n",
+<p>Back to the <a href=\"%s\">link checker</a>.</p>\n",
              &encode(sprintf($Cfg{Markup_Validator_URI}, $esc_uri)),
-             &encode(sprintf($Cfg{CSS_Validator_URI}, $esc_uri)));
+             &encode(sprintf($Cfg{CSS_Validator_URI}, $esc_uri)),
+             &encode($Opts{_Self_URI}));
       print("<pre>\n");
     }
   }
