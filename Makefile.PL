@@ -46,6 +46,7 @@ sub MY::postamble {
 changelog:
 	cvs2cl --FSF --utc --prune \
 	  --ignore ChangeLog --ignore cvsignore --ignore SIGNATURE \
-	  --ignore Makefile.PL --ignore META.yml --ignore MANIFEST
+	  --ignore Makefile.PL --ignore META.yml --ignore MANIFEST \
+	  --ignore NEWS
 MAKE_FRAG
 }
