@@ -4,10 +4,11 @@
    Copyright 2000-2004 W3C (MIT, INRIA, Keio). All Rights Reserved.
    See http://www.w3.org/Consortium/Legal/ipr-notice.html#Copyright
 
-   $Id: linkchecker.css,v 1.9 2004-06-09 06:32:41 ville Exp $
+   $Id: linkchecker.css,v 1.10 2004-06-11 18:55:39 ville Exp $
 */
 
 html, body {
+  line-height: 120%;
   color: black;
   background: white;
   font-family: "Bitstream Vera Sans", sans-serif;
