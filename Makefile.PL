@@ -22,3 +22,10 @@ WriteMakefile(
                    },
   dist          => { TARFLAGS => '--owner=0 --group=0 -cvf' },
 );
+
+sub MY::postamble {
+  return <<'MAKE_FRAG';
+changelog:
+	cvs2cl --FSF --utc --prune --ignore ChangeLog --ignore cvsignore
+MAKE_FRAG
+}
