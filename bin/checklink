@@ -5,7 +5,7 @@
 # (c) 1999-2004 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 3.14 2004-03-27 09:55:37 ville Exp $
+# $Id: checklink,v 3.15 2004-03-27 19:09:41 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -92,7 +92,7 @@ BEGIN
   $PROGRAM       = 'W3C checklink';
   ($AGENT        = $PROGRAM) =~ s/\s+/-/g;
   $VERSION       = '3.9.1';
-  ($CVS_VERSION) = q$Revision: 3.14 $ =~ /(\d+[\d\.]*\.\d+)/;
+  ($CVS_VERSION) = q$Revision: 3.15 $ =~ /(\d+[\d\.]*\.\d+)/;
   $REVISION      = sprintf('version %s [%s] (c) 1999-2004 W3C',
                            $VERSION, $CVS_VERSION);
 
@@ -206,6 +206,8 @@ if ($Opts{Command_Line}) {
 
   # Parse command line
   &parse_arguments();
+  &usage(1) unless @ARGV;
+
   &ask_password() if ($Opts{User} && !$Opts{Password});
 
   my $first = 1;
@@ -350,7 +352,7 @@ sub parse_arguments ()
   Getopt::Long::Configure('bundling', 'no_ignore_case');
   my $masq = '';
 
-  GetOptions('help|?'          => sub { usage(0) },
+  GetOptions('help|h|?'        => sub { usage(0) },
              'q|quiet'         => sub { $Opts{Quiet} = 1;
                                         $Opts{Summary_Only} = 1;
                                       },
@@ -361,7 +363,7 @@ sub parse_arguments ()
              'e|dir-redirects' => sub { $Opts{Dir_Redirects} = 0; },
              'v|verbose'       => \$Opts{Verbose},
              'i|indicator'     => \$Opts{Progress},
-             'h|html'          => \$Opts{HTML},
+             'H|html'          => \$Opts{HTML},
              'n|noacclanguage' => sub { $Opts{Accept_Language} = 0; },
              'r|recursive'     => sub { $Opts{Depth} = -1
                                           if $Opts{Depth} == 0; },
@@ -396,7 +398,7 @@ sub parse_arguments ()
 
 sub version ()
 {
-  print STDERR "$PROGRAM $REVISION\n";
+  print "$PROGRAM $REVISION\n";
   exit(0);
 }
 
@@ -409,7 +411,8 @@ sub usage ()
   my $langs = defined($Opts{Languages}) ? " (default: $Opts{Languages})" : '';
   my $trust = defined($Opts{Trusted})   ? " (default: $Opts{Trusted})"   : '';
 
-  print STDERR "$msg$PROGRAM $REVISION
+  select(STDERR) if $exitval;
+  print "$msg$PROGRAM $REVISION
 
 Usage: checklink <options> <uris>
 Options:
@@ -440,8 +443,8 @@ Options:
   --masquerade \"base1 base2\"  Masquerade base URI base1 as base2.  See manual
                               page for more information.
   -y/--proxy proxy            Specify an HTTP proxy server.
-  -h/--html                   HTML output.
-  -?/--help                   Show this message.
+  -H/--html                   HTML output.
+  -?/-h/--help                Show this message.
   -V/--version                Output version information.
 
 See \"perldoc Net::FTP\" for information about various environment variables
