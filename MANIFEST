@@ -9,7 +9,7 @@ bin/checklink.pod       Manual page for the link checker
 META.yml
 etc/checklink.conf      Optional configuration file
 docs/checklink.html     Additional documentation
-docs/checklink.css      Cascading style sheet for the documentation
+docs/linkchecker.css    Cascading style sheet for the documentation
 docs/qa-small.png
 docs/valid-xhtml10.png
 docs/w3c_home.png
