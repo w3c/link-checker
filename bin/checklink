@@ -5,7 +5,7 @@
 # (c) 1999-2004 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 3.22 2004-04-03 17:23:02 ville Exp $
+# $Id: checklink,v 3.23 2004-04-04 16:13:39 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -92,7 +92,7 @@ BEGIN
   $PROGRAM       = 'W3C checklink';
   ($AGENT        = $PROGRAM) =~ s/\s+/-/g;
   $VERSION       = '3.9.2';
-  ($CVS_VERSION) = q$Revision: 3.22 $ =~ /(\d+[\d\.]*\.\d+)/;
+  ($CVS_VERSION) = q$Revision: 3.23 $ =~ /(\d+[\d\.]*\.\d+)/;
   $REVISION      = sprintf('version %s [%s] (c) 1999-2004 W3C',
                            $VERSION, $CVS_VERSION);
 
@@ -166,8 +166,7 @@ my %Opts =
     Timeout           => 60,
     Redirects         => 1,
     Dir_Redirects     => 1,
-    Accept_Language   => 1,
-    Languages         => $ENV{HTTP_ACCEPT_LANGUAGE} || '*',
+    Accept_Language   => $cmdline ? undef : $ENV{HTTP_ACCEPT_LANGUAGE},
     HTTP_Proxy        => undef,
     Hide_Same_Realm   => 0,
     Depth             => 0,    # -1 means unlimited recursion.
@@ -283,7 +282,7 @@ if ($Opts{Command_Line}) {
     }
   }
 
-  $Opts{Accept_Language} = 0 if ($query->param('no_accept_language'));
+  $Opts{Accept_Language} = undef if $query->param('no_accept_language');
 
   $Opts{Depth} = -1 if ($query->param('recursive') && $Opts{Depth} == 0);
   if ($query->param('depth') && ($query->param('depth') != 0)) {
@@ -375,7 +374,6 @@ sub parse_arguments ()
              'v|verbose'       => \$Opts{Verbose},
              'i|indicator'     => \$Opts{Progress},
              'H|html'          => \$Opts{HTML},
-             'n|noacclanguage' => sub { $Opts{Accept_Language} = 0; },
              'r|recursive'     => sub { $Opts{Depth} = -1
                                           if $Opts{Depth} == 0; },
              'l|location=s'    => \$Opts{Base_Location},
@@ -383,7 +381,10 @@ sub parse_arguments ()
              'u|user=s'        => \$Opts{User},
              'p|password=s'    => \$Opts{Password},
              't|timeout=i'     => \$Opts{Timeout},
-             'L|languages=s'   => \$Opts{Languages},
+             'L|languages=s'   => \$Opts{Accept_Language},
+             'n|noacclanguage' => sub { warn("*** Warning: The " .
+                                        "-n/--noacclanguage option is " .
+                                        "deprecated and has no effect.\n"); },
              'D|depth=i'       => sub { $Opts{Depth} = $_[1]
                                           unless $_[1] == 0; },
              'd|domain=s'      => \$Opts{Trusted},
@@ -406,6 +407,10 @@ sub parse_arguments ()
       $Opts{Masquerade_To}   = $masq[1];
     }
   }
+
+  if ($Opts{Accept_Language} && $Opts{Accept_Language} eq 'auto') {
+    $Opts{Accept_Language} = &guess_language();
+  }
 }
 
 sub version ()
@@ -422,7 +427,6 @@ sub usage ()
 
   die($msg) unless $Opts{Command_Line};
 
-  my $langs = $Opts{Languages} || 'none';
   my $trust = defined($Cfg{Trusted}) ? $Cfg{Trusted} : 'same host only';
 
   select(STDERR) if $exitval;
@@ -443,8 +447,8 @@ Options:
                             it would be http://www.w3.org/TR/html4/
  --exclude-docs REGEXP      In recursive mode, do not check links in documents
                             whose URIs match REGEXP.
- -L, --languages LANGS      Accept-Language header to send (default: $langs).
- -n, --noacclanguage        Do not send the Accept-Language header.
+ -L, --languages LANGS      Accept-Language header to send.  The special value
+                            'auto' causes autodetection from the environment.
  -q, --quiet                No output if no errors are found (implies -s).
  -v, --verbose              Verbose mode.
  -i, --indicator            Show progress while parsing.
@@ -500,6 +504,36 @@ sub ask_password ()
 }
 
 ###############################################################################
+
+###########################################################################
+# Guess an Accept-Language header based on the $LANG environment variable #
+###########################################################################
+sub guess_language ()
+{
+  my $lang = $ENV{LANG} or return undef;
+
+  $lang =~ s/[\.@].*$//; # en_US.UTF-8, fi_FI@euro...
+
+  return 'en' if ($lang eq 'C' || $lang eq 'POSIX');
+
+  my $res = undef;
+  eval {
+    require Locale::Language;
+    if (my $tmp = Locale::Language::language2code($lang)) {
+      $lang = $tmp;
+    }
+    if (my ($l, $c) = (lc($lang) =~ /^([a-z]+)(?:[-_]([a-z]+))?/)) {
+      if (Locale::Language::code2language($l)) {
+        $res = $l;
+        if ($c) {
+          require Locale::Country;
+          $res .= "-$c" if Locale::Country::code2country($c);
+        }
+      }
+    }
+  };
+  return $res;
+}
 
 ###########################################
 # Transform foo into file://localhost/foo #
@@ -880,9 +914,8 @@ sub get_uri ($$;$\%$$$$)
   &hprintf("%s %s ", $method, $uri) if $verbose_progress;
 
   my $request = new HTTP::Request($method, $uri);
-  if ($Opts{Accept_Language} && $Opts{Languages}) {
-    $request->header('Accept-Language' => $Opts{Languages});
-  }
+  $request->header('Accept-Language' => $Opts{Accept_Language})
+    if $Opts{Accept_Language};
   $request->header('Accept', $Accept);
   # Are we providing authentication info?
   if ($auth && $request->url()->host() =~ $Opts{Trusted}) {
