@@ -1,0 +1,165 @@
+/*
+   Base Style Sheet for the W3C Markup Validation Service.
+
+   Copyright 2000-2004 W3C (MIT, INRIA, Keio). All Rights Reserved.
+   See http://www.w3.org/Consortium/Legal/ipr-notice.html#Copyright
+
+   $Id: checklink.css,v 1.1 2004-03-21 15:11:12 ville Exp $
+*/
+
+html, body {
+  color:            black;
+  background:       white;
+  font-family:      "Bitstream Vera Sans", sans-serif;
+  margin:           0;
+  padding:          0;
+  border:           0;
+}
+
+div#main {
+  padding-top:      1em;
+  margin-left:      1em;
+  margin-right:     7.6em;
+}
+
+div#main p {
+  padding-left:     1em;
+  padding-right:    1em;
+}
+
+a:link, a:visited {
+  color:            blue;
+}
+a:hover {
+  color:            blue;
+  background-color: #eee;
+}
+a:active {
+  color:            red;
+  background-color: yellow;
+}
+
+acronym:hover, abbr:hover {cursor: help};
+abbr[title], acronym[title], span[title], strong[title] {
+  border-bottom:    thin dotted;
+  cursor:           help;
+}
+
+pre, code, tt {
+  font-family:      monospace;
+  line-height:      100%;
+  white-space:      pre;
+}
+
+a:link img, a:visited img {
+  border-style:     none;
+}
+a img {
+  color:            black; /* The only way to hide the border in NS 4.x */
+}
+
+ul.toc {
+  list-style:       none;
+}
+
+ol li {
+  padding:          .1em;
+}
+
+h1 a {color: black} /* These are usually targets and not links */
+h2 a {color: black} /* These are usually targets and not links */
+h3 a {color: black} /* These are usually targets and not links */
+
+img {
+  vertical-align:    middle;
+}
+
+address img {
+  float:             right;
+  width:             88px;
+}
+
+address {
+  padding-top:       .5em;
+  padding-right:     1em;
+  padding-left:      1em;
+  padding-bottom:    .5em;
+  margin-top:        3em;;
+  border-top:        1px solid black;
+  background-color:  #eee;
+  clear:             right;
+}
+
+p.copyright {
+  margin-top:        5em;
+  padding-top:       .5em;
+  font-size:         xx-small;
+  max-width:         85ex;
+  text-align:        justify;
+  text-transform:    uppercase;
+  margin-left:       auto;
+  margin-right:      auto;
+  font-family:       monospace;
+  color:             #888;
+  line-height:       120%;
+}
+
+p.copyright a {
+  color:             #88f;
+  text-decoration:   none;
+}
+
+/* Various header(ish) things. Definitions cribbed from the CORE Styles. */
+h1 {
+  font-family: "Bitstream Vera Sans", Tahoma, Verdana, "Myriad Web", Syntax, sans-serif;
+  font-size-adjust: .53;
+  font-size: 2em;
+  font-weight: bold;
+  font-style: normal;
+  text-decoration: none;
+  color: #053188;
+}
+#banner h1 {font-size: 1.3em;
+border-bottom: 1px solid black;}
+
+#banner {background-image: url(/validator/banner-qa.jpg);
+background-repeat: no-repeat;
+background-attachment: scroll;
+height: 50px;
+background-position: right;
+margin:0; padding:0;}
+
+h1#title {
+/*  background-color: #eee; 
+  border-bottom: 1px solid black; 
+  padding: .25em;*/
+  padding:0;
+  margin: 0;
+  color: #053188;
+}
+
+h2 {
+  font-family: "Bitstream Vera Sans", Tahoma, Verdana, "Myriad Web", Syntax, sans-serif;
+  font-size-adjust: .53;
+  font-size: 1.5em;
+  text-align: left;
+  font-weight: bold;
+  font-style: normal;
+  text-decoration: none;
+  margin-top : 2em;
+  margin-bottom : 1em;
+  line-height: 120%;  
+}
+
+h3 {
+  font-family: "Bitstream Vera Sans", Tahoma, Verdana, "Myriad Web", Syntax, sans-serif;
+  font-size-adjust: .53;
+  font-size: 1.3em;
+  background-color: #eee;
+  text-indent: 2em;
+  padding: .2em;
+  border-top: 1px dotted black;
+  font-weight: normal;
+  font-style: normal;
+  text-decoration: none;
+}
