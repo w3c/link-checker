@@ -5,7 +5,7 @@
 # (c) 1999-2004 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 3.28 2004-04-10 19:01:26 ville Exp $
+# $Id: checklink,v 3.29 2004-04-10 22:44:51 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -112,7 +112,7 @@ BEGIN
   $PACKAGE       = 'W3C Link Checker';
   $PROGRAM       = 'W3C-checklink';
   $VERSION       = '3.9.3-dev';
-  my ($cvsver)   = q$Revision: 3.28 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver)   = q$Revision: 3.29 $ =~ /(\d+[\d\.]*\.\d+)/;
   $REVISION      = sprintf('version %s [%s] (c) 1999-2004 W3C',
                            $VERSION, $cvsver);
   $AGENT         = sprintf('%s/%s [%s] %s',
@@ -1540,6 +1540,7 @@ sub show_link_report (\%\%\%\%\@;$\%)
     }
 
     my ($redirect_loop, @redirects_urls) = get_redirects($u, %$redirects);
+    my $currloc = $results->{$u}{location};
 
     # Error type
     $c = &code_shown($u, $results);
@@ -1547,7 +1548,7 @@ sub show_link_report (\%\%\%\%\@;$\%)
     my $whattodo;
     my $redirect_too;
     if ($todo) {
-      my $currmsg = $results->{$u}{location}{message} || '';
+      my $currmsg = $currloc->{message} || '';
       if ($u =~ m/^javascript:/) {
         if ($Opts{HTML}) {
           $whattodo =
@@ -1610,8 +1611,8 @@ on how to solve this</a>.';
       }
       # HTTP message
       my $http_message;
-      if ($results->{$u}{location}{message}) {
-        $http_message = &encode($results->{$u}{location}{message});
+      if ($currloc->{message}) {
+        $http_message = &encode($currloc->{message});
         if ($c == 404 || $c == 500) {
           $http_message = '<span class="broken">'.
             $http_message.'</span>';
@@ -1639,20 +1640,18 @@ HTTP Message: %s%s%s</dd>
              $redirect_too ?
              sprintf(' <span %s>%s</span>', &bgcolor(301), $redirect_too) : '',
              # Original HTTP reply
-             $results->{$u}{location}{orig},
+             $currloc->{orig},
              # Final HTTP reply
-             ($results->{$u}{location}{code} !=
-              $results->{$u}{location}{orig})
+             ($currloc->{code} != $currloc->{orig})
              ? ' <span title="redirected to">-&gt;</span> '.
-             &encode($results->{$u}{location}{code})
+             &encode($currloc->{code})
              : '',
              # Realm
-             (defined($results->{$u}{location}{realm})
-              ? 'Realm: '.&encode($results->{$u}{location}{realm}).'<br>'
-              : ''),
+             defined($currloc->{realm})
+             ? sprintf('Realm: %s<br>', &encode($currloc->{realm})) : '',
              # HTTP original message
-             defined($results->{$u}{location}{orig_message})
-             ? &encode($results->{$u}{location}{orig_message}).
+             defined($currloc->{orig_message})
+             ? &encode($currloc->{orig_message}).
              ' <span title="redirected to">-&gt;</span> '
              : '',
              # HTTP final message
@@ -1662,7 +1661,7 @@ HTTP Message: %s%s%s</dd>
              $lines_list);
       if ($#fragments >= 0) {
         my $fragment_direction = '';
-        if ($results->{$u}{location}{code} == 200) {
+        if ($currloc->{code} == 200) {
           $fragment_direction =
             ' <strong class="broken">They need to be fixed!</strong>';
         }
@@ -1677,18 +1676,17 @@ HTTP Message: %s%s%s</dd>
              # List of lines
              $lines_list ? "Line$s: $lines_list" : '',
              # Original HTTP reply
-             $results->{$u}{location}{orig},
+             $currloc->{orig},
              # Final HTTP reply
-             ($results->{$u}{location}{code} != $results->{$u}{location}{orig})
-             ? ' -> '.$results->{$u}{location}{code}
+             ($currloc->{code} != $currloc->{orig})
+             ? ' -> '.$currloc->{code}
              : '',
              # HTTP message
-             $results->{$u}{location}{message} ?
-             $results->{$u}{location}{message} : '',
+             $currloc->{message} || '',
              # What to do
              wrap(' To do: ', '        ', $whattodo));
       if ($#fragments >= 0) {
-        if ($results->{$u}{location}{code} == 200) {
+        if ($currloc->{code} == 200) {
           print("The following fragments need to be fixed:\n");
         } else {
           print("Fragments:\n");
