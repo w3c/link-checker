@@ -1,3 +1,7 @@
+2004-03-27  Ville Skyttä  <ville.skytta@iki.fi>
+
+	* Appease Perl 5.6.1's taint mode.
+
 2004-03-23  Ville Skyttä  <ville.skytta@iki.fi>
 
 	* Make markup and CSS validator URIs configurable, and make
