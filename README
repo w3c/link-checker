@@ -27,6 +27,9 @@ source):
 
   perldoc ./bin/checklink.pod
 
+...as well as the HTML documentation in docs/checklink.html.
+
+
 COPYRIGHT AND LICENCE
 
 Written by the following people for the W3C:
