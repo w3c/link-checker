@@ -4,7 +4,7 @@
    Copyright 2000-2004 W3C (MIT, INRIA, Keio). All Rights Reserved.
    See http://www.w3.org/Consortium/Legal/ipr-notice.html#Copyright
 
-   $Id: linkchecker.css,v 1.6 2004-06-08 17:37:37 ville Exp $
+   $Id: linkchecker.css,v 1.7 2004-06-08 21:06:47 ville Exp $
 */
 
 html, body {
@@ -18,12 +18,9 @@ html, body {
 
 div#main {
   padding-top:      1em;
-  margin:           0;
-}
-
-div#main p {
   padding-left:     1em;
   padding-right:    1em;
+  margin:           0;
 }
 
 a:link, a:visited {
@@ -47,12 +44,18 @@ abbr[title], acronym[title], span[title], strong[title] {
 }
 
 pre, code, tt {
-  font-family:      monospace;
+  font-family:      "Bitstream Vera Sans Mono", monospace;
   line-height:      100%;
   white-space:      pre;
 }
 pre {
   padding-left: 2em;
+}
+
+fieldset {
+  background:       #fcfcfc;
+  border:           1px dotted #053188;
+  padding:          0.8em;
 }
 
 a:link img, a:visited img {
@@ -68,6 +71,10 @@ ul.toc {
 
 ol li {
   padding:          .1em;
+}
+
+th {
+  text-align:       left;
 }
 
 /* These are usually targets and not links */
@@ -110,7 +117,7 @@ p.copyright {
   text-transform:    uppercase;
   margin-left:       auto;
   margin-right:      auto;
-  font-family:       monospace;
+  font-family:       "Bitstream Vera Sans Mono", monospace;
   color:             #888;
   line-height:       120%;
 }
@@ -121,9 +128,13 @@ p.copyright a {
 }
 
 /* Various header(ish) things. Definitions cribbed from the CORE Styles. */
+
+h1, h2, h3, h4, h5, h6, dt {
+  font-family:       "Bitstream Vera Sans", sans-serif;
+  font-size-adjust:  .53;
+}
+
 h1 {
-  font-family: "Bitstream Vera Sans", Tahoma, Verdana, "Myriad Web", Syntax, sans-serif;
-  font-size-adjust: .53;
   font-size: 2em;
   font-weight: bold;
   font-style: normal;
@@ -150,29 +161,25 @@ h1#title {
 }
 
 h2 {
-  font-family:       "Bitstream Vera Sans", Tahoma, Verdana, "Myriad Web", Syntax, sans-serif;
-  font-size-adjust:  .53;
   font-size:         1.5em;
   text-align:        left;
   font-weight:       bold;
   font-style:        normal;
   text-decoration:   none;
-  margin-top:        2em;
+  margin-top:        1em;
   margin-bottom:     1em;
   line-height:       120%;  
 }
 
 h3 {
-  font-family:       "Bitstream Vera Sans", Tahoma, Verdana, "Myriad Web", Syntax, sans-serif;
-  font-size-adjust:  .53;
   font-size:         1.3em;
-  background-color:  #eee;
-  text-indent:       2em;
-  padding:           .2em;
-  border-top:        1px dotted black;
   font-weight:       normal;
   font-style:        normal;
   text-decoration:   none;
+  background-color:  #eee;
+  text-indent:       1em;
+  padding:           .2em;
+  border-top:        1px dotted black;
 }
 
 
@@ -230,12 +237,20 @@ h3 {
   border-right: solid 1px #ddd;
 }
 
-/* linkchecker results */
+/* Results */
 .report {
   width: 100%;
 }
 dt.report {
   font-weight: bold;
+}
+div#settings {
+  font-size: smaller;
+  float: right;
+}
+div#settings ul {
+  margin: 0;
+  padding-left: 1.5em;
 }
 .unauthorized {
   background-color: aqua;
@@ -249,5 +264,6 @@ dt.report {
 .multiple {
   background-color: fuchsia;
 }
-
-
+.dubious {
+  background-color: #ccc;
+}
