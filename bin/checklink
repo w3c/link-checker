@@ -5,7 +5,7 @@
 # (c) 1999-2004 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 3.9 2004-03-23 20:09:27 ville Exp $
+# $Id: checklink,v 3.10 2004-03-23 20:16:26 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -88,7 +88,7 @@ BEGIN
   $PROGRAM       = 'W3C checklink';
   ($AGENT        = $PROGRAM) =~ s/\s+/-/g;
   $VERSION       = '3.9.1';
-  ($CVS_VERSION) = q$Revision: 3.9 $ =~ /(\d+[\d\.]*\.\d+)/;
+  ($CVS_VERSION) = q$Revision: 3.10 $ =~ /(\d+[\d\.]*\.\d+)/;
   $REVISION      = sprintf('version %s [%s] (c) 1999-2004 W3C',
                            $VERSION, $CVS_VERSION);
 
@@ -2040,7 +2040,7 @@ sub print_form ($)
   }
 
   print "<form action=\"", $q->self_url(), "\" method=\"get\" onsubmit=\"return uriOk()\">
-<p><label for=\"uri\">Enter the address (<a href=\"http://www.w3.org/Addressing/#terms\">URL</a>)
+<p><label for=\"uri\">Enter the address (<a href=\"http://www.w3.org/Addressing/\">URL</a>)
 of a document that you would like to check:</label></p>
 <p><input type=\"text\" size=\"50\" id=\"uri\" name=\"uri\" value=\"\"></p>
 <fieldset>
