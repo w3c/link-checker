@@ -5,7 +5,7 @@
 # (c) 1999-2004 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 3.43 2004-05-10 18:41:28 ville Exp $
+# $Id: checklink,v 3.44 2004-05-16 21:58:40 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -112,7 +112,7 @@ BEGIN
   $PACKAGE       = 'W3C Link Checker';
   $PROGRAM       = 'W3C-checklink';
   $VERSION       = '3.9.3-dev';
-  my ($cvsver)   = q$Revision: 3.43 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver)   = q$Revision: 3.44 $ =~ /(\d+[\d\.]*\.\d+)/;
   $REVISION      = sprintf('version %s [%s] (c) 1999-2004 W3C',
                            $VERSION, $cvsver);
   $AGENT         = sprintf('%s/%s [%s] %s',
@@ -2131,9 +2131,10 @@ sub file_uri ($)
 {
   my ($uri) = @_;
   &html_header($uri);
-  print "<h2>Forbidden</h2>
-<p>You cannot check such a URI (<code>$uri</code>).</p>
-";
+  printf(<<'EOF', &encode($uri));
+<h2>Forbidden</h2>
+<p>You cannot check such a URI (<code>%s</code>).</p>
+EOF
   &html_footer();
   exit;
 }
