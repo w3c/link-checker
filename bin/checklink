@@ -5,7 +5,7 @@
 # (c) 1999-2004 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 3.7 2004-03-18 21:39:55 ville Exp $
+# $Id: checklink,v 3.8 2004-03-22 22:05:43 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -88,7 +88,7 @@ BEGIN
   $PROGRAM       = 'W3C checklink';
   ($AGENT        = $PROGRAM) =~ s/\s+/-/g;
   $VERSION       = '3.9.1';
-  ($CVS_VERSION) = q$Revision: 3.7 $ =~ /(\d+[\d\.]*\.\d+)/;
+  ($CVS_VERSION) = q$Revision: 3.8 $ =~ /(\d+[\d\.]*\.\d+)/;
   $REVISION      = sprintf('version %s [%s] (c) 1999-2004 W3C',
                            $VERSION, $CVS_VERSION);
 
@@ -1985,10 +1985,9 @@ Please send bug reports, suggestions and comments to the
 mailing list</a>
 (<a href="http://lists.w3.org/Archives/Public/www-validator/">archives</a>).
 <br>
-Check out the <a href="docs/checklink.html">documentation</a>.
+Check out the <a href="http://dev.w3.org/cvsweb/~checkout~/perl/modules/W3C/LinkChecker/docs/checklink.html?content-type=text/html;%20charset=utf-8">documentation</a>.
 Download the
-<a href="http://dev.w3.org/cvsweb/~checkout~/validator/httpd/cgi-bin/checklink.pl?rev=$CVS_VERSION&amp;content-type=text/plain">source code</a> from
-<a href="http://dev.w3.org/cvsweb/validator/httpd/cgi-bin/checklink.pl">CVS</a>.
+<a href="http://search.cpan.org/dist/W3C-CheckLink/">source code</a>.
 </address>
 </div>
 </body>
