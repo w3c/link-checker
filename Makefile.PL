@@ -29,6 +29,9 @@ WriteMakefile(
                      Term::ReadKey   => 2.00,
                      Time::HiRes     => 0,
                      URI             => 0,
+                     # For the test suite:
+                     Test::Simple    => 0,
+                     File::Spec      => 0,
                    },
   EXE_FILES     => [ 'bin/checklink' ],
   MAN1PODS      => { 'bin/checklink.pod' =>
