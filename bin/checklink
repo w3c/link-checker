@@ -5,7 +5,7 @@
 # (c) 1999-2004 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 3.32 2004-04-11 19:33:39 ville Exp $
+# $Id: checklink,v 3.33 2004-04-11 20:32:06 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -64,7 +64,7 @@ sub simple_request
   my $response = $self->W3C::UserAgent::SUPER::simple_request(@_);
   if (! defined($self->{FirstResponse})) {
     $self->{FirstResponse} = $response->code();
-    $self->{FirstMessage} = $response->message();
+    $self->{FirstMessage} = $response->message() || '(no message)';
   }
   return $response;
 }
@@ -106,7 +106,7 @@ BEGIN
   $PACKAGE       = 'W3C Link Checker';
   $PROGRAM       = 'W3C-checklink';
   $VERSION       = '3.9.3-dev';
-  my ($cvsver)   = q$Revision: 3.32 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver)   = q$Revision: 3.33 $ =~ /(\d+[\d\.]*\.\d+)/;
   $REVISION      = sprintf('version %s [%s] (c) 1999-2004 W3C',
                            $VERSION, $cvsver);
   $AGENT         = sprintf('%s/%s [%s] %s',
@@ -841,7 +841,7 @@ sub get_document ($$$;\%)
       } else {
         &html_header($uri) if $Opts{HTML};
         &hprintf("\nError: %d %s\n",
-                 $response->code(), $response->message());
+                 $response->code(), $response->message() || '(no message)');
       }
     }
     $response->{Stop} = 1;
@@ -1027,7 +1027,7 @@ sub record_results ($$$)
   # Rewind, check for the original code and message.
   for (my $tmp = $response->previous(); $tmp; $tmp = $tmp->previous()) {
     $results{$uri}{location}{orig} = $tmp->code();
-    $results{$uri}{location}{orig_message} = $tmp->message();
+    $results{$uri}{location}{orig_message} = $tmp->message() || '(no message)';
   }
   $results{$uri}{location}{success} = $response->is_success();
   # Stores the authentication information
@@ -1044,7 +1044,7 @@ sub record_results ($$$)
     $results{$uri}{location}{record} = $results{$uri}{location}{display};
   }
   # Did it fail?
-  $results{$uri}{location}{message} = $response->message();
+  $results{$uri}{location}{message} = $response->message() || '(no message)';
   if (! $results{$uri}{location}{success}) {
     &hprintf("Error: %d %s\n",
              $results{$uri}{location}{code},
