@@ -5,7 +5,7 @@
 # (c) 1999-2004 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 3.21 2004-04-03 10:33:43 ville Exp $
+# $Id: checklink,v 3.22 2004-04-03 17:23:02 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -92,7 +92,7 @@ BEGIN
   $PROGRAM       = 'W3C checklink';
   ($AGENT        = $PROGRAM) =~ s/\s+/-/g;
   $VERSION       = '3.9.2';
-  ($CVS_VERSION) = q$Revision: 3.21 $ =~ /(\d+[\d\.]*\.\d+)/;
+  ($CVS_VERSION) = q$Revision: 3.22 $ =~ /(\d+[\d\.]*\.\d+)/;
   $REVISION      = sprintf('version %s [%s] (c) 1999-2004 W3C',
                            $VERSION, $CVS_VERSION);
 
@@ -411,57 +411,57 @@ sub parse_arguments ()
 sub version ()
 {
   print "$PROGRAM $REVISION\n";
-  exit(0);
+  exit 0;
 }
 
 sub usage ()
 {
   my ($exitval, $msg) = @_;
   $exitval = 0 unless defined($exitval);
-  $msg ||= ''; $msg =~ s/[\r\n]*$/\n\n/;
+  $msg ||= ''; $msg =~ s/[\r\n]*$/\n\n/ if $msg;
 
   die($msg) unless $Opts{Command_Line};
 
-  my $langs = defined($Opts{Languages}) ? " (default: $Opts{Languages})" : '';
-  my $trust = defined($Opts{Trusted})   ? " (default: $Opts{Trusted})"   : '';
+  my $langs = $Opts{Languages} || 'none';
+  my $trust = defined($Cfg{Trusted}) ? $Cfg{Trusted} : 'same host only';
 
   select(STDERR) if $exitval;
   print "$msg$PROGRAM $REVISION
 
 Usage: checklink <options> <uris>
 Options:
-  -s/--summary                Result summary only.
-  -b/--broken                 Show only the broken links, not the redirects.
-  -e/--directory              Hide directory redirects, for example
-                              http://www.w3.org/TR -> http://www.w3.org/TR/
-  -r/--recursive              Check the documents linked from the first one.
-  -D/--depth n                Check the documents linked from the first one
-                              to depth n (implies --recursive).
-  -l/--location uri           Scope of the documents checked in recursive mode.
-                              By default, for example for
-                              http://www.w3.org/TR/html4/Overview.html
-                              it would be http://www.w3.org/TR/html4/
-  --exclude-docs regexp       In recursive mode, do not check links in
-                              documents whose URIs match regexp.
-  -n/--noacclanguage          Do not send an Accept-Language header.
-  -L/--languages              Languages accepted$langs.
-  -q/--quiet                  No output if no errors are found.  Implies -s.
-  -v/--verbose                Verbose mode.
-  -i/--indicator              Show progress while parsing.
-  -u/--user username          Specify a username for authentication.
-  -p/--password password      Specify a password.
-  --hide-same-realm           Hide 401's that are in the same realm as the
-                              document checked.
-  -t/--timeout secs           Timeout for requests (in seconds).
-  -d/--domain domain          Regular expression describing the domain to
-                              which authentication information will be
-                              sent$trust.
-  --masquerade \"base1 base2\"  Masquerade base URI base1 as base2.  See manual
-                              page for more information.
-  -y/--proxy proxy            Specify an HTTP proxy server.
-  -H/--html                   HTML output.
-  -?/-h/--help                Show this message.
-  -V/--version                Output version information.
+ -s, --summary              Result summary only.
+ -b, --broken               Show only the broken links, not the redirects.
+ -e, --directory            Hide directory redirects, for example
+                            http://www.w3.org/TR -> http://www.w3.org/TR/
+ -r, --recursive            Check the documents linked from the first one.
+ -D, --depth N              Check the documents linked from the first one to
+                            depth N (implies --recursive).
+ -l, --location URI         Scope of the documents checked in recursive mode.
+                            By default, for example for
+                            http://www.w3.org/TR/html4/Overview.html
+                            it would be http://www.w3.org/TR/html4/
+ --exclude-docs REGEXP      In recursive mode, do not check links in documents
+                            whose URIs match REGEXP.
+ -L, --languages LANGS      Accept-Language header to send (default: $langs).
+ -n, --noacclanguage        Do not send the Accept-Language header.
+ -q, --quiet                No output if no errors are found (implies -s).
+ -v, --verbose              Verbose mode.
+ -i, --indicator            Show progress while parsing.
+ -u, --user USERNAME        Specify a username for authentication.
+ -p, --password PASSWORD    Specify a password.
+ --hide-same-realm          Hide 401's that are in the same realm as the
+                            document checked.
+ -t, --timeout SECS         Timeout for requests (in seconds).
+ -d, --domain DOMAIN        Regular expression describing the domain to which
+                            authentication information will be sent
+                            (default: $trust).
+ --masquerade \"BASE1 BASE2\" Masquerade base URI BASE1 as BASE2.  See the
+                            manual page for more information.
+ -y, --proxy PROXY          Specify an HTTP proxy server.
+ -H, --html                 HTML output.
+ -?, -h, --help             Show this message and exit.
+ -V, --version              Output version information and exit.
 
 See \"perldoc Net::FTP\" for information about various environment variables
 affecting FTP connections and \"perldoc Net::NNTP\" for setting a default
