@@ -5,7 +5,7 @@
 # (c) 1999-2004 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 3.40 2004-05-07 21:37:28 ville Exp $
+# $Id: checklink,v 3.41 2004-05-10 18:17:29 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -86,7 +86,7 @@ sub redirect_ok
 package W3C::LinkChecker;
 
 use vars qw($AGENT $PACKAGE $PROGRAM $VERSION $REVISION
-            $DocType $Accept $ContentTypes %Cfg);
+            $DocType $Meta $Accept $ContentTypes %Cfg);
 
 use HTML::Entities       qw();
 use HTML::Parser    3.00 qw();
@@ -112,7 +112,7 @@ BEGIN
   $PACKAGE       = 'W3C Link Checker';
   $PROGRAM       = 'W3C-checklink';
   $VERSION       = '3.9.3-dev';
-  my ($cvsver)   = q$Revision: 3.40 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver)   = q$Revision: 3.41 $ =~ /(\d+[\d\.]*\.\d+)/;
   $REVISION      = sprintf('version %s [%s] (c) 1999-2004 W3C',
                            $VERSION, $cvsver);
   $AGENT         = sprintf('%s/%s [%s] %s',
@@ -125,6 +125,9 @@ BEGIN
   }
 
   $DocType = '<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">';
+
+  $Meta = '<meta http-equiv="Content-Script-Type" ' .
+    'content="application/x-javascript">';
 
   my @content_types = qw(application/xhtml+xml text/html);
   $Accept = join(', ', @content_types) . ', */*;q=0.5';
@@ -1391,12 +1394,13 @@ EOF
 <html lang=\"en\">
 <head>
 <title>401 Authorization Required</title>
+%s
 </head>
 <body>
 <h1>Authorization Required</h1>
 <p>
   You need %s access to %s to perform Link Checking.<br>
-", $DocType, &encode($realm), $r->request->url);
+", $DocType, $Meta, &encode($realm), $r->request->url);
 
     if ($Opts{Trusted}) {
       printf <<EOF, &encode($Opts{Trusted});
@@ -1947,7 +1951,6 @@ sub html_header ($;$$)
   if (! $Opts{Command_Line}) {
     $headers .= "Cache-Control: no-cache\nPragma: no-cache\n" if $doform;
     $headers .= "Content-Type: text/html; charset=iso-8859-1\n";
-    $headers .= "Content-Script-Type: application/x-javascript\n";
     $headers .= "Set-Cookie: $cookie\n" if $cookie;
     $headers .= "Content-Language: en\n\n";
   }
@@ -1958,12 +1961,15 @@ sub html_header ($;$$)
 <script type=\"application/x-javascript\">
 function uriOk()
 {
-  var v = document.forms[0].uri.value;
-  if (v.length > 0) {
-    if (v.search) return (v.search(/\\S/) != -1);
-    return true;
+  var u = document.forms[0].uri;
+  var ok = false;
+  if (u.value.length > 0) {
+    if (u.value.search) {
+      ok = (u.value.search(/\\S/) != -1);
+    }
   }
-  return false;
+  if (! ok) u.focus();
+  return ok;
 }
 </script>";
    $onload = ' onload="document.forms[0].uri.focus()"';
@@ -1973,6 +1979,7 @@ function uriOk()
 <html lang=\"en\">
 <head>
 <title>W3C", $title, "</title>
+", $Meta, "
 <style type=\"text/css\">
 body, address {
   font-family: sans-serif;
