@@ -5,7 +5,7 @@
 # (c) 1999-2004 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 3.27 2004-04-10 14:07:13 ville Exp $
+# $Id: checklink,v 3.28 2004-04-10 19:01:26 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -112,7 +112,7 @@ BEGIN
   $PACKAGE       = 'W3C Link Checker';
   $PROGRAM       = 'W3C-checklink';
   $VERSION       = '3.9.3-dev';
-  my ($cvsver)   = q$Revision: 3.27 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver)   = q$Revision: 3.28 $ =~ /(\d+[\d\.]*\.\d+)/;
   $REVISION      = sprintf('version %s [%s] (c) 1999-2004 W3C',
                            $VERSION, $cvsver);
   $AGENT         = sprintf('%s/%s [%s] %s',
@@ -2079,7 +2079,7 @@ sub html_footer ()
 %s %s,
 by <a href="http://www.w3.org/People/Hugo/">Hugo Haas</a> and others.<br>
 Please send bug reports, suggestions and comments to the
-<a href="mailto:www-validator@w3.org?subject=checklink%3A%20">www-validator
+<a href="mailto:www-validator@w3.org?subject=checklink%%3A%%20">www-validator
 mailing list</a>
 (<a href="http://lists.w3.org/Archives/Public/www-validator/">archives</a>).
 <br>
