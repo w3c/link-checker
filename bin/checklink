@@ -5,7 +5,7 @@
 # (c) 1999-2004 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.11 2004-11-07 10:23:44 ville Exp $
+# $Id: checklink,v 4.12 2004-11-07 11:17:55 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -110,7 +110,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.0';
   $REVISION    = sprintf('version %s (c) 1999-2004 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.11 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.12 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver, LWP::RobotUA->_agent());
 
@@ -430,16 +430,23 @@ sub parse_arguments ()
              't|timeout=i'     => \$Opts{Timeout},
              'S|sleep=i'       => \$Opts{Sleep_Time},
              'L|languages=s'   => \$Opts{Accept_Language},
-             'n|noacclanguage' => sub { warn("*** Warning: The " .
-                                        "-n/--noacclanguage option is " .
-                                        "deprecated and has no effect.\n"); },
              'D|depth=i'       => sub { $Opts{Depth} = $_[1]
                                           unless $_[1] == 0; },
              'd|domain=s'      => \$Opts{Trusted},
-             'y|proxy=s'       => \$Opts{HTTP_Proxy},
              'masquerade=s'    => \$masq,
              'hide-same-realm' => \$Opts{Hide_Same_Realm},
              'V|version'       => \&version,
+             # Deprecated options:
+             'n|noacclanguage' => sub { warn("*** Warning: The " .
+                                        "-n/--noacclanguage option is " .
+                                        "deprecated and has no effect.\n");
+                                      },
+             'y|proxy=s'       => sub { warn("*** Warning: The -y/--proxy " .
+                                        "option is deprecated, use the " .
+                                        "http_proxy\n             " .
+                                        "environment variable instead.\n");
+                                        $Opts{HTTP_Proxy} = $_[1];
+                                      },
             )
     || usage(1);
 
@@ -517,12 +524,12 @@ Options:
                             (default: $trust).
  --masquerade \"BASE1 BASE2\" Masquerade base URI BASE1 as BASE2.  See the
                             manual page for more information.
- -y, --proxy PROXY          Specify an HTTP proxy server.
  -H, --html                 HTML output.
  -?, -h, --help             Show this message and exit.
  -V, --version              Output version information and exit.
 
-See \"perldoc Net::FTP\" for information about various environment variables
+See \"perldoc LWP\" for information about proxy server support,
+\"perldoc Net::FTP\" for information about various environment variables
 affecting FTP connections and \"perldoc Net::NNTP\" for setting a default
 NNTP server for news: URIs.
 
