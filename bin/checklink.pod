@@ -1,4 +1,4 @@
-$Id: checklink.pod,v 1.6 2004-04-03 09:46:35 ville Exp $
+$Id: checklink.pod,v 1.7 2004-04-03 10:31:29 ville Exp $
 
 =head1 NAME
 
@@ -109,7 +109,8 @@ Timeout for requests, in seconds.
 
 Perl regular expression describing the domain to which the authentication
 information (if present) will be sent.  The default value can be specified
-in the configuration file.
+in the configuration file.  See the C<Trusted> entry in the configuration
+file description below for more information.
 
 =item B<--masquerade> I<"local remote">
 
@@ -141,10 +142,13 @@ HTML output.
 The main configuration file.  You can use the L<W3C_CHECKLINK_CFG> environment
 variable to override the default location.
 
-C<Trusted> specifies a regular expression for
-matching trusted domains (ie. domains where HTTP basic authentication, if
-any, will be sent).  For example, the following configures only the w3.org
-domain as trusted:
+C<Trusted> specifies a regular expression for matching trusted domains
+(ie. domains where HTTP basic authentication, if any, will be sent).
+The regular expression will be matched case insensitively against host
+names.  The default behavior (when unset, that is) is to send the
+authentication information only to the host which requests it; usually
+you don't want to change this.  For example, the following configures
+I<only> the w3.org domain as trusted:
 
     Trusted = \.w3\.org$
 
