@@ -25,7 +25,7 @@ WriteMakefile(
                      CGI             => 0,
                      Config::General => 2.06,
                      HTML::Parser    => 3.00,
-                     LWP::UserAgent  => 0,
+                     LWP::RobotUA    => 0,
                      Net::IP         => 0,
                      Term::ReadKey   => 2.00,
                      Time::HiRes     => 0,

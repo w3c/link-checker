@@ -5,7 +5,7 @@
 # (c) 1999-2004 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 3.23 2004-04-04 16:13:39 ville Exp $
+# $Id: checklink,v 3.24 2004-04-07 22:08:34 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -33,10 +33,30 @@ $ENV{PATH} = ''; # undef would output warnings with Perl 5.6.1's Cwd.pm.
 
 package W3C::UserAgent;
 
-use LWP::UserAgent      qw();
+use LWP::RobotUA qw();
 # @@@ Needs also W3C::LinkChecker but can't use() it here.
 
-@W3C::UserAgent::ISA =  qw(LWP::UserAgent);
+@W3C::UserAgent::ISA = qw(LWP::RobotUA);
+
+sub new
+{
+  my $proto = shift;
+  my $class = ref($proto) || $proto;
+  my ($name, $from, $rules) = @_;
+
+  # For security/privacy reasons, if $from was not given, do not send it.
+  # Cheat by defining something for the constructor, and resetting it later.
+  my $from_ok = $from;
+  $from ||= 'www-validator@w3.org';
+  # WWW::RobotRules <= 5.78 have bugs which cause suboptimal results with
+  # User-Agent substring matching against robots.txt files; "User-Agent: *"
+  # should work ok with all though, and "User-Agent: W3C-checklink" for >= 5.77
+  my $self = $class->SUPER::new($name, $from, $rules);
+  $self->from(undef) unless $from_ok;
+
+  $self->env_proxy();
+  return $self;
+}
 
 sub simple_request
 {
@@ -68,7 +88,7 @@ sub redirect_ok
 
 package W3C::LinkChecker;
 
-use vars qw($PROGRAM $AGENT $VERSION $CVS_VERSION $REVISION
+use vars qw($AGENT $PACKAGE $PROGRAM $VERSION $REVISION
             $DocType $Accept $ContentTypes %Cfg);
 
 use HTML::Entities       qw();
@@ -89,12 +109,14 @@ use URI::file            qw();
 BEGIN
 {
   # Version info
-  $PROGRAM       = 'W3C checklink';
-  ($AGENT        = $PROGRAM) =~ s/\s+/-/g;
-  $VERSION       = '3.9.2';
-  ($CVS_VERSION) = q$Revision: 3.23 $ =~ /(\d+[\d\.]*\.\d+)/;
+  $PACKAGE       = 'W3C Link Checker';
+  $PROGRAM       = 'W3C-checklink';
+  $VERSION       = '3.9.3-dev';
+  my ($cvsver)   = q$Revision: 3.24 $ =~ /(\d+[\d\.]*\.\d+)/;
   $REVISION      = sprintf('version %s [%s] (c) 1999-2004 W3C',
-                           $VERSION, $CVS_VERSION);
+                           $VERSION, $cvsver);
+  $AGENT         = sprintf('%s/%s [%s] %s',
+                           $PROGRAM, $VERSION, $cvsver,LWP::RobotUA->_agent());
 
   # Pull in mod_perl modules if applicable.
   if ($ENV{MOD_PERL}) {
@@ -223,7 +245,7 @@ if ($Opts{Command_Line}) {
   my $first = 1;
   foreach my $uri (@ARGV) {
     if (!$Opts{Summary_Only}) {
-      printf("%s %s\n", $PROGRAM, $REVISION) unless $Opts{HTML};
+      printf("%s %s\n", $PACKAGE, $REVISION) unless $Opts{HTML};
     } else {
       $Opts{Verbose} = 0;
       $Opts{Progress} = 0;
@@ -265,7 +287,7 @@ if ($Opts{Command_Line}) {
   }
 
   # Override undefined values from the cookie, if we got one.
-  if (my %cookie = $query->cookie($AGENT)) {
+  if (my %cookie = $query->cookie($PROGRAM)) {
     while (my ($key, $value) = each %cookie) {
       $query->param($key, $value) unless defined($query->param($key));
     }
@@ -292,7 +314,7 @@ if ($Opts{Command_Line}) {
   # Save, clear or leave cookie as is.
   my $cookie = '';
   if (my $action = $query->param('cookie')) {
-    my %cookie = (-name => $AGENT);
+    my %cookie = (-name => $PROGRAM);
     if ($action eq 'clear') {
       # Clear the cookie.
       $cookie{-value}   = '';
@@ -307,7 +329,7 @@ if ($Opts{Command_Line}) {
         $cookie{-value}   = \%options;
       } else {
         # Use the old values.
-        $cookie{-value} = { $query->cookie($AGENT) };
+        $cookie{-value} = { $query->cookie($PROGRAM) };
       }
     }
     $cookie = $query->cookie(%cookie);
@@ -415,7 +437,7 @@ sub parse_arguments ()
 
 sub version ()
 {
-  print "$PROGRAM $REVISION\n";
+  print "$PACKAGE $REVISION\n";
   exit 0;
 }
 
@@ -430,7 +452,7 @@ sub usage ()
   my $trust = defined($Cfg{Trusted}) ? $Cfg{Trusted} : 'same host only';
 
   select(STDERR) if $exitval;
-  print "$msg$PROGRAM $REVISION
+  print "$msg$PACKAGE $REVISION
 
 Usage: checklink <options> <uris>
 Options:
@@ -508,6 +530,7 @@ sub ask_password ()
 ###########################################################################
 # Guess an Accept-Language header based on the $LANG environment variable #
 ###########################################################################
+
 sub guess_language ()
 {
   my $lang = $ENV{LANG} or return undef;
@@ -893,12 +916,11 @@ sub get_uri ($$;$\%$$$$)
   $start = &get_timestamp() unless defined($start);
 
   # Prepare the query
-  my %lwpargs = ($LWP::VERSION >= 5.6) ? (keep_alive => 1) : ();
-  my $ua = W3C::UserAgent->new(%lwpargs);
+  my $ua = W3C::UserAgent->new($AGENT); # @@@ TODO: admin address
+  # @@@ make number of keep-alive connections and delay customizable
+  $ua->conn_cache({ total_capacity => 1}); # 1 keep-alive connection
+  $ua->delay(1/60);                        # 1 second
   $ua->timeout($Opts{Timeout});
-  $ua->agent(sprintf('%s/%s [%s] %s',
-                     $AGENT, $VERSION, $CVS_VERSION, $ua->agent()));
-  $ua->env_proxy();
   $ua->proxy('http', 'http://' . $Opts{HTTP_Proxy}) if $Opts{HTTP_Proxy};
 
   # $ua->{fetching} contains the URI we originally wanted
@@ -966,6 +988,7 @@ sub get_uri ($$;$\%$$$$)
   }
   # Record the redirects
   $response->{Redirects} = $ua->{Redirects};
+  # @@@ subtract robot delay from the "fetched in" time?
   &hprintf(" fetched in %ss\n",
            &time_diff($start, &get_timestamp())) if $verbose_progress;
 
@@ -1524,6 +1547,7 @@ sub show_link_report (\%\%\%\%\@;$\%)
     my $whattodo;
     my $redirect_too;
     if ($todo) {
+      my $currmsg = $results->{$u}{location}{message} || '';
       if ($u =~ m/^javascript:/) {
         if ($Opts{HTML}) {
           $whattodo =
@@ -1539,11 +1563,16 @@ on how to solve this</a>.';
         }
       } elsif ($c == 500) {
         # 500's could be a real 500 or a DNS lookup problem
-        if ($results->{$u}{location}{message} =~
-            m/Bad hostname '[^\']*'/) {
+        if ($currmsg =~ /Bad hostname '[^\']*'/) {
           $whattodo = 'The hostname could not be resolved. This link needs to be fixed.';
         } else {
           $whattodo = 'This is a server-side problem. Check the URI.';
+        }
+      } elsif ($c == 403 && $currmsg =~ /Forbidden by robots\.txt/) {
+        if ($Opts{HTML}) {
+          $whattodo = 'The link was not checked due to <a href="http://www.robotstxt.org/wc/exclusion.html#robotstxt">robots exclusion</a> rules, check the link manually.';
+        } else {
+          $whattodo = 'Check the link manually.';
         }
       } elsif ($redirect_loop) {
         $whattodo =
@@ -2047,7 +2076,7 @@ sub html_footer ()
   print <<EOF;
 <div>
 <address>
-$PROGRAM $REVISION,
+$PACKAGE $REVISION,
 by <a href="http://www.w3.org/People/Hugo/">Hugo Haas</a> and others.<br>
 Please send bug reports, suggestions and comments to the
 <a href="mailto:www-validator\@w3.org?subject=checklink%3A%20">www-validator
