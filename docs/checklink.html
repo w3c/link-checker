@@ -6,7 +6,7 @@
     <title>W3C Link Checker Documentation</title>
     <link rev="made" href="mailto:www-validator@w3.org" />
     <style type="text/css" media="all">@import "linkchecker.css";</style>
-    <meta name="revision" content="$Id: checklink.html,v 1.24 2004-11-06 11:39:28 ville Exp $" />
+    <meta name="revision" content="$Id: checklink.html,v 1.25 2004-11-07 11:17:55 ville Exp $" />
   </head>
 
   <body>
@@ -179,6 +179,13 @@
     </p>
 
     <p>
+      The link checker honors proxy settings from the
+      <code><em>scheme</em>_proxy</code> environment variables.  See
+      <a href="http://search.cpan.org/dist/libwww-perl/lib/LWP.pm#ENVIRONMENT">LWP(3)</a>
+      for more information.
+    </p>
+
+    <p>
       Some environment variables affect the way how the link checker uses
       <a href="http://www.ietf.org/rfc/rfc959.txt"><abbr title="File Transfer Protocol">FTP</abbr></a>.
       In particular, passive mode is the default.  See
@@ -253,7 +260,7 @@ Disallow:
         alt="Valid XHTML 1.0!" /></a>
       <a title="Send Feedback for the W3C Link Checker"
         href="http://validator.w3.org/feedback.html">The W3C Validator Team</a><br />
-      $Date: 2004-11-06 11:39:28 $
+      $Date: 2004-11-07 11:17:55 $
     </address>
     <p class="copyright">
       <a rel="Copyright" href="http://www.w3.org/Consortium/Legal/ipr-notice#Copyright">Copyright</a> &copy; 1994-2004
