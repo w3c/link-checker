@@ -7,10 +7,12 @@ installdirs:  site
 requires:
     CGI:                           0
     Config::General:               2.06
+    File::Spec:                    0
     HTML::Parser:                  3
     LWP:                           5.66
     Net::IP:                       0
     Term::ReadKey:                 2
+    Test::Simple:                  0
     Time::HiRes:                   0
     URI:                           0
 

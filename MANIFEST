@@ -13,3 +13,4 @@ docs/linkchecker.css    Cascading style sheet for the documentation
 docs/qa-small.png
 docs/valid-xhtml10.png
 docs/w3c_home.png
+t/00compile.t
