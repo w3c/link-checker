@@ -5,7 +5,7 @@
 # (c) 1999-2005 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.16 2005-02-05 18:48:20 ville Exp $
+# $Id: checklink,v 4.17 2005-03-31 06:25:28 ot Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -118,7 +118,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.1';
   $REVISION    = sprintf('version %s (c) 1999-2005 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.16 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.17 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver, LWP::RobotUA->_agent());
 
@@ -683,7 +683,7 @@ EOF
       printf("<p>For reliable link checking results, check
 <a href=\"%s\">HTML validity</a> first.  See also
 <a href=\"%s\">CSS validity</a>.</p>
-<p>Back to the <a href=\"%s\">link checker</a>.</p>\n",
+<p>Back to the <a accesskey=\"1\" href=\"%s\">link checker</a>.</p>\n",
              &encode(sprintf($Cfg{Markup_Validator_URI}, $esc_uri)),
              &encode(sprintf($Cfg{CSS_Validator_URI}, $esc_uri)),
              &encode($Opts{_Self_URI}));
@@ -2046,12 +2046,14 @@ EOF
 sub banner ($)
 {
   my ($title) = @_;
-  printf(<<'EOF', &encode($title), $Cfg{Doc_URI});
+  printf(<<'EOF', &encode($title), $Cfg{Doc_URI}, $Cfg{Doc_URI});
 <div id="banner"><h1 id="title"><a href="http://www.w3.org/" title="W3C"><img alt="W3C" id="logo" src="http://www.w3.org/Icons/w3c_home" height="48" width="72"></a> Link Checker%s</h1></div>
 <ul class="navbar" id="menu">
-  <li><a href="%s" accesskey="d" title="Documentation for this Link Checker Service">Docs</a></li>
-  <li><a href="http://search.cpan.org/dist/W3C-LinkChecker/" accesskey="i" title="Download the source / Install this service">Download</a></li>
-  <li><a href="http://validator.w3.org/" accesskey="m" title="Validate your markup with the W3C Markup Validation Service">Validator</a></li>
+  <li><span class="hideme"><a href="#results1" accesskey="2" title="Skip past navigation to main part of page">Skip Navigation</a> |</span>
+  <li><a href="%s" accesskey="3" title="Documentation for this Link Checker Service">Docs</a></li>
+  <li><a href="http://search.cpan.org/dist/W3C-LinkChecker/" title="Download the source / Install this service">Download</a></li>
+  <li><a href="%s#csb" title="feedback: comments, suggestions and bugs" accesskey="4">Feedback</a></li>
+  <li><a href="http://validator.w3.org/" title="Validate your markup with the W3C Markup Validation Service">Validator</a></li>
 </ul>
 <div id="main">
 EOF
