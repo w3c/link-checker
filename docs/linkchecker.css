@@ -4,7 +4,7 @@
    Copyright 2000-2004 W3C (MIT, INRIA, Keio). All Rights Reserved.
    See http://www.w3.org/Consortium/Legal/ipr-notice.html#Copyright
 
-   $Id: linkchecker.css,v 1.4 2004-05-31 07:04:53 ot Exp $
+   $Id: linkchecker.css,v 1.5 2004-06-08 17:15:02 ville Exp $
 */
 
 html, body {
@@ -16,11 +16,9 @@ html, body {
   border:           0;
 }
 
-.hideme {display: none}
-
 div#main {
   padding-top:      1em;
-  margin:      0;
+  margin:           0;
 }
 
 div#main p {
