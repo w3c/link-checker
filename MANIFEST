@@ -3,6 +3,7 @@ ChangeLog.old           Older changes
 Makefile.PL
 MANIFEST
 README                  Start by reading this
+SIGNATURE
 bin/checklink           The link checker
 bin/checklink.pod       Manual page for the link checker
 META.yml
