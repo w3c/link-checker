@@ -14,16 +14,16 @@ not run its Makefile.PL or Build.PL.
 -----BEGIN PGP SIGNED MESSAGE-----
 Hash: SHA1
 
-SHA1 e7a3f188324d33d7e126664efbc1f9c6d78ddc42 ChangeLog
+SHA1 0f2982f485fbebaecca8bdc9aeadd2c7021fc3ee ChangeLog
 SHA1 bcb07f9feaa907ee1f23e760591f8d6151acc2d8 ChangeLog.old
 SHA1 85e525160ac626db4021d693f6d52ca4ffc05186 MANIFEST
 SHA1 c473ef4f7ae2167179c4a165cf68a54c05612c67 META.yml
-SHA1 dcc50eca3494f98da39997278ac6a93e5a52334c Makefile.PL
+SHA1 97bcffb752f7860dcc0a9036089fbff08a9d172a Makefile.PL
 SHA1 b0f8aa890a9c6fdb4d4dfc77ae2a5deb27ecd1ae README
-SHA1 e2a1b512fc9615cc5fd49937991da900f2b707ff bin/checklink
-SHA1 0d77337db9f027016c168746b55348cfc96da909 bin/checklink.pod
+SHA1 76a254c989c20b02043124e3d67365bc15410f3f bin/checklink
+SHA1 8cba56e2ac76eb29ccda25d1d2002fb7dee70b42 bin/checklink.pod
 SHA1 c48dca6df03fc445adcc5d7ec3523ddee26b8ffd docs/checklink.css
-SHA1 d05021678937559f6d335e53e37e386c909370f3 docs/checklink.html
+SHA1 7a9a590bcc385d1909417092970130b19b3d8162 docs/checklink.html
 SHA1 a1cc961571daf700c9290860ae9c439d1b462162 docs/qa-small.png
 SHA1 54dfdab40c6dcaddb41915cf4253fb0e7cfa6d26 docs/valid-xhtml10.png
 SHA1 4e8a17dce3368969e174359f430c23d1da2adeae docs/w3c_home.png
@@ -31,7 +31,7 @@ SHA1 e0871ce452e63efdca83447f467b6a7b09661711 etc/checklink.conf
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.2.4 (GNU/Linux)
 
-iD8DBQFAZdI22YzWNbzSQcsRAmsBAKCflQLKUTdo9MB9VXQhWQfvdvtQHwCcCQz+
-jEFciT8yQYjnEVrEjNdZiWc=
-=SECU
+iD8DBQFAaxxs2YzWNbzSQcsRAp2fAJ0W8wJnrHS/HoMvEdfieFv5khMudwCcCvPA
+nlohxGWbjlG4TewDmnjJcgY=
+=fy6w
 -----END PGP SIGNATURE-----
