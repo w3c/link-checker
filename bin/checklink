@@ -5,7 +5,7 @@
 # (c) 1999-2004 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.1 2004-07-11 16:45:13 ville Exp $
+# $Id: checklink,v 4.2 2004-07-11 19:14:46 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -112,7 +112,7 @@ BEGIN
   $PACKAGE       = 'W3C Link Checker';
   $PROGRAM       = 'W3C-checklink';
   $VERSION       = '4.0-dev';
-  my ($cvsver)   = q$Revision: 4.1 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver)   = q$Revision: 4.2 $ =~ /(\d+[\d\.]*\.\d+)/;
   $REVISION      = sprintf('version %s [%s] (c) 1999-2004 W3C',
                            $VERSION, $cvsver);
   $AGENT         = sprintf('%s/%s [%s] %s',
@@ -739,7 +739,9 @@ EOF
     &hprintf("Checking link %s\n", $u) unless $Opts{Summary_Only};
 
     # Check that a link is valid
-    &check_validity($uri, $u, \%links, \%redirects);
+    &check_validity($uri, $u,
+                    ($depth != 0 && &in_recursion_scope($u)),
+                    \%links, \%redirects);
     &hprintf("\tReturn code: %s\n", $results{$u}{location}{code})
       if ($Opts{Verbose});
     if ($results{$u}{location}{success}) {
@@ -834,7 +836,7 @@ sub get_document ($$$;\%)
   my ($method, $uri, $in_recursion, $redirects) = @_;
   # $method contains the HTTP method the use (GET or HEAD)
   # $uri contains the identifier of the resource
-  # $in_recursion equals 1 if we are in recursion mode (i.e. it is at least
+  # $in_recursion is > 0 if we are in recursion mode (i.e. it is at least
   #                        the second resource checked)
   # $redirects is a pointer to the hash containing the map of the redirects
 
@@ -1089,7 +1091,7 @@ sub record_results ($$$)
 # Parse a document #
 ####################
 
-sub parse_document ($$$$;$)
+sub parse_document ($$$$$)
 {
   my ($uri, $location, $document, $links, $rec_needs_links) = @_;
 
@@ -1301,11 +1303,12 @@ sub declaration
 # Check the validity of a link #
 ################################
 
-sub check_validity ($$\%\%)
+sub check_validity ($$$\%\%)
 {
-  my ($testing, $uri, $links, $redirects) = @_;
+  my ($testing, $uri, $in_recursion, $links, $redirects) = @_;
   # $testing is the URI of the document checked
   # $uri is the URI of the target that we are verifying
+  # $in_recursion is > 0 if we're in recursive mode
   # $links is a hash of the links in the documents checked
   # $redirects is a map of the redirects encountered
 
@@ -1357,7 +1360,7 @@ sub check_validity ($$\%\%)
     }
     # Do it then
     $p = &parse_document($uri, $response->base(),
-                         $response->as_string(), 0);
+                         $response->as_string(), 0, $in_recursion);
   } else {
     # We already had the information
     $p->{Anchors} = $results{$uri}{parsing}{Anchors};
