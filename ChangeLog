@@ -1,18 +1,110 @@
-2004-03-27  Ville Skyttä  <ville.skytta@iki.fi>
+2004-03-31  ville
 
-	* Release 3.9.1.
+	* bin/checklink: Release 3.9.2.
 
-	* Appease Perl 5.6.1's taint mode.
+2004-03-31  ville
 
-	* Improve command line mode usability: -h is now an alias for
-	--help, -H for --html, and the usage message is displayed if no
-	URIs to check are given.
+	* docs/checklink.html: Document known issues with libwww-perl 5.76.
 
-2004-03-23  Ville Skyttä  <ville.skytta@iki.fi>
+2004-03-31  ville
 
-	* Make markup and CSS validator URIs configurable, and make
-	self references in the results work whatever the script name is.
+	* bin/checklink: Change to the W3C::LinkChecker namespace.
 
-2004-02-18  Ville Skyttä  <ville.skytta@iki.fi>
+2004-03-30  ville
 
-	* First CPANified version.
+	* bin/checklink.pod: Various doc improvements.
+
+2004-03-27  ville
+
+	* bin/checklink, bin/checklink.pod, docs/checklink.html: Improve
+	command line mode usability: -h is now an alias for --help, -H for
+	--html, and the usage message is displayed if no URIs to check are
+	given.	Also tune STDERR/STDOUT usage a bit.
+
+2004-03-27  ville
+
+	* docs/checklink.html, docs/qa-small.png, docs/valid-xhtml10.png,
+	docs/w3c_home.png: Add images.
+
+2004-03-27  ville
+
+	* docs/checklink.css: - Re-indent - Fix a minor syntax bug -
+	Comment out URL to banner-qa.jpg (where's that?) - Avoid changing
+	hX style with a's when hovering
+
+2004-03-27  ville
+
+	* bin/checklink: Update full man page display instructions.
+
+2004-03-27  ville
+
+	* bin/checklink: Update CVSweb interface URL.
+
+2004-03-27  ville
+
+	* bin/checklink: Appease Perl 5.6.1's taint mode.
+
+2004-03-24  ville
+
+	* docs/checklink.html: Recommend libwww-perl 5.70.
+
+2004-03-23  ville
+
+	* bin/checklink.pod: Use UTF-8 instead of entities.
+
+2004-03-23  ville
+
+	* bin/checklink.pod: Document new *_Validator_URI config
+	parameters.
+
+2004-03-23  ville
+
+	* bin/checklink: Make self references in the results work whatever
+	the script name is.
+
+2004-03-23  ville
+
+	* bin/checklink: Remove a stale fragment id.
+
+2004-03-23  ville
+
+	* bin/checklink, etc/checklink.conf: Make markup and CSS validator
+	URIs configurable.
+
+2004-03-22  ville
+
+	* bin/checklink: Update links.
+
+2004-03-22  ville
+
+	* README, docs/checklink.html: Add some doc cross references.
+
+2004-03-22  ville
+
+	* docs/checklink.html, etc/checklink.conf: Include config file.
+
+2004-03-22  ville
+
+	* docs/checklink.html: More documentation updates and improvements.
+
+2004-03-22  ville
+
+	* docs/checklink.html: Some doc improvements.
+
+2004-03-22  ville
+
+	* docs/checklink.html: Add missing </abbr>.
+
+2004-03-21  ville
+
+	* docs/checklink.css, docs/checklink.html: Add docs.
+
+2004-03-18  ville
+
+	* README, bin/checklink.pod: First CPANified version, copied here
+	from the validator dir.
+
+2004-03-18  ville
+
+	* bin/checklink: Copy here from the validator dir.
+
