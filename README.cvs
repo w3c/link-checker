@@ -1,0 +1,24 @@
+<p>
+This is the code for the <a href="http://validator.w3.org/">W3C
+Link Checker</a>.
+</p>
+
+<p>A stable version of this tool is available for download 
+from
+      <a href="http://search.cpan.org/dist/W3C-LinkChecker/"><abbr
+      title="Comprehensive Perl Archive Network">CPAN</abbr></a>.
+</p>
+
+<p>
+Developers are encouraged to check out the latest development code
+from this CVS repository, by following these instructions:
+</p>
+
+<pre>
+    bash$ <kbd>export CVSROOT=":pserver:anonymous@dev.w3.org:/sources/public"</kbd>
+    bash$ <kbd>cvs login</kbd>
+    (Logging in to anonymous@dev.w3.org)
+    CVS password: <kbd>anonymous</kbd>
+    bash$ <kbd>cvs get perl/modules/W3C/LinkChecker</kbd>
+    ...
+</pre>
