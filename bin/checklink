@@ -5,7 +5,7 @@
 # (c) 1999-2004 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 3.18 2004-04-03 09:46:35 ville Exp $
+# $Id: checklink,v 3.19 2004-04-03 10:26:36 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -92,7 +92,7 @@ BEGIN
   $PROGRAM       = 'W3C checklink';
   ($AGENT        = $PROGRAM) =~ s/\s+/-/g;
   $VERSION       = '3.9.2';
-  ($CVS_VERSION) = q$Revision: 3.18 $ =~ /(\d+[\d\.]*\.\d+)/;
+  ($CVS_VERSION) = q$Revision: 3.19 $ =~ /(\d+[\d\.]*\.\d+)/;
   $REVISION      = sprintf('version %s [%s] (c) 1999-2004 W3C',
                            $VERSION, $CVS_VERSION);
 
@@ -204,11 +204,11 @@ my $timestamp = &get_timestamp();
 
 # Precompile/error-check regular expressions.
 if (defined($Opts{Exclude_Docs})) {
-  eval { $Opts{Exclude_Docs} = qr/$Opts{Exclude_Docs}/; };
+  eval { $Opts{Exclude_Docs} = qr/$Opts{Exclude_Docs}/o; };
   &usage(1, "Error in exclude-docs regexp: $@") if $@;
 }
 if (defined($Opts{Trusted})) {
-  eval { $Opts{Trusted} = qr/$Opts{Trusted}/; };
+  eval { $Opts{Trusted} = qr/$Opts{Trusted}/io; };
   &usage(1, "Error in trusted domains regexp: $@") if $@;
 }
 
@@ -885,7 +885,7 @@ sub get_uri ($$;$\%$$$$)
   }
   $request->header('Accept', $Accept);
   # Are we providing authentication info?
-  if ($auth && $request->url()->host() =~ /$Opts{Trusted}/i) {
+  if ($auth && $request->url()->host() =~ $Opts{Trusted}) {
     if (defined($ENV{HTTP_AUTHORIZATION})) {
       $request->headers->header(Authorization => $ENV{HTTP_AUTHORIZATION});
     } elsif (defined($Opts{User}) && defined($Opts{Password})) {
@@ -916,7 +916,10 @@ sub get_uri ($$;$\%$$$$)
        || (defined($Opts{User}) && defined($Opts{Password})))) {
 
     # Set host as trusted domain unless we already have one.
-    $Opts{Trusted} ||= sprintf('^%s$', quotemeta($response->base()->host()));
+    if (!$Opts{Trusted}) {
+      my $re = sprintf('^%s$', quotemeta($response->base()->host()));
+      $Opts{Trusted} = qr/$re/io;
+    }
 
     # Deal with authentication and avoid loops
     if (! defined($realm)) {
