@@ -5,7 +5,7 @@
 # (c) 1999-2004 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 3.57 2004-06-08 21:06:47 ville Exp $
+# $Id: checklink,v 3.58 2004-06-12 08:52:47 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -112,7 +112,7 @@ BEGIN
   $PACKAGE       = 'W3C Link Checker';
   $PROGRAM       = 'W3C-checklink';
   $VERSION       = '3.9.3-dev';
-  my ($cvsver)   = q$Revision: 3.57 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver)   = q$Revision: 3.58 $ =~ /(\d+[\d\.]*\.\d+)/;
   $REVISION      = sprintf('version %s [%s] (c) 1999-2004 W3C',
                            $VERSION, $cvsver);
   $AGENT         = sprintf('%s/%s [%s] %s',
@@ -167,7 +167,7 @@ $@
 
   $DocType = '<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">';
   $Head = <<EOF;
-<meta http-equiv="Content-Script-Type" content="application/x-javascript">
+<meta http-equiv="Content-Script-Type" content="text/javascript">
 <link rel="stylesheet" type="text/css" href="$Cfg{Style_URI}">
 EOF
 
@@ -1595,7 +1595,7 @@ sub show_link_report (\%\%\%\%\@;$\%)
       if ($u =~ m/^javascript:/) {
         if ($Opts{HTML}) {
           $whattodo =
-'You must change this link: people using a browser without Javascript support
+'You must change this link: people using a browser without JavaScript support
 will <em>not</em> be able to follow this link. See the
 <a href="http://www.w3.org/TR/1999/WAI-WEBCONTENT-19990505/#tech-scripts">Web
 Content Accessibility Guidelines on the use of scripting on the Web</a> and
@@ -1603,7 +1603,7 @@ the
 <a href="http://www.w3.org/TR/WCAG10-HTML-TECHS/#directly-accessible-scripts">techniques
 on how to solve this</a>.';
         } else {
-          $whattodo = 'Change this link: people using a browser without Javascript support will not be able to follow this link.';
+          $whattodo = 'Change this link: people using a browser without JavaScript support will not be able to follow this link.';
         }
       } elsif ($c == RC_ROBOTS_TXT()) {
         $whattodo = 'The link was not checked due to robots exclusion ' .
@@ -1972,7 +1972,7 @@ sub html_header ($;$$)
   my $script = my $onload = '';
   if ($doform) {
     $script = <<'EOF';
-<script type="application/x-javascript">
+<script type="text/javascript">
 function uriOk()
 {
   var u = document.forms[0].uri;
