@@ -5,7 +5,7 @@
 # (c) 1999-2004 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 3.38 2004-04-28 22:12:41 ville Exp $
+# $Id: checklink,v 3.39 2004-05-07 16:32:32 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -112,7 +112,7 @@ BEGIN
   $PACKAGE       = 'W3C Link Checker';
   $PROGRAM       = 'W3C-checklink';
   $VERSION       = '3.9.3-dev';
-  my ($cvsver)   = q$Revision: 3.38 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver)   = q$Revision: 3.39 $ =~ /(\d+[\d\.]*\.\d+)/;
   $REVISION      = sprintf('version %s [%s] (c) 1999-2004 W3C',
                            $VERSION, $cvsver);
   $AGENT         = sprintf('%s/%s [%s] %s',
@@ -2165,8 +2165,8 @@ of a document that you would like to check:</label></p>
     <label for=\"summary\"><input type=\"checkbox\" id=\"summary\" name=\"summary\" value=\"on\"", $sum, "> Summary only</label>
     <br>
     <label for=\"hide_redirects\"><input type=\"checkbox\" id=\"hide_redirects\" name=\"hide_redirects\" value=\"on\"", $red, "> Hide <a href=\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.3\">redirects</a>:</label>
-    <label><input type=\"radio\" name=\"hide_type\" value=\"all\"", $all, "> all</label>
-    <label><input type=\"radio\" name=\"hide_type\" value=\"dir\"", $dir, "> for directories only</label>
+    <label for=\"hide_type_all\"><input type=\"radio\" id=\"hide_type_all\" name=\"hide_type\" value=\"all\"", $all, "> all</label>
+    <label for=\"hide_type_dir\"><input type=\"radio\" id=\"hide_type_dir\" name=\"hide_type\" value=\"dir\"", $dir, "> for directories only</label>
     <br>
     <label for=\"no_accept_language\"><input type=\"checkbox\" id=\"no_accept_language\" name=\"no_accept_language\" value=\"on\"", $acc, "> Don't send the <tt><a href=\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.4\">Accept-Language</a></tt> header</label>
     <br>
