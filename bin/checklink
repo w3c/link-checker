@@ -5,7 +5,7 @@
 # (c) 1999-2004 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.12 2004-11-07 11:17:55 ville Exp $
+# $Id: checklink,v 4.13 2004-11-11 06:44:57 ot Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -110,7 +110,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.0';
   $REVISION    = sprintf('version %s (c) 1999-2004 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.12 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.13 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver, LWP::RobotUA->_agent());
 
@@ -693,6 +693,12 @@ Settings used:
 EOF
   }
 
+  if ($Opts{Summary_Only}) {
+    if ($Opts{HTML}) { print '<p>'}
+    print 'This may take some time';
+    if ($Opts{HTML}) { print '... (<a href="'.$Cfg{Doc_URI}.'#wait">why?</a>)</p>'}
+    else { print " if the document has many links to check.\n"}
+  }
   # Record that we have processed this resource
   $processed{$absolute_uri} = 1;
   # Parse the document
