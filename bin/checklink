@@ -5,7 +5,7 @@
 # (c) 1999-2004 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 3.56 2004-06-08 19:23:10 ville Exp $
+# $Id: checklink,v 3.57 2004-06-08 21:06:47 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -112,7 +112,7 @@ BEGIN
   $PACKAGE       = 'W3C Link Checker';
   $PROGRAM       = 'W3C-checklink';
   $VERSION       = '3.9.3-dev';
-  my ($cvsver)   = q$Revision: 3.56 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver)   = q$Revision: 3.57 $ =~ /(\d+[\d\.]*\.\d+)/;
   $REVISION      = sprintf('version %s [%s] (c) 1999-2004 W3C',
                            $VERSION, $cvsver);
   $AGENT         = sprintf('%s/%s [%s] %s',
@@ -2011,6 +2011,7 @@ sub banner ($)
   <li><a href="http://search.cpan.org/dist/W3C-LinkChecker/" accesskey="i" title="Download the source / Install this service">Download</a></li>
   <li><a href="http://validator.w3.org/" accesskey="m" title="Validate your markup with the W3C Markup Validation Service">Validator</a></li>
 </ul>
+<div id="main">
 EOF
 }
 
@@ -2054,6 +2055,7 @@ sub html_footer ()
 {
   printf("<p>%s</p>\n", &global_stats()) if ($doc_count > 0 && !$Opts{Quiet});
   printf(<<'EOF', $PACKAGE, $REVISION);
+</div><!-- main -->
 <div>
 <address>
 %s<br> %s
