@@ -5,7 +5,7 @@
 # (c) 1999-2004 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 3.29 2004-04-10 22:44:51 ville Exp $
+# $Id: checklink,v 3.30 2004-04-11 11:05:53 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -72,15 +72,9 @@ sub simple_request
 sub redirect_ok
 {
   my ($self, $request, $response) = @_;
-
   if ($self->{Checklink_verbose_progress}) {
     &W3C::LinkChecker::hprintf("\n%s %s ", $request->method(),$request->uri());
   }
-
-  # Build a map of redirects
-  $self->{Redirects}{$self->{fetching}} = $request->uri();
-  $self->{fetching} = $request->uri();
-
   return $self->SUPER::redirect_ok($request, $response);
 }
 
@@ -112,7 +106,7 @@ BEGIN
   $PACKAGE       = 'W3C Link Checker';
   $PROGRAM       = 'W3C-checklink';
   $VERSION       = '3.9.3-dev';
-  my ($cvsver)   = q$Revision: 3.29 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver)   = q$Revision: 3.30 $ =~ /(\d+[\d\.]*\.\d+)/;
   $REVISION      = sprintf('version %s [%s] (c) 1999-2004 W3C',
                            $VERSION, $cvsver);
   $AGENT         = sprintf('%s/%s [%s] %s',
@@ -808,7 +802,7 @@ sub get_document ($$$;\%)
   } else {
     $response = &get_uri($method, $uri);
     &record_results($uri, $method, $response);
-    &record_redirects($redirects, $response->{Redirects});
+    &record_redirects($redirects, $response);
   }
   if (! $response->is_success()) {
     if (! $in_recursion) {
@@ -924,12 +918,6 @@ sub get_uri ($$;$\%$$$$)
   $ua->timeout($Opts{Timeout});
   $ua->proxy('http', 'http://' . $Opts{HTTP_Proxy}) if $Opts{HTTP_Proxy};
 
-  # $ua->{fetching} contains the URI we originally wanted
-  # $ua->{uri} is modified in the case of a redirect; this is used to
-  # build $ua->{Redirects}
-  $ua->{uri} = $ua->{fetching} = $uri;
-  $ua->{Redirects} = $redirects if defined($redirects);
-
   # Do we want printouts of progress?
   my $verbose_progress =
     ! ($Opts{Summary_Only} || (!$doc_count && $Opts{HTML}));
@@ -983,19 +971,14 @@ sub get_uri ($$;$\%$$$$)
       $realm = $1;
     }
     print "\n" if $verbose_progress;
-    return &get_uri($method, $response->request->url,
-                    $start, $ua->{Redirects},
-                    $code, $realm, $message, 1);
+    return &get_uri($method, $response->request()->url(),
+                    $start, $redirects, $code, $realm, $message, 1);
   }
-  # Record the redirects
-  $response->{Redirects} = $ua->{Redirects};
   # @@@ subtract robot delay from the "fetched in" time?
   &hprintf(" fetched in %ss\n",
            &time_diff($start, &get_timestamp())) if $verbose_progress;
 
-  $response->{OriginalCode}    = $code;
-  $response->{OriginalMessage} = $message;
-  $response->{Realm}           = $realm if defined($realm);
+  $response->{Realm} = $realm if defined($realm);
 
   return $response;
 }
@@ -1012,10 +995,10 @@ sub record_results ($$$)
   $results{$uri}{location}{code} = $response->code();
   $results{$uri}{location}{type} = $response->header('Content-type');
   $results{$uri}{location}{display} = $results{$uri}{location}{code};
-  $results{$uri}{location}{orig} = $response->{OriginalCode};
-  # Did we get a redirect?
-  if ($response->{OriginalCode} != $response->code()) {
-    $results{$uri}{location}{orig_message} =  $response->{OriginalMessage};
+  # Rewind, check for the original code and message.
+  for (my $tmp = $response->previous(); $tmp; $tmp = $tmp->previous()) {
+    $results{$uri}{location}{orig} = $tmp->code();
+    $results{$uri}{location}{orig_message} = $tmp->message();
   }
   $results{$uri}{location}{success} = $response->is_success();
   # Stores the authentication information
@@ -1273,7 +1256,6 @@ sub check_validity ($$\%\%)
       # Can't test? Return 400 Bad request.
       $results{$uri}{location}{code}    = 400;
       $results{$uri}{location}{record}  = 400;
-      $results{$uri}{location}{orig}    = 400;
       $results{$uri}{location}{success} = 0;
       $results{$uri}{location}{message} = $msg;
       &hprintf("Error: %d %s\n", 400, $msg) if $Opts{Verbose};
@@ -1296,7 +1278,7 @@ sub check_validity ($$\%\%)
     # Get the information back from get_uri()
     &record_results($uri, $method, $response);
     # Record the redirects
-    &record_redirects($redirects, $response->{Redirects});
+    &record_redirects($redirects, $response);
   }
 
   # We got the response of the HTTP request. Stop here if it was a HEAD.
@@ -1408,11 +1390,11 @@ sub time_diff ($$)
 ########################
 
 # Record the redirects in a hash
-sub record_redirects (\%\%)
+sub record_redirects (\%$)
 {
-  my ($redirects, $sub) = @_;
-  foreach my $r (keys %$sub) {
-    $redirects->{$r} = $sub->{$r};
+  my ($redirects, $response) = @_;
+  for (my $prev = $response->previous(); $prev; $prev = $prev->previous()) {
+    $redirects->{$prev->request()->url()} = $response->request()->url();
   }
 }
 
@@ -1598,6 +1580,9 @@ on how to solve this</a>.';
     my $s = (scalar(@unique) > 1) ? 's' : '';
     undef @unique;
 
+    my @http_codes = ($currloc->{code});
+    unshift(@http_codes, $currloc->{orig}) if $currloc->{orig};
+
     if ($Opts{HTML}) {
       # Style stuff
       my $idref = '';
@@ -1623,7 +1608,7 @@ on how to solve this</a>.';
       printf("
 <dt%s>%s</dt>
 <dd>What to do: <strong%s>%s</strong>%s<br></dd>
-<dd>HTTP Code returned: %d%s<br>
+<dd>HTTP Code returned: %s<br>
 HTTP Message: %s%s%s</dd>
 <dd>Line%s: %s</dd>\n",
              # Anchor for return codes
@@ -1639,13 +1624,9 @@ HTTP Message: %s%s%s</dd>
              # Redirect too?
              $redirect_too ?
              sprintf(' <span %s>%s</span>', &bgcolor(301), $redirect_too) : '',
-             # Original HTTP reply
-             $currloc->{orig},
-             # Final HTTP reply
-             ($currloc->{code} != $currloc->{orig})
-             ? ' <span title="redirected to">-&gt;</span> '.
-             &encode($currloc->{code})
-             : '',
+             # Response code chain
+             join(' <span title="redirected to">-&gt;</span> ',
+                  map { &encode($_) } @http_codes),
              # Realm
              defined($currloc->{realm})
              ? sprintf('Realm: %s<br>', &encode($currloc->{realm})) : '',
@@ -1670,17 +1651,13 @@ HTTP Message: %s%s%s</dd>
       }
     } else {
       my $redirmsg = $redirect_loop ? ' redirect loop detected' : '';
-      printf("\n%s\t%s\n  Code: %d%s %s\n%s\n",
+      printf("\n%s\t%s\n  Code: %s %s\n%s\n",
              # List of redirects
              $redirected ? join("\n-> ", @redirects_urls) . $redirmsg : $u,
              # List of lines
              $lines_list ? "Line$s: $lines_list" : '',
-             # Original HTTP reply
-             $currloc->{orig},
-             # Final HTTP reply
-             ($currloc->{code} != $currloc->{orig})
-             ? ' -> '.$currloc->{code}
-             : '',
+             # Response code chain
+             join(' -> ', @http_codes),
              # HTTP message
              $currloc->{message} || '',
              # What to do
@@ -1755,12 +1732,8 @@ sub ip_allowed ($)
   $iptype = 'PUBLIC'
     if ($iptype && $iptype eq 'PRIVATE' && $Opts{Allow_Private_IPs});
   if ($iptype && $iptype ne 'PUBLIC') {
-    my $code = 403;
-    my $msg =
-      'Checking non-public IP address disallowed by service configuration';
-    $resp = HTTP::Response->new($code, $msg);
-    $resp->{OriginalCode} = $code;
-    $resp->{OriginalMessage} = $msg;
+    $resp = HTTP::Response->new(403,
+    'Checking non-public IP address disallowed by link checker configuration');
   }
   return $resp;
 }
