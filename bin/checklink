@@ -5,7 +5,7 @@
 # (c) 1999-2004 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 3.30 2004-04-11 11:05:53 ville Exp $
+# $Id: checklink,v 3.31 2004-04-11 16:19:36 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -106,7 +106,7 @@ BEGIN
   $PACKAGE       = 'W3C Link Checker';
   $PROGRAM       = 'W3C-checklink';
   $VERSION       = '3.9.3-dev';
-  my ($cvsver)   = q$Revision: 3.30 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver)   = q$Revision: 3.31 $ =~ /(\d+[\d\.]*\.\d+)/;
   $REVISION      = sprintf('version %s [%s] (c) 1999-2004 W3C',
                            $VERSION, $cvsver);
   $AGENT         = sprintf('%s/%s [%s] %s',
@@ -1978,7 +1978,7 @@ address img {
   width: 88px;
 }
 a:hover {
-  background-color: #eee#;
+  background-color: #eee;
 }
 a:visited {
   color: purple;
