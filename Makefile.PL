@@ -20,4 +20,5 @@ WriteMakefile(
   MAN1PODS      => { 'bin/checklink.pod' =>
                      '$(INST_MAN1DIR)/checklink.$(MAN1EXT)',
                    },
+  dist          => { TARFLAGS => '--owner=0 --group=0 -cvf' },
 );
