@@ -5,7 +5,7 @@
 # (c) 1999-2004 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 3.33 2004-04-11 20:32:06 ville Exp $
+# $Id: checklink,v 3.34 2004-04-12 11:56:17 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -106,7 +106,7 @@ BEGIN
   $PACKAGE       = 'W3C Link Checker';
   $PROGRAM       = 'W3C-checklink';
   $VERSION       = '3.9.3-dev';
-  my ($cvsver)   = q$Revision: 3.33 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver)   = q$Revision: 3.34 $ =~ /(\d+[\d\.]*\.\d+)/;
   $REVISION      = sprintf('version %s [%s] (c) 1999-2004 W3C',
                            $VERSION, $cvsver);
   $AGENT         = sprintf('%s/%s [%s] %s',
@@ -1637,8 +1637,8 @@ on how to solve this</a>.';
       printf("
 <dt%s>%s</dt>
 <dd>What to do: <strong%s>%s</strong>%s<br></dd>
-<dd>HTTP Code returned: %s<br>
-HTTP Message: %s%s%s</dd>
+<dd>Response status code: %s<br>
+Response message: %s%s%s</dd>
 <dd>Line%s: %s</dd>\n",
              # Anchor for return codes
              $idref,
@@ -2154,7 +2154,7 @@ of a document that you would like to check:</label></p>
     <label><input type=\"radio\" name=\"hide_type\" value=\"all\"", $all, "> all</label>
     <label><input type=\"radio\" name=\"hide_type\" value=\"dir\"", $dir, "> for directories only</label>
     <br>
-    <label for=\"no_accept_language\"><input type=\"checkbox\" id=\"no_accept_language\" name=\"no_accept_language\" value=\"on\"", $acc, "> Don't send <tt><a href=\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.4\">Accept-Language</a></tt> headers</label>
+    <label for=\"no_accept_language\"><input type=\"checkbox\" id=\"no_accept_language\" name=\"no_accept_language\" value=\"on\"", $acc, "> Don't send the <tt><a href=\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.4\">Accept-Language</a></tt> header</label>
     <br>
     <label title=\"Check linked documents recursively (maximum: ", $Opts{Max_Documents}, " documents)\" for=\"recursive\"><input type=\"checkbox\" id=\"recursive\" name=\"recursive\" value=\"on\"", $rec, "> Check linked documents recursively</label>,
     <label title=\"Depth of the recursion (-1 is the default and means unlimited)\" for=\"depth\">recursion depth: <input type=\"text\" size=\"3\" maxlength=\"3\" id=\"depth\" name=\"depth\" value=\"", $dep, "\"></label>
