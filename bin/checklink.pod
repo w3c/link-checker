@@ -1,4 +1,4 @@
-$Id: checklink.pod,v 1.4 2004-03-27 19:09:41 ville Exp $
+$Id: checklink.pod,v 1.5 2004-03-30 19:04:22 ville Exp $
 
 =head1 NAME
 
@@ -6,11 +6,12 @@ checklink - check the validity of links in an HTML or XHTML document
 
 =head1 SYNOPSIS
 
-B<checklink>  [ I<options> ] I<URI> ...
+B<checklink>  [ I<options> ] I<uri> ...
 
 =head1 DESCRIPTION
 
-This manual page documents briefly the B<checklink> command.
+This manual page documents briefly the B<checklink> command, a.k.a. the
+W3C® Link Checker.
 
 B<checklink> is a program that reads an HTML or XHTML document,
 extracts a list of anchors and lists and checks that no anchor is
@@ -18,7 +19,7 @@ defined twice and that all the links are dereferenceable, including
 the fragments. It warns about HTTP redirects, including directory
 redirects, and can check recursively a part of a web site.
 
-The program can be used either as a command-line version or as a CGI script.
+The program can be used either as a command line tool or as a CGI script.
 
 =head1 OPTIONS
 
@@ -37,7 +38,7 @@ Output version information.
 
 =item B<-s, --summary>
 
-Result summary only.
+Show result summary only.
 
 =item B<-b, --broken>
 
@@ -52,12 +53,12 @@ L<http://www.w3.org/TR/>.
 
 Check the documents linked from the first one.
 
-=item B<-D, --depth n>
+=item B<-D, --depth> I<n>
 
-Check the documents linked from the first one to depth n
-(implies --recursive).
+Check the documents linked from the first one to depth I<n>
+(implies B<--recursive>).
 
-=item B<-l, --location uri>
+=item B<-l, --location> I<uri>
 
 Scope of the documents checked in recursive mode. By default, for
 L<http://www.w3.org/TR/html4/Overview.html> for example, it would be
@@ -67,7 +68,7 @@ L<http://www.w3.org/TR/html4/>.
 
 Do not send an Accept-Language header.
 
-=item B<-L, --languages>
+=item B<-L, --languages> I<langs>
 
 Languages accepted (default: '*').
 
@@ -83,40 +84,40 @@ Verbose mode.
 
 Show progress while parsing.
 
-=item B<-u, --user username>
+=item B<-u, --user> I<username>
 
 Specify a username for authentication.
 
-=item B<-p, --password password>
+=item B<-p, --password> I<password>
 
-Specify a password.
+Specify a password for authentication.
 
 =item B<--hide-same-realm>
 
 Hide 401's that are in the same realm as the document checked.
 
-=item B<-t, --timeout value>
+=item B<-t, --timeout> I<secs>
 
-Timeout for the HTTP requests.
+Timeout for requests, in seconds.
 
-=item B<-d, --domain domain>
+=item B<-d, --domain> I<domain>
 
-Regular expression describing the domain to which the authentication
-information will be sent.  The default value can be specified in the
-checklink configuration file.
+Perl regular expression describing the domain to which the authentication
+information (if present) will be sent.  The default value can be specified
+in the configuration file.
 
-=item B<--masquerade "local remote">
+=item B<--masquerade> I<"local remote">
 
 Masquerade local dir as a remote URI.  For example, the following results in
 /my/local/dir/ being "mapped" to http://some/remote/uri/
 
   --masquerade "/my/local/dir http://some/remote/uri/"
 
-As of revision 3.6.2.19 of checklink, --masquerade takes a single
+As of revision 3.6.2.19 of checklink, B<--masquerade> takes a single
 argument consisting of two URIs, separated by whitespace.  One usual way of
 providing a value with embedded whitespace is to enclose it in quotes.
 
-=item B<-y, --proxy proxy>
+=item B<-y, --proxy> I<proxy>
 
 Specify an HTTP proxy server.
 
@@ -180,7 +181,7 @@ If set, overrides the path to the configuration file.
 The documentation for this program is available on the web at
 L<http://www.w3.org/2000/07/checklink>.
 
-LWP(3), L<Net::FTP(3)>, L<Net::NNTP(3)>, L<Net::IP>.
+L<LWP>, L<Net::FTP>, L<Net::NNTP>, L<Net::IP>, L<perlre>.
 
 =head1 AUTHOR
 
