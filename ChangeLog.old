@@ -1,0 +1,856 @@
+2004-02-01 13:07  ville
+
+	* checklink.pl: 2004.
+
+2003-11-25 22:46  ville
+
+	* checklink.pl: Markup improvements: "fussy"-clean, towards HTML
+	  4.01 Strict and ISO-HTML.
+
+2003-11-24 21:11  ville
+
+	* checklink.pl: Fix HTML "escaping" of URIs.  Some were escaped
+	  twice, some not at all.
+
+2003-11-22 17:40  ville
+
+	* checklink.pl: Check recursion scope also for redirected
+	  documents.
+	  http://lists.w3.org/Archives/Public/www-validator/2003Nov/0074.html
+
+2003-11-22 17:20  ville
+
+	* checklink.pl: Improve "To do" message wrapping in command line
+	  mode.
+
+2003-11-22 17:17  ville
+
+	* checklink.pl: Fix URI->abs() usage in absolutizing URIs.
+
+2003-10-20 23:19  ville
+
+	* checklink.pl: Make ip_allowed() not choke on URIs that don't
+	  implement host().
+	  http://lists.w3.org/Archives/Public/www-validator/2003Oct/0056.html
+
+2003-09-15 21:31  ville
+
+	* checklink.pl: Unbreak --masquerade, enhance documentation and
+	  error messages.  W3C Bugzilla #340, Debian bug #187791, thanks to
+	  Dan Jacobson and Frederic Schutz for the report.
+
+2003-09-12 20:49  ville
+
+	* checklink.pl: Make the configuration file optional.  Thanks to
+	  Hugo Haas for the heads up.  Also, load Config::General only if
+	  needed.
+
+2003-09-11 13:46  hugo
+
+	* checklink.pl: Fixing the following: [Thu Sep 11 12:44:53 2003]
+	  checklink.pl: Argument "help" isn't numeric in exit at
+	  /home/hugo/bin/checklink.pl line 410.
+
+2003-07-27 19:19  ville
+
+	* checklink.pl: Don't conditionalize the Term::ReadKey requirement,
+	  but defer its loading until actually needed.	system('stty')
+	  doesn't work under -T without laundering $ENV{PATH}, and I don't
+	  feel like going there :P
+
+	  Also, don't load CGI and CGI::Carp in command line mode; defer by
+	  using require() instead of use().
+
+2003-07-27 18:38  ville
+
+	* checklink.pl: Implement option to disallow checking non-public IP
+	  addresses; disallow by default in CGI mode and allow in command
+	  line mode.
+
+	  New requirement: Net::IP.
+
+2003-07-26 22:20  ville
+
+	* checklink.pl: Use Text::Wrap for beautifying command line output,
+	  some other output tweaks.
+
+2003-07-26 22:16  ville
+
+	* checklink.pl: Fix redirect loop detection, and add a descriptive
+	  error message.
+
+	  Previously, only loops like L1 -> L2 -> L3 -> L1 were detected;
+	  ones like L1 -> L2 -> L3 -> L2 resulted in infinite recursion.
+
+	  Fixes <http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=188372>,
+	  thanks to Dan Jacobson and Frederic Schutz for reporting this.
+
+2003-07-26 18:48  ville
+
+	* checklink.pl: Plug myself into the man page's AUTHOR section, per
+	  Frederic's request :)
+
+2003-07-23 23:08  ville
+
+	* checklink.pl: Include POD documentation, courtesy of Frederic
+	  Schutz.
+
+2003-06-16 00:41  ville
+
+	* checklink.pl: Document env vars affecting FTP configuration, and
+	  make passive mode the default (#226).
+
+2003-06-15 17:56  ville
+
+	* checklink.pl: Trust and launder the NNTPSERVER and NEWSHOST
+	  environment variables in order to support news: URIs without
+	  explicit hostnames under -T.
+
+2003-06-15 17:42  ville
+
+	* checklink.pl: Call get_timestamp always without arguments.
+
+2003-06-02 20:27  ville
+
+	* checklink.pl: -? == --help, be a bit more verbose with the usage
+	  of --location and --recursive (Debian bug report #189642).
+
+2003-05-24 23:32  link
+
+	* checklink.pl: Merging from validator-0_6_0-branch, at tag
+	  validator-0_6_2-beta1, to HEAD.
+
+2003-04-19 22:50  ville
+
+	* checklink.pl: - Abort check in case of non-understood command
+	  line options	 (#203, Debian bug #187792).  - Allow bundling of
+	  command line options.  - Bump 2002->2003 in copyright.
+
+2003-02-05 23:47  ville
+
+	* checklink.pl: Skip 'base' tags with empty hrefs (#138).  Put HTML
+	  validity a bit more prominently into beginning of results page.
+
+2003-02-02 21:03  ville
+
+	* checklink.pl: - Implemented external configuration file stuff
+	  (#127).    We now require Config::General >= 2.06.  - Fixed basic
+	  authentication (#122).  If the trusted domain is not specificed,
+	  we only send the authentication to the same host which requested
+	  it.	 Also added a notice about this to the error page/command
+	  line message if    no suitable authentication info was given.  -
+	  Changed text/javascript to application/x-javascript, thanks to
+	  Nicolas Roeser for the report.    (see
+	  <http://lists.w3.org/Archives/Public/www-validator/2003Jan/0158.html>)
+	  - Fixed missing results from the summary when a file:// URI was
+	  present   (also reduces number of error log warnings emitted).  -
+	  Command line --help clarifications, reformatting.  - Code
+	  cleanups.
+
+2003-01-07 22:07  ville
+
+	* checklink.pl: Fix markup in "Authorization Required" error
+	  document.
+
+2002-12-09 02:16  ville
+
+	* checklink.pl: - Fix multiple brainos in cookie code.
+
+2002-12-08 16:47  ville
+
+	* checklink.pl: - Rewrote recursion scope checking, was failing
+	  with URIs with no slash after   the hostname; eg.
+	  <http://validator.w3.org> caused checklink to wander to   other
+	  sites (#115).  - Report CVS revision as version number.
+
+2002-12-07 21:55  ville
+
+	* checklink.pl: - Send Accept: application/xhtml+xml, text/html,
+	  */*;q=0.5 (#112) - Sanitize Accept-Language headers; either send
+	  the ones from a browser or *.    In command line mode, really
+	  default to * and send the ones given with    the command line
+	  option. (#110)  - Add messages for codes 303 (#111), 307 and 406
+	  (#55).  - Add "for" attribute for all <label>'s and the
+	  corresponding id's so that   MSIE users can enjoy clicking the
+	  labels.  - Some internal cleanup.
+
+2002-11-23 23:37  ville
+
+	* checklink.pl: - Options can be saved in a cookie (#56).  - Added
+	  a JavaScript check against submitting empty URIs.  - Style
+	  tweaks, ala Validator.  - Point to new docs location (relative).
+
+2002-11-23 17:06  ville
+
+	* checklink.pl: - Tweak "form page" layout.  - Don't say "Valid
+	  anchors!" if no anchors found.  - Fix HTML output from command
+	  line.
+
+2002-11-22 01:27  ville
+
+	* checklink.pl: Output and style nits.
+
+2002-10-27 15:04  ville
+
+	* checklink.pl: Removed the debug logic and reworked the guess
+	  whether the script is being run as a CGI or from the command
+	  line; the problems this caused outweigh its usefulness [1].  Oh,
+	  and this fixes #26.
+
+	  [1] <http://nagoya.apache.org/bugzilla/show_bug.cgi?id=13914>
+
+2002-10-27 14:08  ville
+
+	* checklink.pl: Unbreak the source download link (introduced in my
+	  previous commit).  Found by checking the output of checklink with
+	  itself.  Yay :)
+
+2002-10-27 12:55  ville
+
+	* checklink.pl: - Load Getopt::Long only in command line mode.	-
+	  Tighter lexical scoping for variables.  - Output version/revision
+	  number consistently everywhere.
+
+2002-10-27 01:43  ville
+
+	* checklink.pl: Use keep-alive if the installed LWP is >= 5.6.
+
+2002-10-27 00:49  ville
+
+	* checklink.pl: - Made W3C::UserAgent more OO avoiding use of
+	  W3C::CheckLink's lexicals.  - Tuned HTTP header sending to make
+	  mod_perl 1.99_05 happy.  - Some style tweaks; reorganized
+	  use()'s, added missing ones.
+
+2002-10-26 22:19  ville
+
+	* checklink.pl: Swap $REVISION and $VERSION in order to be more
+	  consistent with Perl stuff in general, make sure that we have at
+	  least two digits in the version number.
+
+2002-10-26 22:04  ville
+
+	* checklink.pl: Whitespace only (reindentation).
+
+2002-10-26 21:29  ville
+
+	* checklink.pl: Portability update, now actually works on Win2K.
+
+	  Term::ReadKey is now used for reading the password from the
+	  command line if it is available, falling back to stty if it
+	  isn't.
+
+2002-10-23 23:31  ville
+
+	* checklink.pl: Fix all function prototypes, and remove them from
+	  methods.
+
+2002-10-23 07:32  hugo
+
+	* checklink.pl: Security fix: cross-scripting vulnerability found
+	  and fixed by ITO Tsuyoshi <tsuyoshi@is.s.u-tokyo.ac.jp>.
+
+2002-08-22 04:03  link
+
+	* checklink.pl: Applying checklink-options.patch from Ville SKytta.
+	  Thanks Ville! Use GetOpt::Long for command-line option handling.
+	  Add &version/-V.
+
+2002-08-22 03:56  link
+
+	* checklink.pl: Applying checklink-cleanup.patch from Ville SKytta.
+	  Thanks Ville! (A bunch of cleanups; police whitespace, namespace,
+	  HTML, etc.)
+
+2002-08-20 04:51  link
+
+	* checklink.pl: Merging to HEAD from validator-0_6_0 branch.  This
+	  will be validator-0_6_0b1c1 (Beta 1, Candidate 1).
+
+2002-07-08 00:54  link
+
+	* checklink.pl: Apply "Local Validator" patch from Ville Skytta.
+	  Thanks Ville!
+
+2002-06-21 23:29  eric
+
+	* checklink.pl: s/netloc/host/ to reflect API change.  made it easy
+	  to rerun HTTP sessions in the debugger.  covering for that
+	  slacker Hugo.
+
+2002-02-01 23:29  hugo
+
+	* checklink.pl: Updated copyright info
+
+2002-01-11 14:36  hugo
+
+	* checklink.pl: Added support for application/xhtml+xml documents
+
+2001-11-26 20:18  hugo
+
+	* checklink.pl: Applied patch from Henk P. Penning
+	  <henkp@cs.uu.nl>: Using Time::HiRes instead of sys/syscall.ph
+	  (should be more portable)
+
+	  See:
+	  http://lists.w3.org/Archives/Public/www-validator/2001OctDec/0224.html
+
+2001-09-21 17:15  hugo
+
+	* checklink.pl: Tiny change: escaping less characters in URIs (0-9
+	  and . are no longer escaped)
+
+2001-09-17 23:23  hugo
+
+	* checklink.pl: Fixed a URI escaping problem
+
+2001-08-01 14:53  hugo
+
+	* checklink.pl: Added support for *_proxy environment variables
+
+2001-07-25 14:34  hugo
+
+	* checklink.pl: Specifying the charset (Latin-1)
+
+2001-06-27 18:59  hugo
+
+	* checklink.pl: Apllied patch from Terje Bless <link@tss.no>:
+	  http://lists.w3.org/Archives/Public/www-validator/2001AprJun/0496.html
+
+2001-06-05 13:09  gerald
+
+	* checklink.pl: typo
+
+2001-04-04 22:18  hugo
+
+	* checklink.pl: Ooops, left a closing tag...
+
+2001-04-04 22:16  hugo
+
+	* checklink.pl: Fixed an HTML validity problem in the summary only
+	  mode:
+
+	  http://lists.w3.org/Archives/Public/www-validator/2001AprJun/0001.html
+
+2001-03-27 15:58  hugo
+
+	* checklink.pl: Added directions for inaccessible javascript: URIs
+
+2001-03-27 02:12  hugo
+
+	* checklink.pl: Got rid of $_contact_address Changed the mailto:
+	  URIs and instructions to include 'checklink' in the subject when
+	  sending a mail to www-validator
+
+2001-03-27 01:46  hugo
+
+	* checklink.pl: Made the "Summary only" function do the same as
+	  John <rowe@excc.ex.ac.uk>'s quiet function from:
+	  http://lists.w3.org/Archives/Public/www-validator/2001JanMar/0261.html
+	  This is a tiny change.
+
+2001-03-27 01:33  hugo
+
+	* checklink.pl: Added a --depth option based on the patch provided
+	  by John <rowe@excc.ex.ac.uk>:
+	  http://lists.w3.org/Archives/Public/www-validator/2001JanMar/0261.html
+
+	  Had to tweak it to make the combination of -r and -D work.
+
+2001-03-27 00:39  hugo
+
+	* checklink.pl: Maybe the base element problem is going to go away
+	  completely now.  I have added a change by John
+	  <rowe@excc.ex.ac.uk> which basically does not trust
+	  HTTP::Response's base function, and it seems to be the way to go.
+
+2001-01-22 18:00  hugo
+
+	* checklink.pl: Fixed typo
+
+2001-01-22 17:58  hugo
+
+	* checklink.pl: Made it clearer that www-validator is a mailing
+	  list to avoid confusion
+
+2001-01-22 17:49  hugo
+
+	* checklink.pl: Now suggests to send bug reports and comments to
+	  www-validator@w3.org Stopped suggesting people to send me email
+	  when the max number of documents   checked is reached in
+	  recursive mode.
+
+2001-01-19 15:59  hugo
+
+	* checklink.pl: Changed the text before the input box too
+
+2001-01-19 15:52  hugo
+
+	* checklink.pl: Changed title to "W3C Link Checker" only for the
+	  form instead of "W3C® Link Checker: Revision: 2.68 (c) 1999-2001
+	  W3C" which was too verbose
+
+2001-01-18 23:58  hugo
+
+	* checklink.pl: Committing changes that I made a long time ago...
+
+	  - Added 410 HTTP error code in the list of errors.  - Simplified
+	  a few regular expressions (got rid of some /'s).  - Added support
+	  for //... URI's.  - Commented a bit more the code because I was
+	  getting lost.  - Simplified already_processed().  - Added a
+	  --hide-same-realm option: hide 401's that are in the same
+	  realm as the document checked.  - Added a --masquerade option to
+	  check documents on the local system	  as if they were on the
+	  Web (based on a patch by David Carlisle     <davidc@nag.co.uk>).
+	  Example:     checklink -q -b --masquerade
+	  /afs/w3.org/pub/WWW/Math/Group/draft/cr/
+	  http://www.w3.org/TR/2000/CR-MathML2-20001113/ appendixe.html -
+	  500 errors are now split in two cases: DNS problems (LWP reports
+	     that as a 500...) and real internal server errors.  - Fixed a
+	  footer problem in the online problem.  - Fixed a duplicate id
+	  problem in the error code references.
+
+2000-09-25 20:38  hugo
+
+	* checklink.pl: Undid change done in 2.62 about base tag handling.
+	  I'm not really sure why I did this change in the first place, I
+	  might have to fix a bug later...
+
+2000-08-17 18:10  hugo
+
+	* checklink.pl: Replaced require by use and specified that
+	  HTML::Parser version 3 at least is required.
+
+2000-08-15 21:03  hugo
+
+	* checklink.pl: Reverting line list code because it needs tweaking
+
+2000-08-12 00:35  hugo
+
+	* checklink.pl: Got rid of unnecessary verbosity in the line list.
+	  Added a valid links message in the text version.
+
+2000-08-05 17:46  hugo
+
+	* checklink.pl: Now checks <blockquote cite="...">
+
+2000-08-05 02:20  hugo
+
+	* checklink.pl: Fixed a confusion in the use of URI::abs()
+
+2000-08-05 01:43  hugo
+
+	* checklink.pl: Do not consider base's href as a link anymore (was
+	  wrong and was causing a loop in recursive mode)
+
+2000-08-03 21:38  hugo
+
+	* checklink.pl: Discovered the existence of
+	  HTTP::Headers::authorization_basic
+
+2000-07-17 17:26  hugo
+
+	* checklink.pl: Fixed typo
+
+2000-07-14 00:18  hugo
+
+	* checklink.pl: Added links to the documentation
+
+2000-07-13 19:10  hugo
+
+	* checklink.pl: Added a test in the case when the encoding would be
+	  identity
+
+2000-07-12 22:14  hugo
+
+	* checklink.pl: Now checks the Content-Encoding too
+
+2000-07-10 18:21  hugo
+
+	* checklink.pl: Fixed a bug due to the migration to the version 3
+	  API
+
+2000-06-23 22:09  hugo
+
+	* checklink.pl: Clarified the footer
+
+2000-06-23 19:56  hugo
+
+	* checklink.pl: Increased the limit for the online version to 150
+	  documents.
+
+2000-06-12 18:37  hugo
+
+	* checklink.pl: Fixed a bad wording
+
+2000-05-16 16:12  hugo
+
+	* checklink.pl: Fixed a display problem
+
+2000-05-16 15:48  hugo
+
+	* checklink.pl: Clean up. Fixed a tiny bug.
+
+2000-05-11 18:44  hugo
+
+	* checklink.pl: Cosmetic changes
+
+2000-05-10 21:32  hugo
+
+	* checklink.pl: Speeded up parsing.  Fixed display problem in the
+	  recursive version.  Made things simpler in check_uri().
+
+2000-05-09 22:44  hugo
+
+	* checklink.pl: Next time, I'll think twice before committing: -
+	  Removed superfluous test - Using the same strategy for text
+	  version
+
+2000-05-09 22:36  hugo
+
+	* checklink.pl: Report fragments as really broken is the HTTP end
+	  code is 200
+
+2000-05-07 18:16  hugo
+
+	* checklink.pl: Removed unnecessary test. Added a header for the
+	  link results.
+
+2000-05-05 18:13  hugo
+
+	* checklink.pl: Improved presentation for 500's
+
+2000-05-05 02:33  hugo
+
+	* checklink.pl: Improved presentation for redirected broken URI's.
+	  Added note about directory redirects.
+
+2000-05-05 01:58  hugo
+
+	* checklink.pl: Added anchor to the results for better
+	  accessibility.  Removed a lot of colors: it's more readable.
+	  Added a heading for anchors report.
+
+2000-05-05 01:29  hugo
+
+	* checklink.pl: Now uses the version 3 of the API of HTML::Parser.
+	  Got rid of the chunk stuff, since the new parser doesn't care
+	  about the   size of the data parsed (good).  Added attributes
+	  checked. Still not perfect, but better.  Fixed a display bug in
+	  the text version.  Now parses <?xml:stylesheet ...?>. I'm not
+	  happy about the way it's done   though.
+
+2000-05-04 23:28  hugo
+
+	* checklink.pl: Changed language from 'en' to '*'.  Fixed a bug in
+	  the online version when the document cannot be processed.
+	  Changed the presentation to make clearer what needs to be done.
+	  Changed the directions to fix the links.
+
+2000-04-26 20:07  hugo
+
+	* checklink.pl: Only use XML extensions when required in the parser
+
+2000-04-11 01:10  hugo
+
+	* checklink.pl: Fixed a bug when accessing a file which does not
+	  exist.  Now counts the lines in <? ... ?> parts.  Now reports
+	  when an anchor is defined twice on the same line.
+
+2000-04-06 00:28  hugo
+
+	* checklink.pl: Changed the format of the HTML output to make it
+	  accessible.  Broken links sorted by priority.  Fixed a display
+	  issue for 200 replies.  Removed useless statistics and cleaned up
+	  a few things.  Changed the email address to report configuration
+	  problems.  Added links to HTML Validator and CSS Validator.
+	  Added optional Accept-Language headers.
+
+2000-03-30 01:31  hugo
+
+	* checklink.pl: Better handling of doctypes.
+
+2000-03-20 22:55  hugo
+
+	* checklink.pl: I knew I would break something changing the data
+	  structures: I love it when a plan comes together! Fixed a table
+	  display problem.
+
+2000-03-02 01:15  hugo
+
+	* checklink.pl: Fixed authentication problem.  Added a limit for
+	  the number of documents checked with the online version.  Fixed
+	  the -h command line option
+
+2000-02-25 00:22  hugo
+
+	* checklink.pl: Major changes: - can check documents recursively -
+	  fixed a bug in the parsing of the URI in the CGI version - now
+	  checks URI's for DTD's - now checks id attributes - doesn't check
+	  <a name="..."> for XHTML Basic 1.0
+
+2000-02-18 00:56  hugo
+
+	* checklink.pl: Changed the way results are stored internally Added
+	  an option to hide directory redirects: http://www.w3.org/TR ->
+	  http://www.w3.org/TR/ Fixed some stats errors Fixed some display
+	  problems Separated directory redirects in the report
+
+2000-02-11 01:03  hugo
+
+	* checklink.pl: Fixed nasty bug: when providing authentication
+	  information, 401's were not reported.
+
+2000-02-09 17:41  hugo
+
+	* checklink.pl: Fixed markup problem (thanks to Patrick D. F. Ion
+	  <ion@ams.org>)
+
+2000-02-09 01:11  hugo
+
+	* checklink.pl: Changed the default for HTML version to "Show
+	  redirects"
+
+2000-02-08 23:48  hugo
+
+	* checklink.pl: "use strict;" which had somehow disappeared is
+	  back.  It helped me fixing a typo.
+
+2000-02-08 23:19  hugo
+
+	* checklink.pl: Added comments Now correctly reports broken
+	  fragments with redirects
+
+2000-02-03 20:30  hugo
+
+	* checklink.pl: Now handling empty anchors.  Worked on the command
+	  line version.  Added link to source code.
+
+2000-01-28 23:19  hugo
+
+	* checklink.pl: Added links to online versions
+
+2000-01-27 01:04  hugo
+
+	* checklink.pl: Added W3C logo
+
+2000-01-27 00:29  hugo
+
+	* checklink.pl: W3C is registered
+
+2000-01-27 00:24  hugo
+
+	* checklink.pl: Encoding HTML correctly
+
+2000-01-26 23:45  hugo
+
+	* checklink.pl: Fixed HTTP answer
+
+2000-01-21 01:00  hugo
+
+	* checklink.pl: Some more explanation
+
+2000-01-21 00:48  hugo
+
+	* checklink.pl: Fixed problem in the summary table
+
+2000-01-21 00:01  hugo
+
+	* checklink.pl: Backward compatibility with Renaud's script
+
+2000-01-20 23:59  hugo
+
+	* checklink.pl: Fixed escaped URI's problem
+
+2000-01-20 23:40  hugo
+
+	* checklink.pl: Fixed line count
+
+2000-01-18 00:16  hugo
+
+	* checklink.pl: Fixed copyright
+
+2000-01-18 00:16  hugo
+
+	* checklink.pl: Added summary and advices.
+
+2000-01-13 19:32  hugo
+
+	* checklink.pl: Now validates
+
+2000-01-13 19:27  hugo
+
+	* checklink.pl: Fixed form
+
+1999-12-15 20:03  hugo
+
+	* checklink.pl: Added authetication in the command line version.
+	  Fixed a few bugs. Added proxy support
+
+1999-12-14 17:20  hugo
+
+	* checklink.pl: Fixed problem with page tested in report. Added
+	  cache control headers.
+
+1999-12-05 02:31  hugo
+
+	* checklink.pl: Line count is still flaky but the CGI version does
+	  what is expected.
+
+1999-12-05 01:34  hugo
+
+	* checklink.pl: Fixed redirect + 401 problem
+
+1999-12-05 01:19  hugo
+
+	* checklink.pl: More detailed output
+
+1999-12-05 01:00  hugo
+
+	* checklink.pl: Fixed problems with 401's + a few other bugs
+
+1999-12-02 03:42  hugo
+
+	* checklink.pl: Supports authentication with the CGI interface &
+	  output is more accurate
+
+1999-12-01 23:52  hugo
+
+	* checklink.pl: CGI interface improved
+
+1999-12-01 22:40  hugo
+
+	* checklink.pl: Fixed various CGI interface problems
+
+1999-12-01 21:53  hugo
+
+	* checklink.pl: CVS messed up a regular expression... fixed
+
+1999-12-01 21:47  hugo
+
+	* checklink.pl: Fixed display bugs. Line count still flaky.
+
+1999-11-26 15:14  hugo
+
+	* checklink.pl: Fixed line count. Parsing speed up.
+
+1999-11-25 00:04  hugo
+
+	* checklink.pl: new version of checklink
+
+1999-05-05 09:43  renaudb
+
+	* checklink.pl: split request thing before registering in LWP UA
+
+1999-04-28 22:31  renaudb
+
+	* checklink.pl: added plenty of color codes for errors
+
+1999-03-09 00:34  renaudb
+
+	* checklink.pl: added links to CVS server
+
+1999-03-09 00:19  renaudb
+
+	* checklink.pl: now HTTP return code 500 is considered as a broken
+	  link, and is highlighted using the color red
+
+1999-03-02 00:35  renaudb
+
+	* checklink.pl: modified front end
+
+1999-03-01 22:09  renaudb
+
+	* checklink.pl: added comment about prerequesite, and testing write
+	  access to CVS base
+
+1999-02-21 02:25  renaudb
+
+	* checklink.pl: put more comments in the code
+
+1999-02-21 02:13  renaudb
+
+	* checklink.pl: made checklink handle 401s the right way...yoohoo
+
+1999-02-19 04:22  renaudb
+
+	* checklink.pl: added color and legend for 403s
+
+1998-11-13 03:10  renaudb
+
+	* checklink.pl: added more verbose output
+
+1998-09-28 22:24  renaudb
+
+	* checklink.pl: fixed colors on redirect and typo in title
+
+1998-09-24 03:24  renaudb
+
+	* checklink.pl: added legend
+
+1998-09-12 02:05  renaudb
+
+	* checklink.pl: fixed weird CGI error
+
+1998-09-12 00:34  renaudb
+
+	* checklink.pl: finished handling of 401s. fixed double responses
+	  too
+
+1998-09-10 03:33  renaudb
+
+	* checklink.pl: 302 handled
+
+1998-09-09 23:38  renaudb
+
+	* checklink.pl: added flag for text in links
+
+1998-09-09 16:43  renaudb
+
+	* checklink.pl: added few comments
+
+1998-09-06 04:00  renaudb
+
+	* checklink.pl: add use strict and -T. almost working
+
+1998-09-05 03:19  renaudb
+
+	* checklink.pl: added smarts for redirects
+
+1998-09-04 19:12  renaudb
+
+	* checklink.pl: changed auth method fom GET to POST. yeeek.
+
+1998-09-04 04:21  renaudb
+
+	* checklink.pl: nope
+
+1998-09-03 21:34  renaudb
+
+	* checklink.pl: added version, link to original page, changing
+	  title
+
+1998-09-03 03:20  renaudb
+
+	* checklink.pl: fixed auth
+
+1998-09-02 03:05  renaudb
+
+	* checklink.pl: fixed couple bugs. auth no worky
+
+1998-08-31 23:54  renaudb
+
+	* checklink.pl: added line numbers. still buggy
+
+1998-08-31 19:16  renaudb
+
+	* checklink.pl:  added no-buffering
+
+1998-08-31 18:55  renaudb
+
+	* checklink.pl: added version tag
+
+1998-08-31 18:53  renaudb
+
+	* checklink.pl: first commit of team checklink
+
