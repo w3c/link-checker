@@ -5,13 +5,13 @@
 # (c) 1999-2004 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 3.44 2004-05-16 21:58:40 ville Exp $
+# $Id: checklink,v 3.45 2004-05-31 05:54:39 ot Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
 #
 # The documentation is at:
-#       http://www.w3.org/2000/07/checklink
+#       http://validator.w3.org/docs/checlink.html
 #
 # See the CVSweb interface at:
 #       http://dev.w3.org/cvsweb/perl/modules/W3C/LinkChecker/
@@ -112,7 +112,7 @@ BEGIN
   $PACKAGE       = 'W3C Link Checker';
   $PROGRAM       = 'W3C-checklink';
   $VERSION       = '3.9.3-dev';
-  my ($cvsver)   = q$Revision: 3.44 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver)   = q$Revision: 3.45 $ =~ /(\d+[\d\.]*\.\d+)/;
   $REVISION      = sprintf('version %s [%s] (c) 1999-2004 W3C',
                            $VERSION, $cvsver);
   $AGENT         = sprintf('%s/%s [%s] %s',
@@ -166,7 +166,10 @@ $@
   $Cfg{CSS_Validator_URI} ||=
     'http://jigsaw.w3.org/css-validator/validator?uri=%s';
   $Cfg{Doc_URI} ||=
-    'http://www.w3.org/2000/07/checklink';
+    'http://validator.w3.org/docs/checklink.html';
+  $Cfg{Style_URI} ||=
+    'http://validator.w3.org/docs/linkchecker.css';
+
 
   # Trusted environment variables that need laundering in taint mode.
   foreach (qw(NNTPSERVER NEWSHOST)) {
@@ -1982,90 +1985,18 @@ function uriOk()
 <head>
 <title>W3C", $title, "</title>
 ", $Meta, "
-<style type=\"text/css\">
-body, address {
-  font-family: sans-serif;
-  color: black;
-  background: white;
-}
-pre, code, tt {
-  font-family: monospace;
-}
-img {
-  color: white;
-  border: none;
-  vertical-align: middle;
-}
-fieldset {
-  padding: 0.8em;
-  background-color: #eee;
-}
-th {
-  text-align: left;
-}
-h1 a {
-  color: black;
-}
-h1 {
-  color: #053188;
-}
-h1#title {
-  background-color: #eee;
-  border-bottom: 1px solid black;
-  padding: .25em;
-}
-h2 {
-  margin-bottom: 0.5em;
-}
-address {
-  padding: 1ex;
-  border-top: 1px solid black;
-  background-color: #eee;
-  clear: right;
-}
-address img {
-  float: right;
-  width: 88px;
-}
-a:hover {
-  background-color: #eee;
-}
-a:visited {
-  color: purple;
-}
-.report {
-  width: 100%;
-}
-dt.report {
-  font-weight: bold;
-}
-.unauthorized {
-  background-color: aqua;
-}
-.redirect {
-  background-color: yellow;
-}
-.broken {
-  background-color: red;
-}
-.multiple {
-  background-color: fuchsia;
-}
-.dubious {
-  background-color: lightgray;
-}
-div#settings {
-  font-size: smaller;
-  float: right;
-}
-ul {
-  margin: 0;
-  padding-left: 1.5em;
-}
-</style>", $script, "
+<link rel=\"stylesheet\" type=\"text/css\" href=\"",$Cfg{Style_URI},"\">", $script, "
 </head>
 <body", $onload, ">
-<h1 id=\"title\"><a href=\"http://www.w3.org/\" title=\"W3C\"><img alt=\"W3C\" id=\"logo\" src=\"http://www.w3.org/Icons/w3c_home\" height=\"48\" width=\"72\"></a> ", $title, "</h1>\n\n";
+    <div id=\"banner\"><h1 id=\"title\"><a href=\"http://www.w3.org/\" title=\"W3C\"><img alt=\"W3C\" 
+id=\"logo\" src=\"http://www.w3.org/Icons/w3c_home\" height=\"48\" width=\"72\"></a> ", $title, "</h1></div>\n\n",
+'<ul class="navbar" id="menu">
+  <li><span class="hideme"><a href="#skip" accesskey="s" title="Skip past navigation to main part of page">Skip Navigation</a> |</span>',"
+  <li><a href=\"",$Cfg{Doc_URI},'" title="Documentation for this Link Checker Service">Docs</a></li>
+   <li><a href="http://search.cpan.org/dist/W3C-LinkChecker/" title="Download the source / Install this service ">Download</a></li>
+   <li><a href="http://validator.w3.org" accesskey="h" title="Validate your markup with the  W3C Markup Validation Service">Validator</a></li>
+</ul>
+';
 }
 
 sub bgcolor ($)
@@ -2107,19 +2038,10 @@ sub show_url ($;$)
 sub html_footer ()
 {
   printf("<p>%s</p>\n", &global_stats()) if ($doc_count > 0 && !$Opts{Quiet});
-  printf(<<'EOF', $PACKAGE, $REVISION, &encode($Cfg{Doc_URI}));
+  printf(<<'EOF', $PACKAGE, $REVISION, &encode);
 <div>
 <address>
-%s %s,
-by <a href="http://www.w3.org/People/Hugo/">Hugo Haas</a> and others.<br>
-Please send bug reports, suggestions and comments to the
-<a href="mailto:www-validator@w3.org?subject=checklink%%3A%%20">www-validator
-mailing list</a>
-(<a href="http://lists.w3.org/Archives/Public/www-validator/">archives</a>).
-<br>
-Check out the <a href="%s">documentation</a>.
-Download the
-<a href="http://search.cpan.org/dist/W3C-LinkChecker/">source code</a>.
+%s<br> %s
 </address>
 </div>
 </body>
