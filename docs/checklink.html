@@ -6,7 +6,7 @@
     <title>W3C Link Checker Documentation</title>
     <link rev="made" href="mailto:www-validator@w3.org" />
     <style type="text/css" media="all">@import "linkchecker.css";</style>
-    <meta name="revision" content="$Id: checklink.html,v 1.15 2004-04-11 20:27:27 ville Exp $" />
+    <meta name="revision" content="$Id: checklink.html,v 1.16 2004-04-20 17:13:28 ville Exp $" />
   </head>
 
   <body>
@@ -24,6 +24,7 @@
       <li><a href="#what">What it does</a></li>
       <li><a href="#online">Use it online</a></li>
       <li><a href="#install">Install it locally</a></li>
+      <li><a href="#bot">Robots exclusion</a></li>
       <li><a href="#csb">Comments, suggestions and bugs</a></li>
     </ul>
 
@@ -187,6 +188,30 @@
       for more information.
     </p>
 
+    <h2><a name="bot" id="bot">Robots exclusion</a></h2>
+
+    <p>
+      As of version 3.9.3, the link checker honors
+      <a href="http://www.robotstxt.org/wc/exclusion.html#robotstxt">robots exclusion rules</a>.  To place rules specific to the W3C Link Checker in
+      <code>/robots.txt</code> files, sites can use the
+      <code>W3C-checklink</code> user agent string.  For example, to allow
+      the link checker to access all documents on a server and to disallow
+      all other robots, one could use the following:
+    </p>
+
+    <pre>
+User-Agent: *
+Disallow: /
+
+User-Agent: W3C-checklink
+Disallow:
+</pre>
+
+    <p>
+      Note that <code>/robots.txt</code> rules affect only user agents
+      that honor it; it is not a generic method for access control.
+    </p>
+
     <h2><a name="csb" id="csb">Comments, suggestions and bugs</a></h2>
 
     <p>
@@ -208,7 +233,7 @@
         alt="Valid XHTML 1.0!" /></a>
       <a title="Send Feedback for the W3C Link Checker"
         href="http://validator.w3.org/feedback.html">The W3C Validator Team</a><br />
-      $Date: 2004-04-11 20:27:27 $
+      $Date: 2004-04-20 17:13:28 $
     </address>
     <p class="copyright">
       <a rel="Copyright" href="http://www.w3.org/Consortium/Legal/ipr-notice#Copyright">Copyright</a> &copy; 1994-2004
