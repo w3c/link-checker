@@ -41,6 +41,8 @@ WriteMakefile(
 sub MY::postamble {
   return <<'MAKE_FRAG';
 changelog:
-	cvs2cl --FSF --utc --prune --ignore ChangeLog --ignore cvsignore
+	cvs2cl --FSF --utc --prune \
+	  --ignore ChangeLog --ignore cvsignore --ignore SIGNATURE \
+	  --ignore Makefile.PL --ignore META.yml --ignore MANIFEST
 MAKE_FRAG
 }
