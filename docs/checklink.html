@@ -6,7 +6,7 @@
     <title>W3C Link Checker Documentation</title>
     <link rev="made" href="mailto:www-validator@w3.org" />
     <style type="text/css" media="all">@import "linkchecker.css";</style>
-    <meta name="revision" content="$Id: checklink.html,v 1.13 2004-04-10 17:00:56 ville Exp $" />
+    <meta name="revision" content="$Id: checklink.html,v 1.14 2004-04-11 19:33:41 ville Exp $" />
   </head>
 
   <body>
@@ -94,8 +94,10 @@
 
     <p>
       In the online version (and in general, when run as a CGI script),
-      the number of documents that can be checked recursively is limited
-      and there is a delay between each document checked to avoid abuses.
+      the number of documents that can be checked recursively is limited.
+      Both the command line version and the online one sleep at least one
+      second between requests to each server to avoid abuses and target
+      server congestion.
     </p>
 
     <h2><a name="install" id="install">Install it locally</a></h2>
@@ -206,7 +208,7 @@
         alt="Valid XHTML 1.0!" /></a>
       <a title="Send Feedback for the W3C Link Checker"
         href="http://validator.w3.org/feedback.html">The W3C Validator Team</a><br />
-      $Date: 2004-04-10 17:00:56 $
+      $Date: 2004-04-11 19:33:41 $
     </address>
     <p class="copyright">
       <a rel="Copyright" href="http://www.w3.org/Consortium/Legal/ipr-notice#Copyright">Copyright</a> &copy; 1994-2004

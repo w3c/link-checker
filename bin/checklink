@@ -5,7 +5,7 @@
 # (c) 1999-2004 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 3.31 2004-04-11 16:19:36 ville Exp $
+# $Id: checklink,v 3.32 2004-04-11 19:33:39 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -106,7 +106,7 @@ BEGIN
   $PACKAGE       = 'W3C Link Checker';
   $PROGRAM       = 'W3C-checklink';
   $VERSION       = '3.9.3-dev';
-  my ($cvsver)   = q$Revision: 3.31 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver)   = q$Revision: 3.32 $ =~ /(\d+[\d\.]*\.\d+)/;
   $REVISION      = sprintf('version %s [%s] (c) 1999-2004 W3C',
                            $VERSION, $cvsver);
   $AGENT         = sprintf('%s/%s [%s] %s',
@@ -187,8 +187,8 @@ my %Opts =
     HTTP_Proxy        => undef,
     Hide_Same_Realm   => 0,
     Depth             => 0,    # -1 means unlimited recursion.
-    Sleep_Time        => 3,    # For the online version.
-    Max_Documents     => 150,  # Ditto.
+    Sleep_Time        => 1,
+    Max_Documents     => 150,  # For the online version.
     User              => undef,
     Password          => undef,
     Base_Location     => '.',
@@ -398,6 +398,7 @@ sub parse_arguments ()
              'u|user=s'        => \$Opts{User},
              'p|password=s'    => \$Opts{Password},
              't|timeout=i'     => \$Opts{Timeout},
+             'S|sleep=i'       => \$Opts{Sleep_Time},
              'L|languages=s'   => \$Opts{Accept_Language},
              'n|noacclanguage' => sub { warn("*** Warning: The " .
                                         "-n/--noacclanguage option is " .
@@ -427,6 +428,11 @@ sub parse_arguments ()
 
   if ($Opts{Accept_Language} && $Opts{Accept_Language} eq 'auto') {
     $Opts{Accept_Language} = &guess_language();
+  }
+
+  if (($Opts{Sleep_Time} || 0) < 1) {
+    warn("*** Warning: minimum allowed sleep time is 1 second, resetting.\n");
+    $Opts{Sleep_Time} = 1;
   }
 }
 
@@ -473,6 +479,8 @@ Options:
  -p, --password PASSWORD    Specify a password.
  --hide-same-realm          Hide 401's that are in the same realm as the
                             document checked.
+ -S, --sleep SECS           Sleep SECS seconds between requests to each server
+                            (default and minimum: 1 second).
  -t, --timeout SECS         Timeout for requests (in seconds).
  -d, --domain DOMAIN        Regular expression describing the domain to which
                             authentication information will be sent
@@ -611,6 +619,19 @@ sub check_uri ($$$;$)
   if ($Opts{HTML}) {
     print("</h2>\n");
     if (! $Opts{Summary_Only}) {
+      my $accept = &encode($Accept);
+      my $acclang = &encode($Opts{Accept_Language} || '(not sent)');
+      my $s = $Opts{Sleep_Time} == 1 ? '' : 's';
+      printf(<<'EOF', $accept, $acclang, $Opts{Sleep_Time}, $s);
+<div id="settings">
+Settings used:
+ <ul>
+  <li><tt><a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.1">Accept</a></tt>: %s</li>
+  <li><tt><a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.4">Accept-Language</a></tt>: %s</li>
+  <li>Sleeping %d second%s between requests to each server</li>
+ </ul>
+</div>
+EOF
       printf("<p>Go to <a href=\"#%s\">the results</a>.</p>\n",
              $result_anchor);
       my $esc_uri = URI::Escape::uri_escape($absolute_uri, "^A-Za-z0-9.");
@@ -623,6 +644,16 @@ sub check_uri ($$$;$)
              &encode($Opts{_Self_URI}));
       print("<pre>\n");
     }
+  } elsif (! $Opts{Summary_Only}) {
+    my $s = $Opts{Sleep_Time} == 1 ? '' : 's';
+    my $acclang = $Opts{Accept_Language} || '(not sent)';
+    printf(<<'EOF', $Accept, $acclang, $Opts{Sleep_Time}, $s);
+Settings used:
+- Accept: %s
+- Accept-Language: %s
+- Sleeping %d second%s between requests to each server
+
+EOF
   }
 
   # Record that we have processed this resource
@@ -758,7 +789,6 @@ sub check_uri ($$$;$)
       # Do the job
       print "\n";
       if ($Opts{HTML}) {
-        # For the online version, wait for a while to avoid abuses
         if (!$Opts{Command_Line}) {
           if ($doc_count == $Opts{Max_Documents}) {
             print("<hr>\n<p><strong>Maximum number of documents reached!</strong></p>\n");
@@ -770,7 +800,6 @@ sub check_uri ($$$;$)
             next;
           }
         }
-        sleep($Opts{Sleep_Time});
       }
       if ($depth < 0) {
         &check_uri($u, 0, -1);
@@ -912,9 +941,9 @@ sub get_uri ($$;$\%$$$$)
 
   # Prepare the query
   my $ua = W3C::UserAgent->new($AGENT); # @@@ TODO: admin address
-  # @@@ make number of keep-alive connections and delay customizable
+  # @@@ make number of keep-alive connections customizable
   $ua->conn_cache({ total_capacity => 1}); # 1 keep-alive connection
-  $ua->delay(1/60);                        # 1 second
+  $ua->delay($Opts{Sleep_Time}/60);
   $ua->timeout($Opts{Timeout});
   $ua->proxy('http', 'http://' . $Opts{HTTP_Proxy}) if $Opts{HTTP_Proxy};
 
@@ -1967,6 +1996,9 @@ h1#title {
   border-bottom: 1px solid black;
   padding: .25em;
 }
+h2 {
+  margin-bottom: 0.5em;
+}
 address {
   padding: 1ex;
   border-top: 1px solid black;
@@ -2000,6 +2032,14 @@ dt.report {
 }
 .multiple {
   background-color: fuchsia;
+}
+div#settings {
+  font-size: smaller;
+  float: right;
+}
+ul {
+  margin: 0;
+  padding-left: 1.5em;
 }
 </style>", $script, "
 </head>
@@ -2116,7 +2156,7 @@ of a document that you would like to check:</label></p>
     <br>
     <label for=\"no_accept_language\"><input type=\"checkbox\" id=\"no_accept_language\" name=\"no_accept_language\" value=\"on\"", $acc, "> Don't send <tt><a href=\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.4\">Accept-Language</a></tt> headers</label>
     <br>
-    <label title=\"Check linked documents recursively (maximum: ", $Opts{Max_Documents}, " documents; sleeping ", $Opts{Sleep_Time}, " seconds between each document)\" for=\"recursive\"><input type=\"checkbox\" id=\"recursive\" name=\"recursive\" value=\"on\"", $rec, "> Check linked documents recursively</label>,
+    <label title=\"Check linked documents recursively (maximum: ", $Opts{Max_Documents}, " documents)\" for=\"recursive\"><input type=\"checkbox\" id=\"recursive\" name=\"recursive\" value=\"on\"", $rec, "> Check linked documents recursively</label>,
     <label title=\"Depth of the recursion (-1 is the default and means unlimited)\" for=\"depth\">recursion depth: <input type=\"text\" size=\"3\" maxlength=\"3\" id=\"depth\" name=\"depth\" value=\"", $dep, "\"></label>
     <br><br>", $cookie_options, "
   </p>

@@ -1,4 +1,4 @@
-$Id: checklink.pod,v 1.8 2004-04-04 16:13:39 ville Exp $
+$Id: checklink.pod,v 1.9 2004-04-11 19:33:39 ville Exp $
 
 =head1 NAME
 
@@ -100,6 +100,11 @@ Specify a password for authentication.
 =item B<--hide-same-realm>
 
 Hide 401's that are in the same realm as the document checked.
+
+=item B<-S, --sleep> I<secs>
+
+Sleep the specified number of seconds between requests to each server.
+Defaults to 1 second, which is also the minimum allowed.
 
 =item B<-t, --timeout> I<secs>
 
