@@ -5,7 +5,7 @@
 # (c) 1999-2004 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 3.8 2004-03-22 22:05:43 ville Exp $
+# $Id: checklink,v 3.9 2004-03-23 20:09:27 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -88,7 +88,7 @@ BEGIN
   $PROGRAM       = 'W3C checklink';
   ($AGENT        = $PROGRAM) =~ s/\s+/-/g;
   $VERSION       = '3.9.1';
-  ($CVS_VERSION) = q$Revision: 3.8 $ =~ /(\d+[\d\.]*\.\d+)/;
+  ($CVS_VERSION) = q$Revision: 3.9 $ =~ /(\d+[\d\.]*\.\d+)/;
   $REVISION      = sprintf('version %s [%s] (c) 1999-2004 W3C',
                            $VERSION, $CVS_VERSION);
 
@@ -121,6 +121,12 @@ BEGIN
       my %config_opts =
         ( -ConfigFile  => $conffile,
           -SplitPolicy => 'equalsign',
+          -DefaultConfig => {
+            Markup_Validator_URI
+              => 'http://validator.w3.org/check?uri=%s',
+            CSS_Validator_URI
+              => 'http://jigsaw.w3.org/css-validator/validator?uri=%s',
+          },
         );
       %Cfg = Config::General->new(%config_opts)->getall();
     };
@@ -532,12 +538,13 @@ sub check_uri ($$$;$)
     if (! $Opts{Summary_Only}) {
       printf("<p>Go to <a href=\"#%s\">the results</a>.</p>\n",
              $result_anchor);
+      my $esc_uri = URI::Escape::uri_escape($absolute_uri, "^A-Za-z0-9.");
       printf("<p>For reliable link checking results, check
-<a href=\"check?uri=%s\">HTML Validity</a> first.  See also
-<a href=\"http://jigsaw.w3.org/css-validator/validator?uri=%s\">CSS Validity</a>.</p>
+<a href=\"%s\">HTML validity</a> first.  See also
+<a href=\"%s\">CSS validity</a>.</p>
 <p>Back to the <a href=\"checklink\">link checker</a>.</p>\n",
-             map{&encode(URI::Escape::uri_escape($absolute_uri,
-                                                 "^A-Za-z0-9."))}(1..2));
+             &encode(sprintf($Cfg{Markup_Validator_URI}, $esc_uri)),
+             &encode(sprintf($Cfg{CSS_Validator_URI}, $esc_uri)));
       print("<pre>\n");
     }
   }
