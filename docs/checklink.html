@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
@@ -6,7 +6,7 @@
     <title>W3C Link Checker Documentation</title>
     <link rev="made" href="mailto:www-validator@w3.org" />
     <style type="text/css" media="all">@import "checklink.css";</style>
-    <meta name="revision" content="$Id: checklink.html,v 1.2 2004-03-22 20:54:54 ville Exp $" />
+    <meta name="revision" content="$Id: checklink.html,v 1.3 2004-03-22 21:05:27 ville Exp $" />
   </head>
 
   <body>
@@ -40,13 +40,18 @@
       Since it was lacking some functionalities,
       <a href="http://www.w3.org/People/Hugo/">Hugo Haas</a>
       rewrote it more or less from scratch in November 1999.
+      It has been improved by Ville Skyttä and many other volunteers since.
     </p>
 
     <p>
       The source code is available publicly under the
       <a href="http://www.w3.org/Consortium/Legal/copyright-software">W3C IPR
       software notice</a> from
-      <a href="http://dev.w3.org/cvsweb/validator/httpd/cgi-bin/checklink.pl">CVS</a>.
+      <a href="http://search.cpan.org/dist/W3C-LinkChecker/"><abbr
+      title="Comprehensive Perl Archive Network">CPAN</abbr></a> (released
+      versions) and
+      <a href="http://dev.w3.org/cvsweb/perl/modules/W3C/LinkChecker/">CVS</a>
+      (development and archived release versions).
     </p>
 
     <h2><a name="what" id="what">What it does</a></h2>
@@ -88,7 +93,8 @@
     </p>
 
     <p>
-      The number of documents that can be checked recursively is limited
+      In the online version (and in general, when run as a CGI script),
+      the number of documents that can be checked recursively is limited
       and there is a delay between each document checked to avoid abuses.
     </p>
 
@@ -96,8 +102,7 @@
 
     <p>
       The link checker is written in Perl. It is one single file, but it
-      depends on a few modules available from
-      <abbr title="Comprehensive Perl Archive Network">CPAN</abbr>.
+      depends on a few modules available from CPAN.
     </p>
 
     <p>In order to install it:</p>
@@ -192,7 +197,7 @@
         alt="Valid XHTML 1.0!" /></a>
       <a title="Send Feedback for the W3C Link Checker"
         href="http://validator.w3.org/feedback.html">The W3C Validator Team</a><br />
-      $Date: 2004-03-22 20:54:54 $
+      $Date: 2004-03-22 21:05:27 $
     </address>
     <p class="copyright">
       <a rel="Copyright" href="http://www.w3.org/Consortium/Legal/ipr-notice#Copyright">Copyright</a> &copy; 1994-2004
