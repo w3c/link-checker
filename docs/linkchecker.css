@@ -4,103 +4,98 @@
    Copyright 2000-2004 W3C (MIT, INRIA, Keio). All Rights Reserved.
    See http://www.w3.org/Consortium/Legal/ipr-notice.html#Copyright
 
-   $Id: linkchecker.css,v 1.7 2004-06-08 21:06:47 ville Exp $
+   $Id: linkchecker.css,v 1.8 2004-06-08 21:17:41 ville Exp $
 */
 
 html, body {
-  color:            black;
-  background:       white;
-  font-family:      "Bitstream Vera Sans", sans-serif;
-  margin:           0;
-  padding:          0;
-  border:           0;
+  color: black;
+  background: white;
+  font-family: "Bitstream Vera Sans", sans-serif;
+  margin: 0;
+  padding: 0;
+  border: 0;
 }
 
 div#main {
-  padding-top:      1em;
-  padding-left:     1em;
-  padding-right:    1em;
-  margin:           0;
+  padding-top: 1em;
+  padding-left: 1em;
+  padding-right: 1em;
+  margin: 0;
 }
 
 a:link, a:visited {
-  color:            blue;
+  color: blue;
 }
 a:hover {
-  color:            blue;
+  color: blue;
   background-color: #eee;
 }
 a:active {
-  color:            red;
+  color: red;
   background-color: yellow;
 }
 
 acronym:hover, abbr:hover {
-  cursor:           help;
+  cursor: help;
 }
 abbr[title], acronym[title], span[title], strong[title] {
-  border-bottom:    thin dotted;
-  cursor:           help;
+  border-bottom: thin dotted;
+  cursor: help;
 }
 
 pre, code, tt {
-  font-family:      "Bitstream Vera Sans Mono", monospace;
-  line-height:      100%;
-  white-space:      pre;
+  font-family: "Bitstream Vera Sans Mono", monospace;
+  line-height: 100%;
+  white-space: pre;
 }
 pre {
   padding-left: 2em;
 }
 
 fieldset {
-  background:       #fcfcfc;
-  border:           1px dotted #053188;
-  padding:          0.8em;
+  background: #fcfcfc;
+  border: 1px dotted #053188;
+  padding: 0.8em;
 }
 
 a:link img, a:visited img {
-  border-style:     none;
+  border-style: none;
 }
 a img {
-  color:            black; /* The only way to hide the border in NS 4.x */
+  color: black; /* The only way to hide the border in NS 4.x */
 }
 
 ul.toc {
-  list-style:       none;
+  list-style: none;
 }
 
 ol li {
-  padding:          .1em;
+  padding: .1em;
 }
 
 th {
-  text-align:       left;
+  text-align: left;
 }
 
 /* These are usually targets and not links */
 h1 a, h1 a:hover, h2 a, h2 a:hover, h3 a, h3 a:hover {
-  color:            inherit;
+  color: inherit;
   background-color: inherit;
 }
 
 img {
-  vertical-align:    middle;
-}
-
-address img {
-  float:             right;
-  width:             88px;
+  vertical-align: middle;
 }
 
 address {
-  padding-top:       0;
-  padding-right:     1em;
-  padding-left:      1em;
-  padding-bottom:    0;
-  margin-top:        3em;
-  border-top:        1px solid black;
-  background-color:  #eee;
-  clear:             right;
+  padding-top: 0;
+  padding-right: 1em;
+  padding-left: 1em;
+  padding-bottom: 0;
+  margin-top: 3em;
+  border-top: 1px solid black;
+  background-color: #eee;
+  clear: right;
   background-image: url(http://validator.w3.org/images/footer.jpg);
   background-repeat: no-repeat;
   background-attachment: scroll;
@@ -109,29 +104,29 @@ address {
 }
 
 p.copyright {
-  margin-top:        5em;
-  padding-top:       .5em;
-  font-size:         xx-small;
-  max-width:         85ex;
-  text-align:        justify;
-  text-transform:    uppercase;
-  margin-left:       auto;
-  margin-right:      auto;
-  font-family:       "Bitstream Vera Sans Mono", monospace;
-  color:             #888;
-  line-height:       120%;
+  margin-top: 5em;
+  padding-top: .5em;
+  font-size: xx-small;
+  max-width: 85ex;
+  text-align: justify;
+  text-transform: uppercase;
+  margin-left: auto;
+  margin-right:auto;
+  font-family: "Bitstream Vera Sans Mono", monospace;
+  color: #888;
+  line-height: 120%;
 }
 
 p.copyright a {
-  color:             #88f;
-  text-decoration:   none;
+  color: #88f;
+  text-decoration: none;
 }
 
 /* Various header(ish) things. Definitions cribbed from the CORE Styles. */
 
 h1, h2, h3, h4, h5, h6, dt {
-  font-family:       "Bitstream Vera Sans", sans-serif;
-  font-size-adjust:  .53;
+  font-family: "Bitstream Vera Sans", sans-serif;
+  font-size-adjust: .53;
 }
 
 h1 {
@@ -141,45 +136,48 @@ h1 {
   text-decoration: none;
   color: #053188;
 }
-#banner h1 {font-size: 1.3em;
-display: inline}
+#banner h1 {
+  font-size: 1.3em;
+  display: inline;
+}
 
 #banner {
-background-image: url(http://validator.w3.org/images/header.jpg);
-background-repeat: no-repeat;
-background-attachment: scroll;
-height: 50px;
-background-position: right;
-margin:0; padding:0;
-border-bottom: 1px solid black;
+  background-image: url(http://validator.w3.org/images/header.jpg);
+  background-repeat: no-repeat;
+  background-attachment: scroll;
+  height: 50px;
+  background-position: right;
+  margin: 0;
+  padding: 0;
+  border-bottom: 1px solid black;
 }
 
 h1#title {
-  padding:           0;
-  margin:            0;
-  color:             #053188;
+  padding: 0;
+  margin: 0;
+  color: #053188;
 }
 
 h2 {
-  font-size:         1.5em;
-  text-align:        left;
-  font-weight:       bold;
-  font-style:        normal;
-  text-decoration:   none;
-  margin-top:        1em;
-  margin-bottom:     1em;
-  line-height:       120%;  
+  font-size: 1.5em;
+  text-align: left;
+  font-weight: bold;
+  font-style: normal;
+  text-decoration: none;
+  margin-top: 1em;
+  margin-bottom: 1em;
+  line-height: 120%;
 }
 
 h3 {
-  font-size:         1.3em;
-  font-weight:       normal;
-  font-style:        normal;
-  text-decoration:   none;
-  background-color:  #eee;
-  text-indent:       1em;
-  padding:           .2em;
-  border-top:        1px dotted black;
+  font-size: 1.3em;
+  font-weight: normal;
+  font-style: normal;
+  text-decoration: none;
+  background-color: #eee;
+  text-indent: 1em;
+  padding: .2em;
+  border-top: 1px dotted black;
 }
 
 
@@ -188,7 +186,7 @@ h3 {
 */
 
 #menu {
-/*  min-width: 63em; */
+  /* min-width: 63em; */
   list-style-type: none;
   padding: 0;
   margin: 0;
