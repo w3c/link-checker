@@ -6,7 +6,7 @@
     <title>W3C Link Checker Documentation</title>
     <link rev="made" href="mailto:www-validator@w3.org" />
     <style type="text/css" media="all">@import "linkchecker.css";</style>
-    <meta name="revision" content="$Id: checklink.html,v 1.20 2004-06-08 17:15:02 ville Exp $" />
+    <meta name="revision" content="$Id: checklink.html,v 1.21 2004-06-09 06:30:04 ville Exp $" />
   </head>
 
   <body>
@@ -214,6 +214,19 @@ Disallow:
 </pre>
 
     <p>
+      Robots exlusion support in the link checker is based on the
+      <a href="http://search.cpan.org/dist/libwww-perl/lib/LWP/RobotUA.pm">LWP::RobotUA</a>
+      Perl module.  It currently supports the
+      "<a href="http://www.robotstxt.org/wc/norobots.html">original 1994 version</a>"
+      of the standard.  The robots META tag, ie.
+      <code>&lt;meta name="robots" content="..."&gt;</code>, is not supported.
+      Other than that, the link checker's implementation goes all the way
+      in trying to honor robots exclusion rules; if a
+      <code>/robots.txt</code> disallows it, not even the first document
+      submitted as the root for a link checker run is fetched.
+    </p>
+
+    <p>
       Note that <code>/robots.txt</code> rules affect only user agents
       that honor it; it is not a generic method for access control.
     </p>
@@ -239,7 +252,7 @@ Disallow:
         alt="Valid XHTML 1.0!" /></a>
       <a title="Send Feedback for the W3C Link Checker"
         href="http://validator.w3.org/feedback.html">The W3C Validator Team</a><br />
-      $Date: 2004-06-08 17:15:02 $
+      $Date: 2004-06-09 06:30:04 $
     </address>
     <p class="copyright">
       <a rel="Copyright" href="http://www.w3.org/Consortium/Legal/ipr-notice#Copyright">Copyright</a> &copy; 1994-2004
