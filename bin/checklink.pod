@@ -1,4 +1,4 @@
-$Id: checklink.pod,v 1.1 2004-03-18 21:44:14 ville Exp $
+$Id: checklink.pod,v 1.2 2004-03-23 21:34:03 ville Exp $
 
 =head1 NAME
 
@@ -148,6 +148,16 @@ mode and false when run as a CGI script.  For example, to disallow checking
 non-public IP addresses, regardless of the mode, use:
 
    Allow_Private_IPs = 0
+
+C<Markup_Validator_URI> and C<CSS_Validator_URI> are formatted URIs to the
+respective validators.  The %s in these will be replaced with the full
+"URI encoded" URI to the document being checked, and shown in the link
+checker results view in the online/CGI version.  The defaults are:
+
+   Markup_Validator_URI =
+     http://validator.w3.org/check?uri=%s
+   CSS_Validator_URI =
+     http://jigsaw.w3.org/css-validator/validator?uri=%s
 
 =back
 
