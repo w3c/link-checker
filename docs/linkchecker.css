@@ -4,7 +4,7 @@
    Copyright 2000-2004 W3C (MIT, INRIA, Keio). All Rights Reserved.
    See http://www.w3.org/Consortium/Legal/ipr-notice.html#Copyright
 
-   $Id: linkchecker.css,v 1.8 2004-06-08 21:17:41 ville Exp $
+   $Id: linkchecker.css,v 1.9 2004-06-09 06:32:41 ville Exp $
 */
 
 html, body {
@@ -85,6 +85,11 @@ h1 a, h1 a:hover, h2 a, h2 a:hover, h3 a, h3 a:hover {
 
 img {
   vertical-align: middle;
+}
+
+address img {
+  float: right;
+  width: 88px;
 }
 
 address {
