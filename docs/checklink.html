@@ -6,7 +6,7 @@
     <title>W3C Link Checker Documentation</title>
     <link rev="made" href="mailto:www-validator@w3.org" />
     <style type="text/css" media="all">@import "linkchecker.css";</style>
-    <meta name="revision" content="$Id: checklink.html,v 1.26 2004-11-11 06:44:57 ot Exp $" />
+    <meta name="revision" content="$Id: checklink.html,v 1.27 2004-11-23 20:13:36 ville Exp $" />
   </head>
 
   <body>
@@ -255,6 +255,17 @@ Disallow:
       with 'checklink' in the subject.
     </p>
 
+    <h3><a name="issues" id="issues">Known issues</a></h3>
+
+    <p>
+      If a link checker run in "summary only" mode takes a long time, some
+      user agents may stop loading the results page due to a timeout.  We
+      have placed workarounds hoping to avoid this in the code, but have not
+      yet found one that would work reliably for all browsers.  If you
+      experience these timeouts, try avoiding "summary only" mode, or try
+      using the link checker with another browser.
+    </p>
+
     </div>
     <address>
       <a href="http://validator.w3.org/check?uri=referer"><img
@@ -262,7 +273,7 @@ Disallow:
         alt="Valid XHTML 1.0!" /></a>
       <a title="Send Feedback for the W3C Link Checker"
         href="http://validator.w3.org/feedback.html">The W3C Validator Team</a><br />
-      $Date: 2004-11-11 06:44:57 $
+      $Date: 2004-11-23 20:13:36 $
     </address>
     <p class="copyright">
       <a rel="Copyright" href="http://www.w3.org/Consortium/Legal/ipr-notice#Copyright">Copyright</a> &copy; 1994-2004
