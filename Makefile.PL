@@ -25,7 +25,7 @@ WriteMakefile(
                      Config::General => 2.06,
                      HTML::Parser    => 3.00,
                      LWP             => 5.66,
-                     Net::IP         => 0,
+                     Net::IP         => 0, # Optional, see the docs.
                      Term::ReadKey   => 2.00,
                      Time::HiRes     => 0,
                      URI             => 0,

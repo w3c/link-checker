@@ -5,7 +5,7 @@
 # (c) 1999-2004 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.8 2004-10-12 21:54:11 ville Exp $
+# $Id: checklink,v 4.9 2004-11-06 11:39:28 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -92,9 +92,6 @@ use HTML::Entities       qw();
 use HTML::Parser    3.00 qw();
 use HTTP::Request        qw();
 use HTTP::Response       qw();
-use Net::hostent         qw(gethostbyname);
-use Net::IP              qw();
-use Socket               qw(inet_ntoa);
 use Time::HiRes          qw();
 use URI                  qw();
 use URI::Escape          qw();
@@ -112,7 +109,7 @@ BEGIN
   $PACKAGE       = 'W3C Link Checker';
   $PROGRAM       = 'W3C-checklink';
   $VERSION       = '4.0';
-  my ($cvsver)   = q$Revision: 4.8 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver)   = q$Revision: 4.9 $ =~ /(\d+[\d\.]*\.\d+)/;
   $REVISION      = sprintf('version %s [%s] (c) 1999-2004 W3C',
                            $VERSION, $cvsver);
   $AGENT         = sprintf('%s/%s [%s] %s',
@@ -213,6 +210,22 @@ my %Opts =
                          $Cfg{Allow_Private_IPs} : $cmdline,
   );
 undef $cmdline;
+
+unless ($Opts{Allow_Private_IPs}) {
+  eval {
+    require Net::IP;
+    require Socket;
+    Socket->import('inet_ntoa');
+    require Net::hostent;
+  };
+  if ($@) {
+    die <<".EOF.";
+Allow_Private_IPs is false; this feature requires the Net::IP, Socket, and
+Net::hostent modules:
+$@
+.EOF.
+  }
+}
 
 # Global variables
 # What is our query?
@@ -1778,19 +1791,19 @@ sub code_shown ($$)
 sub ip_allowed ($)
 {
   my ($uri) = @_;
+  return undef if $Opts{Allow_Private_IPs}; # Short-circuit
+
   my $hostname = undef;
   eval { $hostname = $uri->host() }; # Not all URIs implement host()...
   return undef unless $hostname;
 
   my $addr = my $iptype = my $resp = undef;
-  if (my $host = gethostbyname($hostname)) {
+  if (my $host = Net::hostent::gethostbyname($hostname)) {
     $addr = inet_ntoa($host->addr()) if $host->addr();
     if ($addr && (my $ip = Net::IP->new($addr))) {
       $iptype = $ip->iptype();
     }
   }
-  $iptype = 'PUBLIC'
-    if ($iptype && $iptype eq 'PRIVATE' && $Opts{Allow_Private_IPs});
   if ($iptype && $iptype ne 'PUBLIC') {
     $resp = HTTP::Response->new(403,
     'Checking non-public IP address disallowed by link checker configuration');
