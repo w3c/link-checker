@@ -1,3 +1,66 @@
+2004-11-23  ville
+
+	* bin/checklink: Release 4.1.
+
+2004-11-23  ville
+
+	* docs/checklink.html: Add known issues section, and "summary only"
+	problems to it (#896).
+
+2004-11-11  ot
+
+	* bin/checklink, docs/checklink.html: warning note about delay in
+	summary only mode
+
+2004-11-07  ville
+
+	* bin/checklink, bin/checklink.pod, docs/checklink.html: Deprecate
+	the -y/--proxy option in favour of the http_proxy env variable.
+
+2004-11-07  ville
+
+	* bin/checklink: Remove CVS revision from user visible version
+	strings to make them less scary.  Add meta generator tag to emitted
+	HTML containing the full user agent string.
+
+2004-11-07  ville
+
+	* bin/checklink: Use the same W3C::UserAgent instance for all
+	retrievals.  Fixes
+	http://www.w3.org/Bugs/Public/show_bug.cgi?id=893
+
+2004-11-06  ville
+
+	* bin/checklink, docs/checklink.html, etc/checklink.conf: Make
+	Net::IP and other modules required for restricting access to
+	private IP addresses optional.
+
+2004-11-06  ville
+
+	* docs/checklink.html: Add abbr for CVS.
+
+2004-10-12  ville
+
+	* bin/checklink: Try to avoid server/browser timeouts in summary
+	only mode when the check takes a long time.  Should fix
+	http://www.w3.org/Bugs/Public/show_bug.cgi?id=896
+
+2004-10-10  ville
+
+	* bin/checklink: Avoid feeding the whole response (including HTTP
+	headers) to HTML::Parser.  Fixes
+	http://www.w3.org/Bugs/Public/show_bug.cgi?id=889
+
+2004-08-27  duerst
+
+	* bin/checklink: changed result pages to charset=utf-8 on
+	Content-Type:; should not have any effect currently, but will be
+	useful later.
+
+2004-07-21  ville
+
+	* bin/checklink: Enforce libwww-perl >= 5.66 requirement.
+
 2004-07-20  ville
 
 	* bin/checklink: Release 4.0.
