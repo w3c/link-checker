@@ -5,7 +5,7 @@
 # (c) 1999-2004 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 3.15 2004-03-27 19:09:41 ville Exp $
+# $Id: checklink,v 3.16 2004-03-31 19:04:43 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -34,7 +34,7 @@ $ENV{PATH} = ''; # undef would output warnings with Perl 5.6.1's Cwd.pm.
 package W3C::UserAgent;
 
 use LWP::UserAgent      qw();
-# @@@ Needs also W3C::CheckLink but can't use() it here.
+# @@@ Needs also W3C::LinkChecker but can't use() it here.
 
 @W3C::UserAgent::ISA =  qw(LWP::UserAgent);
 
@@ -54,7 +54,7 @@ sub redirect_ok
   my ($self, $request) = @_;
 
   if ($self->{Checklink_verbose_progress}) {
-    &W3C::CheckLink::hprintf("\n%s %s ", $request->method(), $request->uri());
+    &W3C::LinkChecker::hprintf("\n%s %s ", $request->method(),$request->uri());
   }
 
   # Build a map of redirects
@@ -66,7 +66,7 @@ sub redirect_ok
 
 # -----------------------------------------------------------------------------
 
-package W3C::CheckLink;
+package W3C::LinkChecker;
 
 use vars qw($PROGRAM $AGENT $VERSION $CVS_VERSION $REVISION
             $DocType $Accept $ContentTypes %Cfg);
@@ -84,7 +84,7 @@ use URI::Escape          qw();
 use URI::file            qw();
 # @@@ Needs also W3C::UserAgent but can't use() it here.
 
-@W3C::CheckLink::ISA =  qw(HTML::Parser);
+@W3C::LinkChecker::ISA =  qw(HTML::Parser);
 
 BEGIN
 {
@@ -92,7 +92,7 @@ BEGIN
   $PROGRAM       = 'W3C checklink';
   ($AGENT        = $PROGRAM) =~ s/\s+/-/g;
   $VERSION       = '3.9.1';
-  ($CVS_VERSION) = q$Revision: 3.15 $ =~ /(\d+[\d\.]*\.\d+)/;
+  ($CVS_VERSION) = q$Revision: 3.16 $ =~ /(\d+[\d\.]*\.\d+)/;
   $REVISION      = sprintf('version %s [%s] (c) 1999-2004 W3C',
                            $VERSION, $CVS_VERSION);
 
@@ -436,7 +436,7 @@ Options:
   -p/--password password      Specify a password.
   --hide-same-realm           Hide 401's that are in the same realm as the
                               document checked.
-  -t/--timeout value          Timeout for HTTP requests.
+  -t/--timeout secs           Timeout for requests (in seconds).
   -d/--domain domain          Regular expression describing the domain to
                               which the authentication information will be
                               sent$trust.
@@ -984,7 +984,7 @@ sub parse_document ($$$$;$)
   }
 
   my $start;
-  $p = W3C::CheckLink->new();
+  $p = W3C::LinkChecker->new();
   $p->{base} = $location;
   if (! $Opts{Summary_Only}) {
     $start = &get_timestamp();
@@ -1021,9 +1021,9 @@ sub parse_document ($$$$;$)
   return $p;
 }
 
-###################################
-# Constructor for W3C::CheckLink #
-###################################
+####################################
+# Constructor for W3C::LinkChecker #
+####################################
 
 sub new
 {
@@ -1108,9 +1108,9 @@ sub get_anchor
   return $anchor;
 }
 
-###########################
-# W3C::CheckLink handlers #
-###########################
+#############################
+# W3C::LinkChecker handlers #
+#############################
 
 sub add_link
 {
@@ -2002,7 +2002,7 @@ mailing list</a>
 <br>
 Check out the <a href="http://dev.w3.org/cvsweb/~checkout~/perl/modules/W3C/LinkChecker/docs/checklink.html?content-type=text/html;%20charset=utf-8">documentation</a>.
 Download the
-<a href="http://search.cpan.org/dist/W3C-CheckLink/">source code</a>.
+<a href="http://search.cpan.org/dist/W3C-LinkChecker/">source code</a>.
 </address>
 </div>
 </body>
