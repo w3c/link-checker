@@ -5,7 +5,7 @@
 # (c) 1999-2004 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 3.17 2004-03-31 19:27:36 ville Exp $
+# $Id: checklink,v 3.18 2004-04-03 09:46:35 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -92,7 +92,7 @@ BEGIN
   $PROGRAM       = 'W3C checklink';
   ($AGENT        = $PROGRAM) =~ s/\s+/-/g;
   $VERSION       = '3.9.2';
-  ($CVS_VERSION) = q$Revision: 3.17 $ =~ /(\d+[\d\.]*\.\d+)/;
+  ($CVS_VERSION) = q$Revision: 3.18 $ =~ /(\d+[\d\.]*\.\d+)/;
   $REVISION      = sprintf('version %s [%s] (c) 1999-2004 W3C',
                            $VERSION, $CVS_VERSION);
 
@@ -176,6 +176,7 @@ my %Opts =
     User              => undef,
     Password          => undef,
     Base_Location     => '.',
+    Exclude_Docs      => undef,
     Masquerade        => 0,
     Masquerade_From   => '',
     Masquerade_To     => '',
@@ -199,13 +200,23 @@ my $doc_count = 0;
 # Time stamp
 my $timestamp = &get_timestamp();
 
+&parse_arguments() if $Opts{Command_Line};
+
+# Precompile/error-check regular expressions.
+if (defined($Opts{Exclude_Docs})) {
+  eval { $Opts{Exclude_Docs} = qr/$Opts{Exclude_Docs}/; };
+  &usage(1, "Error in exclude-docs regexp: $@") if $@;
+}
+if (defined($Opts{Trusted})) {
+  eval { $Opts{Trusted} = qr/$Opts{Trusted}/; };
+  &usage(1, "Error in trusted domains regexp: $@") if $@;
+}
+
 if ($Opts{Command_Line}) {
 
   require Text::Wrap;
   Text::Wrap->import('wrap');
 
-  # Parse command line
-  &parse_arguments();
   &usage(1) unless @ARGV;
 
   &ask_password() if ($Opts{User} && !$Opts{Password});
@@ -368,6 +379,7 @@ sub parse_arguments ()
              'r|recursive'     => sub { $Opts{Depth} = -1
                                           if $Opts{Depth} == 0; },
              'l|location=s'    => \$Opts{Base_Location},
+             'exclude-docs=s', => \$Opts{Exclude_Docs},
              'u|user=s'        => \$Opts{User},
              'p|password=s'    => \$Opts{Password},
              't|timeout=i'     => \$Opts{Timeout},
@@ -406,7 +418,9 @@ sub usage ()
 {
   my ($exitval, $msg) = @_;
   $exitval = 0 unless defined($exitval);
-  $msg = $msg ? "$msg\n\n" : '';
+  $msg ||= ''; $msg =~ s/[\r\n]*$/\n\n/;
+
+  die($msg) unless $Opts{Command_Line};
 
   my $langs = defined($Opts{Languages}) ? " (default: $Opts{Languages})" : '';
   my $trust = defined($Opts{Trusted})   ? " (default: $Opts{Trusted})"   : '';
@@ -427,6 +441,8 @@ Options:
                               By default, for example for
                               http://www.w3.org/TR/html4/Overview.html
                               it would be http://www.w3.org/TR/html4/
+  --exclude-docs regexp       In recursive mode, do not check links in
+                              documents whose URIs match regexp.
   -n/--noacclanguage          Do not send an Accept-Language header.
   -L/--languages              Languages accepted$langs.
   -q/--quiet                  No output if no errors are found.  Implies -s.
@@ -792,6 +808,8 @@ sub in_recursion_scope ($)
 
   return undef if ($current eq $rel);     # Relative path not possible?
   return undef if ($rel =~ m|^(\.\.)?/|); # Relative path starts with ../ or /?
+  return undef if (defined($Opts{Exclude_Docs}) &&
+                   $current =~ $Opts{Exclude_Docs});
   return 1;
 }
 

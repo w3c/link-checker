@@ -1,4 +1,4 @@
-$Id: checklink.pod,v 1.5 2004-03-30 19:04:22 ville Exp $
+$Id: checklink.pod,v 1.6 2004-04-03 09:46:35 ville Exp $
 
 =head1 NAME
 
@@ -63,6 +63,11 @@ Check the documents linked from the first one to depth I<n>
 Scope of the documents checked in recursive mode. By default, for
 L<http://www.w3.org/TR/html4/Overview.html> for example, it would be
 L<http://www.w3.org/TR/html4/>.
+
+=item B<--exclude-docs> I<regexp>
+
+In recursive mode, do not check links in documents whose URIs match
+I<regexp>.
 
 =item B<-n, --noacclanguage>
 
