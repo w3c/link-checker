@@ -5,7 +5,7 @@
 # (c) 1999-2004 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.2 2004-07-11 19:14:46 ville Exp $
+# $Id: checklink,v 4.3 2004-07-11 19:19:23 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -112,7 +112,7 @@ BEGIN
   $PACKAGE       = 'W3C Link Checker';
   $PROGRAM       = 'W3C-checklink';
   $VERSION       = '4.0-dev';
-  my ($cvsver)   = q$Revision: 4.2 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver)   = q$Revision: 4.3 $ =~ /(\d+[\d\.]*\.\d+)/;
   $REVISION      = sprintf('version %s [%s] (c) 1999-2004 W3C',
                            $VERSION, $cvsver);
   $AGENT         = sprintf('%s/%s [%s] %s',
@@ -1305,10 +1305,10 @@ sub declaration
 
 sub check_validity ($$$\%\%)
 {
-  my ($testing, $uri, $in_recursion, $links, $redirects) = @_;
+  my ($testing, $uri, $want_links, $links, $redirects) = @_;
   # $testing is the URI of the document checked
   # $uri is the URI of the target that we are verifying
-  # $in_recursion is > 0 if we're in recursive mode
+  # $want_links is true if we're interested in links in the target doc
   # $links is a hash of the links in the documents checked
   # $redirects is a map of the redirects encountered
 
@@ -1360,7 +1360,7 @@ sub check_validity ($$$\%\%)
     }
     # Do it then
     $p = &parse_document($uri, $response->base(),
-                         $response->as_string(), 0, $in_recursion);
+                         $response->as_string(), 0, $want_links);
   } else {
     # We already had the information
     $p->{Anchors} = $results{$uri}{parsing}{Anchors};
