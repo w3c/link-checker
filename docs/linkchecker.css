@@ -4,7 +4,7 @@
    Copyright 2000-2004 W3C (MIT, INRIA, Keio). All Rights Reserved.
    See http://www.w3.org/Consortium/Legal/ipr-notice.html#Copyright
 
-   $Id: linkchecker.css,v 1.5 2004-06-08 17:15:02 ville Exp $
+   $Id: linkchecker.css,v 1.6 2004-06-08 17:37:37 ville Exp $
 */
 
 html, body {
@@ -94,7 +94,7 @@ address {
   border-top:        1px solid black;
   background-color:  #eee;
   clear:             right;
-  background-image: url(http://validator.w3.org/images/footer);
+  background-image: url(http://validator.w3.org/images/footer.jpg);
   background-repeat: no-repeat;
   background-attachment: scroll;
   height: 50px;
@@ -134,7 +134,7 @@ h1 {
 display: inline}
 
 #banner {
-background-image: url(http://validator.w3.org/images/header);
+background-image: url(http://validator.w3.org/images/header.jpg);
 background-repeat: no-repeat;
 background-attachment: scroll;
 height: 50px;
