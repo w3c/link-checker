@@ -6,3 +6,5 @@ README                  Start by reading this
 bin/checklink           The link checker
 bin/checklink.pod       Manual page for the link checker
 META.yml
+docs/checklink.html     Additional documentation
+docs/checklink.css      Cascading style sheet for the documentation

@@ -1,0 +1,214 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <title>W3C Link Checker Documentation</title>
+    <link rev="made" href="mailto:www-validator@w3.org" />
+    <style type="text/css" media="all">@import "checklink.css";</style>
+    <meta name="revision" content="$Id: checklink.html,v 1.1 2004-03-21 15:11:12 ville Exp $" />
+  </head>
+
+  <body>
+    <div id="banner">
+    <h1 id="title"><a href="http://www.w3.org/"><img height="48" alt="W3C"
+        id="logo" src="http://www.w3.org/Icons/WWW/w3c_home" /></a>
+	<img src="http://www.w3.org/QA/2002/12/qa-small.png" alt="QA"/>
+      Link Checker</h1>
+    </div>
+
+    <div id="main">
+
+    <ul>
+      <li><a href="#about">About this service</a></li>
+      <li><a href="#what">What it does</a></li>
+      <li><a href="#online">Use it online</a></li>
+      <li><a href="#install">Install it locally</a></li>
+      <li><a href="#csb">Comments, suggestions and bugs</a></li>
+    </ul>
+
+    <h2><a name="about" id="about">About this service</a></h2>
+
+    <p>
+      In order to check the validity of the technical reports that W3C
+      publishes, the Systems Team has developed a link checker.
+    </p>
+
+    <p>
+      A first version was developed in August 1998 by
+      <a href="http://www.w3.org/People/Renaud/">Renaud Bruyeron</a>.
+      Since it was lacking some functionalities,
+      <a href="http://www.w3.org/People/Hugo/">Hugo Haas</a>
+      rewrote it more or less from scratch in November 1999.
+    </p>
+
+    <p>
+      The source code is available publicly under the
+      <a href="http://www.w3.org/Consortium/Legal/copyright-software">W3C IPR
+      software notice</a> from
+      <a href="http://dev.w3.org/cvsweb/validator/httpd/cgi-bin/checklink.pl">CVS</a>.
+    </p>
+
+    <h2><a name="what" id="what">What it does</a></h2>
+
+    <p>
+      The link checker reads an HTML or XHTML document and extracts a list
+      of anchors and links.
+    </p>
+
+    <p>
+      It checks that no anchor is defined twice.
+    </p>
+
+    <p>
+      It then checks that all the links are dereferenceable, including
+      the fragments. It warns about HTTP redirects, including directory
+      redirects.
+    </p>
+
+    <p>
+      It can check recursively a part of a Web site.
+    </p>
+
+    <p>
+      There is a command line version and a
+      <abbr title="Common Gateway Interface">CGI</abbr> version. They both
+      support <a href="http://www.ietf.org/rfc/rfc2617.txt">HTTP basic
+      authentication</a>. This is achieved in the CGI version
+      by passing through the authorization information from the user browser
+      to the site tested.
+    </p>
+
+    <h2><a name="online" id="online">Use it online</a></h2>
+
+    <p>
+      There is an
+      <a href="http://validator.w3.org/checklink">online version</a>
+      of the link checker.
+    </p>
+
+    <p>
+      The number of documents that can be checked recursively is limited
+      and there is a delay between each document checked to avoid abuses.
+    </p>
+
+    <h2><a name="install" id="install">Install it locally</a></h2>
+
+    <p>
+      The link checker is written in Perl. It is one single file, but it
+      depends on a few modules available from
+      <abbr title="Comprehensive Perl Archive Network">CPAN</abbr>.
+    </p>
+
+    <p>In order to install it:</p>
+
+    <ol>
+      <li>
+	Install <a href="http://www.perl.com/">Perl</a>.
+      </li>
+      <li>
+	You will need the following <a href="http://www.cpan.org/">CPAN</a>
+	distributions, as well as the distributions they possibly depend on.
+	Depending on your Perl version, you might already have some of
+	these installed.  Also, the latest versions of these may require a
+        recent version of Perl.  As long as the minimum version requirement(s)
+        below are satisfied, everything should be fine.  The latest version
+        should not be needed, just get an older version that works with your
+        Perl.  For an introduction to installing Perl modules,
+	see <a href="http://www.cpan.org/misc/cpan-faq.html#How_install_Perl_modules">The CPAN FAQ</a>.
+	<ul>
+	  <li><a href="http://search.cpan.org/dist/CGI.pm/">CGI.pm</a></li>
+          <li><a href="http://search.cpan.org/dist/Config-General/">Config-General</a> (optional, version 2.06 or newer; required only for reading the (optional) configuration file)</li>
+	  <li><a href="http://search.cpan.org/dist/HTML-Parser/">HTML-Parser</a> (version 3.00 or newer)</li>
+	  <li><a href="http://search.cpan.org/dist/libwww-perl/">libwww-perl</a> (version 5.60 or newer if you want HTTP/1.1 with <code>Keep-Alive</code>)</li>
+          <li><a href="http://search.cpan.org/dist/Net-IP/">Net-IP</a></li>
+          <li><a href="http://search.cpan.org/dist/TermReadKey/">TermReadKey</a> (optional but recommended; required only in command line mode for password input)</li>
+	  <li><a href="http://search.cpan.org/dist/Time-HiRes/">Time-HiRes</a></li>
+	  <li><a href="http://search.cpan.org/dist/URI/">URI</a></li>
+	</ul>
+      </li>
+      <li>
+	Download the link checker from
+	<a href="http://dev.w3.org/cvsweb/validator/httpd/cgi-bin/checklink.pl">CVS</a>.
+      </li>
+      <li>
+        Download the configuration file from
+        <a href="http://dev.w3.org/cvsweb/validator/htdocs/config/checklink.conf">CVS</a>
+        and install it to <code>/etc/w3c/checklink.conf</code> or set the
+        <code>W3C_CHECKLINK_CFG</code> environment variable to the location
+        where you installed it.
+      </li>
+    </ol>
+
+    <p>
+      Calling <code>checklink.pl</code> without any arguments runs the
+      CGI version, and running <code>checklink.pl --help</code> shows how to
+      use the command line version.  The script also includes embedded
+      <abbr title="Plain Old Documentation">POD</abbr> documentation, use
+      <code><a href="http://search.cpan.org/dist/Pod-Perldoc/lib/perldoc.pod">perldoc</a> checklink.pl</code> to view it.
+    </p>
+
+    <p>
+      If you want to enable the authentication capabilities with Apache,
+      have a look at
+      <a href="http://lists.w3.org/Archives/Public/www-validator/1999JulSep/0140.html">Steven Drake's hack</a>.
+    </p>
+
+    <p>
+      Some environment variables affect the way how the link checker uses
+      <a href="http://www.ietf.org/rfc/rfc959.txt"><abbr title="File Transfer Protocol">FTP</abbr></a>.
+      In particular, passive mode is the default.  See
+      <a href="http://search.cpan.org/dist/libnet/Net/FTP.pm#CONSTRUCTOR">Net::FTP(3)</a>
+      for more information.
+    </p>
+
+    <p>
+      There are multiple alternatives for configuring the default
+      <a href="http://www.ietf.org/rfc/rfc977.txt"><abbr title="Network News Transfer Protocol">NNTP</a>
+      server for use with <code>news:</code> URIs without explicit hostnames,
+      see
+      <a href="http://search.cpan.org/dist/libnet/Net/NNTP.pm#CONSTRUCTOR">Net::NNTP(3)</a>
+      for more information.
+    </p>
+
+    <h2><a name="csb" id="csb">Comments, suggestions and bugs</a></h2>
+
+    <p>
+      The current version has proven to be stable. It could however be
+      improved, see the <a href="http://www.w3.org/Bugs/Public/buglist.cgi?product=LinkChecker&amp;bug_status=NEW&amp;bug_status=ASSIGNED&amp;bug_status=REOPENED">list of open enhancement ideas and bugs</a> for details.
+    </p>
+
+    <p>
+      Please send comments, suggestions and bugs about the link checker
+      to the <a href="mailto:www-validator@w3.org?subject=checklink%3A%20">www-validator mailing list</a>
+      (<a href="http://lists.w3.org/Archives/Public/www-validator/">archives</a>),
+      with 'checklink' in the subject.
+    </p>
+
+    </div>
+    <address>
+      <a href="http://validator.w3.org/check?uri=referer"><img
+        src="http://www.w3.org/Icons/valid-xhtml10" height="31" width="88"
+        alt="Valid XHTML 1.0!" /></a>
+      <a title="Send Feedback for the W3C Link Checker"
+        href="http://validator.w3.org/feedback.html">The W3C Validator Team</a><br />
+      $Date: 2004-03-21 15:11:12 $
+    </address>
+    <p class="copyright">
+      <a rel="Copyright" href="http://www.w3.org/Consortium/Legal/ipr-notice#Copyright">Copyright</a> &copy; 1994-2004
+      <a href="http://www.w3.org/"><acronym title="World Wide Web Consortium">W3C</acronym></a>&reg;
+      (<a href="http://www.lcs.mit.edu/"><acronym title="Massachusetts Institute of Technology">MIT</acronym></a>,
+      <a href="http://www.ercim.org/"><acronym title="European Research Consortium for Informatics and Mathematics">ERCIM</acronym></a>,
+      <a href="http://www.keio.ac.jp/">Keio</a>),
+      All Rights Reserved.
+      W3C <a href="http://www.w3.org/Consortium/Legal/ipr-notice#Legal_Disclaimer">liability</a>,
+      <a href="http://www.w3.org/Consortium/Legal/ipr-notice#W3C_Trademarks">trademark</a>,
+      <a rel="Copyright" href="http://www.w3.org/Consortium/Legal/copyright-documents">document use</a>
+      and <a rel="Copyright" href="http://www.w3.org/Consortium/Legal/copyright-software">software licensing</a>
+      rules apply. Your interactions with this site are in accordance
+      with our <a href="http://www.w3.org/Consortium/Legal/privacy-statement#Public">public</a> and
+      <a href="http://www.w3.org/Consortium/Legal/privacy-statement#Members">Member</a> privacy
+      statements.
+    </p>
+  </body>
+</html>
