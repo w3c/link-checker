@@ -5,7 +5,7 @@
 # (c) 1999-2004 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 3.52 2004-06-02 16:03:00 ville Exp $
+# $Id: checklink,v 3.53 2004-06-02 19:02:21 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -86,7 +86,7 @@ sub redirect_ok
 package W3C::LinkChecker;
 
 use vars qw($AGENT $PACKAGE $PROGRAM $VERSION $REVISION
-            $DocType $Meta $Accept $ContentTypes %Cfg);
+            $DocType $Head $Accept $ContentTypes %Cfg);
 
 use HTML::Entities       qw();
 use HTML::Parser    3.00 qw();
@@ -112,7 +112,7 @@ BEGIN
   $PACKAGE       = 'W3C Link Checker';
   $PROGRAM       = 'W3C-checklink';
   $VERSION       = '3.9.3-dev';
-  my ($cvsver)   = q$Revision: 3.52 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver)   = q$Revision: 3.53 $ =~ /(\d+[\d\.]*\.\d+)/;
   $REVISION      = sprintf('version %s [%s] (c) 1999-2004 W3C',
                            $VERSION, $cvsver);
   $AGENT         = sprintf('%s/%s [%s] %s',
@@ -123,11 +123,6 @@ BEGIN
     eval "require Apache::compat"; # For mod_perl 2
     require Apache;
   }
-
-  $DocType = '<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">';
-
-  $Meta = '<meta http-equiv="Content-Script-Type" ' .
-    'content="application/x-javascript">';
 
   my @content_types = qw(application/xhtml+xml text/html);
   $Accept = join(', ', @content_types) . ', */*;q=0.5';
@@ -170,6 +165,11 @@ $@
   $Cfg{Style_URI} ||=
     'http://validator.w3.org/docs/linkchecker.css';
 
+  $DocType = '<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">';
+  $Head = <<EOF;
+<meta http-equiv="Content-Script-Type" content="application/x-javascript">
+<link rel="stylesheet" type="text/css" href="$Cfg{Style_URI}">
+EOF
 
   # Trusted environment variables that need laundering in taint mode.
   foreach (qw(NNTPSERVER NEWSHOST)) {
@@ -1407,14 +1407,13 @@ EOF
     printf("%s
 <html lang=\"en\">
 <head>
-<title>401 Authorization Required</title>
-%s
-</head>
-<body>
-<h1>Authorization Required</h1>
-<p>
-  You need %s access to %s to perform Link Checking.<br>
-", $DocType, $Meta, &encode($realm), $r->request->url);
+<title>W3C Link Checker: 401 Authorization Required</title>
+%s</head>
+<body>", $DocType, $Head);
+    &banner(': 401 Authorization Required');
+    printf("<p>
+  You need %s access to <a href=\"%s\">%s</a> to perform link checking.<br>
+", &encode($realm), (&encode($r->request()->url())) x 2);
 
     if ($Opts{Trusted}) {
       printf <<EOF, &encode($Opts{Trusted});
@@ -1955,8 +1954,8 @@ sub html_header ($;$$)
 {
   my ($uri, $doform, $cookie) = @_;
 
-  $uri = &encode($uri);
-  my $title = ' Link Checker' . ($uri eq '' ? '' : ': ' . $uri);
+  my $title = defined($uri) ? $uri : '';
+  $title = ': ' . $title if ($title =~ /\S/);
 
   # mod_perl 1.99_05 doesn't seem to like if the "\n\n" isn't in the same
   # print() statement as the last header...
@@ -1971,15 +1970,15 @@ sub html_header ($;$$)
 
   my $script = my $onload = '';
   if ($doform) {
-    $script = "
-<script type=\"application/x-javascript\">
+    $script = <<'EOF';
+<script type="application/x-javascript">
 function uriOk()
 {
   var u = document.forms[0].uri;
   var ok = false;
   if (u.value.length > 0) {
     if (u.value.search) {
-      ok = (u.value.search(/\\S/) != -1);
+      ok = (u.value.search(/\S/) != -1);
     } else {
       ok = true;
     }
@@ -1987,27 +1986,32 @@ function uriOk()
   if (! ok) u.focus();
   return ok;
 }
-</script>";
+</script>
+EOF
    $onload = ' onload="document.forms[0].uri.focus()"';
   }
 
   print $headers, $DocType, "
 <html lang=\"en\">
 <head>
-<title>W3C", $title, "</title>
-", $Meta, "
-<link rel=\"stylesheet\" type=\"text/css\" href=\"",$Cfg{Style_URI},"\">", $script, "
-</head>
-<body", $onload, ">
-    <div id=\"banner\"><h1 id=\"title\"><a href=\"http://www.w3.org/\" title=\"W3C\"><img alt=\"W3C\" 
-id=\"logo\" src=\"http://www.w3.org/Icons/w3c_home\" height=\"48\" width=\"72\"></a> ", $title, "</h1></div>\n\n",
-'<ul class="navbar" id="menu">
-  <li><span class="hideme"><a href="#skip" accesskey="s" title="Skip past navigation to main part of page">Skip Navigation</a> |</span>',"
-  <li><a href=\"",$Cfg{Doc_URI},'" title="Documentation for this Link Checker Service">Docs</a></li>
-   <li><a href="http://search.cpan.org/dist/W3C-LinkChecker/" title="Download the source / Install this service ">Download</a></li>
-   <li><a href="http://validator.w3.org" accesskey="h" title="Validate your markup with the  W3C Markup Validation Service">Validator</a></li>
+<title>W3C Link Checker", &encode($title), "</title>
+", $Head, $script, "</head>
+<body", $onload, '>';
+  &banner($title);
+}
+
+sub banner ($)
+{
+  my ($title) = @_;
+  printf(<<'EOF', &encode($title), $Cfg{Doc_URI});
+<div id="banner"><h1 id="title"><a href="http://www.w3.org/" title="W3C"><img alt="W3C" id="logo" src="http://www.w3.org/Icons/w3c_home" height="48" width="72"></a> Link Checker%s</h1></div>
+<ul class="navbar" id="menu">
+  <li><span class="hideme"><a href="#skip" accesskey="s" title="Skip past navigation to main part of page">Skip Navigation</a> |</span>
+  <li><a href="%s" title="Documentation for this Link Checker Service">Docs</a></li>
+  <li><a href="http://search.cpan.org/dist/W3C-LinkChecker/" title="Download the source / Install this service">Download</a></li>
+  <li><a href="http://validator.w3.org/" accesskey="h" title="Validate your markup with the W3C Markup Validation Service">Validator</a></li>
 </ul>
-';
+EOF
 }
 
 sub bgcolor ($)
