@@ -6,10 +6,9 @@ eval {
   if ($LWP::VERSION eq "5.76") {
     print STDERR <<'EOF';
 
-*** Warning: due to a bug in libwww-perl version 5.76, the link checker
-*** will detect many spurious redirect loops, and may follow redirects to
-*** file: URLs.  It is not recommended to use this version of libwww-perl
-*** with the link checker.
+*** Warning: it is not recommended to use this version of link checker with
+*** libwww-perl version 5.76.  Version 5.76 of libwww-perl has a bug which
+*** may cause the link checker to follow redirects to file: URLs.
 
 EOF
   }
