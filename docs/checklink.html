@@ -6,14 +6,14 @@
     <title>W3C Link Checker Documentation</title>
     <link rev="made" href="mailto:www-validator@w3.org" />
     <style type="text/css" media="all">@import "checklink.css";</style>
-    <meta name="revision" content="$Id: checklink.html,v 1.3 2004-03-22 21:05:27 ville Exp $" />
+    <meta name="revision" content="$Id: checklink.html,v 1.4 2004-03-22 21:35:12 ville Exp $" />
   </head>
 
   <body>
     <div id="banner">
     <h1 id="title"><a href="http://www.w3.org/"><img height="48" alt="W3C"
         id="logo" src="http://www.w3.org/Icons/WWW/w3c_home" /></a>
-	<img src="http://www.w3.org/QA/2002/12/qa-small.png" alt="QA"/>
+	<img src="http://www.w3.org/QA/2002/12/qa-small.png" alt="QA" />
       Link Checker</h1>
     </div>
 
@@ -101,8 +101,9 @@
     <h2><a name="install" id="install">Install it locally</a></h2>
 
     <p>
-      The link checker is written in Perl. It is one single file, but it
-      depends on a few modules available from CPAN.
+      The link checker is written in Perl. It is packaged as a standard
+      <a href="http://www.cpan.org/">CPAN</a> distribution, and depends on
+      a few other modules which are also available from CPAN.
     </p>
 
     <p>In order to install it:</p>
@@ -122,7 +123,8 @@
         Perl.  For an introduction to installing Perl modules,
 	see <a href="http://www.cpan.org/misc/cpan-faq.html#How_install_Perl_modules">The CPAN FAQ</a>.
 	<ul>
-	  <li><a href="http://search.cpan.org/dist/CGI.pm/">CGI.pm</a></li>
+          <li><a href="http://search.cpan.org/dist/W3C-LinkChecker/">W3C-LinkChecker</a> (the link checker itself)</li>
+	  <li><a href="http://search.cpan.org/dist/CGI.pm/">CGI.pm</a> (required for CGI mode only)</li>
           <li><a href="http://search.cpan.org/dist/Config-General/">Config-General</a> (optional, version 2.06 or newer; required only for reading the (optional) configuration file)</li>
 	  <li><a href="http://search.cpan.org/dist/HTML-Parser/">HTML-Parser</a> (version 3.00 or newer)</li>
 	  <li><a href="http://search.cpan.org/dist/libwww-perl/">libwww-perl</a> (version 5.60 or newer if you want HTTP/1.1 with <code>Keep-Alive</code>)</li>
@@ -133,24 +135,28 @@
 	</ul>
       </li>
       <li>
-	Download the link checker from
-	<a href="http://dev.w3.org/cvsweb/validator/httpd/cgi-bin/checklink.pl">CVS</a>.
+        Optionally install the link checker configuration file,
+        <code>checklink.conf</code> contained in the link checker
+        distribution package into <code>/etc/w3c/checklink.conf</code>
+        or set the <code>W3C_CHECKLINK_CFG</code> environment variable to the
+        location where you installed it.
       </li>
       <li>
-        Download the configuration file from
-        <a href="http://dev.w3.org/cvsweb/validator/htdocs/config/checklink.conf">CVS</a>
-        and install it to <code>/etc/w3c/checklink.conf</code> or set the
-        <code>W3C_CHECKLINK_CFG</code> environment variable to the location
-        where you installed it.
+        Optionally, install the <code>checklink</code> script into a location
+        in your web server which allows execution of CGI scripts (typically a
+        directory named <code>cgi-bin</code> somewhere below your web server's
+        root directory).
       </li>
     </ol>
 
     <p>
-      Calling <code>checklink.pl</code> without any arguments runs the
-      CGI version, and running <code>checklink.pl --help</code> shows how to
-      use the command line version.  The script also includes embedded
-      <abbr title="Plain Old Documentation">POD</abbr> documentation, use
-      <code><a href="http://search.cpan.org/dist/Pod-Perldoc/lib/perldoc.pod">perldoc</a> checklink.pl</code> to view it.
+      Calling <kbd>checklink</kbd> without any arguments runs the
+      CGI version, and running <kbd>checklink --help</kbd> shows how to
+      use the command line version.  The distribution package also includes
+      more extensive <abbr title="Plain Old Documentation">POD</abbr>
+      documentation, use
+      <kbd><a href="http://search.cpan.org/dist/Pod-Perldoc/lib/perldoc.pod">perldoc</a> checklink</kbd> (or <kbd>man checklink</kbd> on Unixish systems)
+      to view it.
     </p>
 
     <p>
@@ -184,7 +190,7 @@
     </p>
 
     <p>
-      Please send comments, suggestions and bugs about the link checker
+      Please send comments, suggestions and bug reports about the link checker
       to the <a href="mailto:www-validator@w3.org?subject=checklink%3A%20">www-validator mailing list</a>
       (<a href="http://lists.w3.org/Archives/Public/www-validator/">archives</a>),
       with 'checklink' in the subject.
@@ -197,7 +203,7 @@
         alt="Valid XHTML 1.0!" /></a>
       <a title="Send Feedback for the W3C Link Checker"
         href="http://validator.w3.org/feedback.html">The W3C Validator Team</a><br />
-      $Date: 2004-03-22 21:05:27 $
+      $Date: 2004-03-22 21:35:12 $
     </address>
     <p class="copyright">
       <a rel="Copyright" href="http://www.w3.org/Consortium/Legal/ipr-notice#Copyright">Copyright</a> &copy; 1994-2004
