@@ -36,6 +36,7 @@ WriteMakefile(
                      '$(INST_MAN1DIR)/checklink.$(MAN1EXT)',
                    },
   dist          => { TARFLAGS => '--owner=0 --group=0 -cvf' },
+  clean         => { FILES => 'ChangeLog.bak' },
 );
 
 sub MY::postamble {
