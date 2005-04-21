@@ -5,7 +5,7 @@
 # (c) 1999-2005 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.18 2005-04-09 14:52:49 ville Exp $
+# $Id: checklink,v 4.19 2005-04-21 13:44:18 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -118,13 +118,13 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.1';
   $REVISION    = sprintf('version %s (c) 1999-2005 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.18 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.19 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver, LWP::RobotUA->_agent());
 
   # Pull in mod_perl modules if applicable.
   if ($ENV{MOD_PERL}) {
-    eval "require Apache::compat"; # For mod_perl 2
+    eval "require Apache2::compat"; # For mod_perl 2
     require Apache;
   }
 
