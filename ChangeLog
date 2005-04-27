@@ -1,3 +1,36 @@
+2005-04-27  ville
+
+	* bin/checklink: Release 4.2.
+
+2005-04-21  ville
+
+	* bin/checklink: Use Apache2::compat instead of Apache::compat to
+	support recent mod_perl 2's.
+
+2005-04-09  ville
+
+	* bin/checklink, docs/checklink.html: Fix navbar markup.
+
+2005-04-09  ville
+
+	* docs/linkchecker.css: Add missing "hideme" class for "skip
+	navigation" links.
+
+2005-03-31  ot
+
+	* bin/checklink, docs/checklink.html: implementing new access keys,
+	as proposed in
+	http://lists.w3.org/Archives/Public/public-qa-dev/2005Mar/0013.html
+
+2005-02-05  ville
+
+	* bin/checklink: Check redirects for private IP addresses too.
+
+2005-01-09  ville
+
+	* README, bin/checklink, docs/checklink.html, docs/linkchecker.css:
+	2005.
+
 2004-11-23  ville
 
 	* bin/checklink: Release 4.1.
