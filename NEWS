@@ -1,3 +1,6 @@
+Version 4.2.1
+- Include documentation of the reorganized access keys.
+
 Version 4.2
 - Access key reorganization, making them less likely to conflict with
   browsers' "native" key bindings.
