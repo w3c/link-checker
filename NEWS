@@ -1,3 +1,8 @@
+Version 4.2
+- Access key reorganization, making them less likely to conflict with
+  browsers' "native" key bindings.
+- Redirects are now checked for private IP addresses too.
+
 Version 4.1
 - Added workarounds against browser timeouts in "summary only" mode.
 - Improved caching and reuse of fetched /robots.txt information.
