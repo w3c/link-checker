@@ -1,3 +1,16 @@
+2005-05-15  ville
+
+	* bin/checklink: Release 4.2.1.
+
+2005-05-15  ville
+
+	* docs/checklink.html: Access key doc tweaks: spelling, whitespace,
+	consistency with rest of the docs.
+
+2005-04-28  ot
+
+	* docs/checklink.html: adding access keys documentation
+
 2005-04-27  ville
 
 	* bin/checklink: Release 4.2.
