@@ -5,7 +5,7 @@
 # (c) 1999-2005 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.22 2005-08-29 05:11:39 ot Exp $
+# $Id: checklink,v 4.23 2005-08-31 09:53:00 ot Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -89,7 +89,11 @@ sub simple_request
 #    } else {
 #       print "\n\nBummer! Request to ",$request->url," returned code ", $response->code,
 #          ": ", $response->message, "\n";
-#       # print $response->error_as_HTML;
+#       if (($response->code != 302) and ($response->code != 301)) { 
+#       # ignoring redirects, the agents will follow them for us
+#       print "Request to ",$request->url," returned: ", $response->status_line, "\n";
+#       
+#      }
 #    }
 #    return;
 #  }
@@ -144,7 +148,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.2.1';
   $REVISION    = sprintf('version %s (c) 1999-2005 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.22 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.23 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver, LWP::Parallel::RobotUA->_agent());
 
@@ -820,11 +824,13 @@ EOF
     push (@links_to_check, $u);
     # Check that a link is valid
   }
- # &check_validity($uri, @links_to_check,
- #                   ($depth != 0 && &in_recursion_scope($u)),
- #                   \%links, \%redirects);
+#  &check_validity($uri, \@links_to_check,
+#                    ($depth != 0 && &in_recursion_scope($u)),
+#                    \%links, \%redirects);
  # TODO fix recursion scope issue
- &check_validity($uri, @links_to_check);
+  &check_validity($uri, \@links_to_check,
+                    0,
+                    \%links, \%redirects);
  
  
   foreach my $u (keys %links) {
@@ -1126,14 +1132,14 @@ sub get_uri ($$;$\%$$$$)
   } # end foreach above
 }
 
-sub get_uris (%@;$\%$$$$)
+sub get_uris (\%\@;$\%$$$$)
 {
   # Here we have a lot of extra parameters in order not to lose information
   # if the function is called several times (401's)
-  my (%methods, @uris, $start, $redirects, $code, $realm, $message, $auth) = @_;
+  my ($methods, $uris, $start, $redirects, $code, $realm, $message, $auth) = @_;
 
-  # $method contains the method used
-  # $uri contains the target of the request
+  # $method contains a reference to the hash of methods used
+  # $uris contains the target of the request
   # $start is a timestamp (not defined the first time the function is
   #                        called)
   # $redirects is a map of redirects
@@ -1146,8 +1152,8 @@ sub get_uris (%@;$\%$$$$)
   $start = &get_timestamp() unless defined($start);
 
   # Prepare the queries
-  foreach my $uri (@uris) { 
-    my $method = $methods{$uri};
+  foreach my $uri (@$uris) { 
+    my $method = $$methods{$uri};
     my $request = new HTTP::Request($method, $uri);
     $request->header('Accept-Language' => $Opts{Accept_Language})
       if $Opts{Accept_Language};
@@ -1168,17 +1174,21 @@ sub get_uris (%@;$\%$$$$)
   
   # Do the query
   $ua->register($request);
-  print $request;
   }
-  
   my $entries = $ua->wait();
 
   my %responses;
-
+print "\n";
   foreach (keys %$entries) {
-  
-    my $response = $entries->{$_}->response;
-  my $uri = $response->request()->url();
+  my $uri;
+  my $response = $entries->{$_}->response;  
+  if (defined $response->request) {
+    $uri = $response->request->url();
+  }
+  else {
+  # try (for 401s or other cases, back to the previous)
+    $uri = $response->previous()->request()->url();
+  }
   # Get the results
   # Record the very first response
   if (! defined($code)) {
@@ -1201,7 +1211,7 @@ sub get_uris (%@;$\%$$$$)
       $response->headers->www_authenticate =~ /Basic realm=\"([^\"]+)\"/;
       $realm = $1;
     }
-    return &get_uri($methods{$uri}, $response->request()->url(),
+    return &get_uri(%{$methods->{$uri}}, $response->request()->url(),
                     $start, $redirects, $code, $realm, $message, 1);
   }
   # @@@ subtract robot delay from the "fetched in" time?
@@ -1477,9 +1487,9 @@ sub declaration
 # Check the validity of a link #
 ################################
 
-sub check_validity ($$$\%\%)
+sub check_validity ($\@$\%\%)
 {
-  my ($testing, @links_to_check, $want_links, $links, $redirects) = @_;
+  my ($testing, $links_to_check, $want_links, $links, $redirects) = @_;
   # $testing is the URI of the document checked
   # $uri is the URI of the target that we are verifying
   # $want_links is true if we're interested in links in the target doc
@@ -1489,7 +1499,7 @@ sub check_validity ($$$\%\%)
   my @links_checked_final;
   my %methods;
   my %being_processed;
-  foreach my $uri (@links_to_check) 
+  foreach my $uri (@$links_to_check) 
   {
     # Checking file: URI's is not allowed with a CGI
     if ($testing ne $uri) {
@@ -1521,9 +1531,13 @@ sub check_validity ($$$\%\%)
       $being_processed{$uri} = 1;
     }
   }
-  my %responses = &get_uris(%methods, @links_checked_final);
+
+  my %responses = &get_uris(\%methods, \@links_checked_final);
+
     
+
   foreach my $uri (keys %responses) {  
+  
     my $response = $responses{$uri};
     my $method = $methods{$uri};
     # Get the information back from get_uri()
