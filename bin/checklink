@@ -5,7 +5,7 @@
 # (c) 1999-2005 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.23 2005-08-31 09:53:00 ot Exp $
+# $Id: checklink,v 4.24 2005-10-25 00:36:04 ot Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -148,7 +148,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.2.1';
   $REVISION    = sprintf('version %s (c) 1999-2005 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.23 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.24 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver, LWP::Parallel::RobotUA->_agent());
 
@@ -1182,14 +1182,10 @@ print "\n";
   foreach (keys %$entries) {
   my $uri;
   my $response = $entries->{$_}->response;  
-  if (defined $response->request) {
-    $uri = $response->request->url();
-  }
-  else {
-  # try (for 401s or other cases, back to the previous)
-    $uri = $response->previous()->request()->url();
-  }
-  # Get the results
+  print $response->as_string;
+  next if ($response->code() == 403);
+  $uri = $response->request->url() || die "something went wrong with a request, exiting: $!";
+   # Get the results
   # Record the very first response
   if (! defined($code)) {
     ($code, $message) = delete(@$ua{qw(FirstResponse FirstMessage)});
@@ -1536,8 +1532,8 @@ sub check_validity ($\@$\%\%)
 
     
 
+    
   foreach my $uri (keys %responses) {  
-  
     my $response = $responses{$uri};
     my $method = $methods{$uri};
     # Get the information back from get_uri()
