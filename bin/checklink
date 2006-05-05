@@ -5,7 +5,7 @@
 # (c) 1999-2005 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.26 2006-05-05 19:39:20 ville Exp $
+# $Id: checklink,v 4.27 2006-05-05 19:40:38 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -123,7 +123,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.2.1';
   $REVISION    = sprintf('version %s (c) 1999-2005 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.26 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.27 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver, LWP::RobotUA->_agent());
 
@@ -804,7 +804,7 @@ EOF
       # List the broken fragments
       foreach my $fragment (keys %{$links{$u}{fragments}}) {
         if ($Opts{Verbose}) {
-          my @frags = sort keys %{$links{$u}{fragments}{$fragment}};
+          my @frags = sort {$a<=>$b} keys %{$links{$u}{fragments}{$fragment}};
           &hprintf("\t\t%s %s - Line%s: %s\n",
                    $fragment,
                    ($results{$u}{fragments}{$fragment}) ? 'OK' : 'Not found',
