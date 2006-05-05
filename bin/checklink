@@ -5,7 +5,7 @@
 # (c) 1999-2005 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.25 2006-05-05 19:31:57 ville Exp $
+# $Id: checklink,v 4.26 2006-05-05 19:39:20 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -61,7 +61,12 @@ sub new
 sub simple_request
 {
   my $self = shift;
-  my $response = $self->W3C::UserAgent::SUPER::simple_request(@_);
+  my $response = do {
+    local $SIG{__WARN__} = sub { # Suppress some warnings, rt.cpan.org #18902
+      warn($_[0]) if ($_[0] && $_[0] !~ /^RobotRules/);
+    };
+    $self->W3C::UserAgent::SUPER::simple_request(@_);
+  };
   if (! defined($self->{FirstResponse})) {
     $self->{FirstResponse} = $response->code();
     $self->{FirstMessage} = $response->message() || '(no message)';
@@ -118,7 +123,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.2.1';
   $REVISION    = sprintf('version %s (c) 1999-2005 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.25 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.26 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver, LWP::RobotUA->_agent());
 
