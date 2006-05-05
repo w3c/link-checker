@@ -5,7 +5,7 @@
 # (c) 1999-2005 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.24 2005-10-25 00:36:04 ot Exp $
+# $Id: checklink,v 4.25 2006-05-05 19:31:57 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -33,14 +33,10 @@ $ENV{PATH} = ''; # undef would output warnings with Perl 5.6.1's Cwd.pm.
 
 package W3C::UserAgent;
 
-#use LWP::RobotUA 1.19 qw();
-use Exporter();
-use LWP::Parallel::RobotUA qw(:CALLBACK);
+use LWP::RobotUA 1.19 qw();
 # @@@ Needs also W3C::LinkChecker but can't use() it here.
 
-@W3C::UserAgent::ISA = qw(LWP::Parallel::RobotUA Exporter);
-@W3C::UserAgent::EXPORT = @LWP::Parallel::RobotUA::EXPORT_OK;
-
+@W3C::UserAgent::ISA = qw(LWP::RobotUA);
 
 sub new
 {
@@ -72,32 +68,6 @@ sub simple_request
   }
   return $response;
 }
-
-
-  # on_return gets called whenever a connection (or its callback)
-  # returns EOF (or any other terminating status code available for
-  # callback functions). Please note that on_return gets called for
-  # any successfully terminated HTTP connection! This does not imply
-  # that the response sent from the server is a success! 
-  # see http://search.cpan.org/~marclang/ParallelUserAgent-2.57/lib/LWP/Parallel.pm
-#  sub on_return {
-#    my ($self, $request, $response, $entry) = @_;
-#    if ($response->is_success) {
-#       print "\n\nWoa! Request to ",$request->url," returned code ", $response->code,
-#          ": ", $response->message, "\n";
-#       print $response->content;
-#    } else {
-#       print "\n\nBummer! Request to ",$request->url," returned code ", $response->code,
-#          ": ", $response->message, "\n";
-#       if (($response->code != 302) and ($response->code != 301)) { 
-#       # ignoring redirects, the agents will follow them for us
-#       print "Request to ",$request->url," returned: ", $response->status_line, "\n";
-#       
-#      }
-#    }
-#    return;
-#  }
-
 
 sub redirect_ok
 {
@@ -148,9 +118,9 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.2.1';
   $REVISION    = sprintf('version %s (c) 1999-2005 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.24 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.25 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
-                         $PROGRAM, $VERSION, $cvsver, LWP::Parallel::RobotUA->_agent());
+                         $PROGRAM, $VERSION, $cvsver, LWP::RobotUA->_agent());
 
   # Pull in mod_perl modules if applicable.
   if ($ENV{MOD_PERL}) {
@@ -297,13 +267,6 @@ $ua->conn_cache({ total_capacity => 1}); # 1 keep-alive connection
 $ua->delay($Opts{Sleep_Time}/60);
 $ua->timeout($Opts{Timeout});
 $ua->proxy('http', 'http://' . $Opts{HTTP_Proxy}) if $Opts{HTTP_Proxy};
-
-#settings for the parallel crawling of resources
-# TODO make these configuration options
-$ua->max_req(3); # max num of requests to a given host at a time
-$ua->max_hosts(5); # max num of hosts polled in parallel
-
-
 
 if ($Opts{Command_Line}) {
 
@@ -809,7 +772,6 @@ EOF
 
   # Build the list of broken URI's
   my %broken;
-  my @links_to_check;
   foreach my $u (keys %links) {
 
     # Don't check mailto: URI's
@@ -821,19 +783,11 @@ EOF
     } else {
       &hprintf("Checking link %s\n", $u);
     }
-    push (@links_to_check, $u);
+
     # Check that a link is valid
-  }
-#  &check_validity($uri, \@links_to_check,
-#                    ($depth != 0 && &in_recursion_scope($u)),
-#                    \%links, \%redirects);
- # TODO fix recursion scope issue
-  &check_validity($uri, \@links_to_check,
-                    0,
+    &check_validity($uri, $u,
+                    ($depth != 0 && &in_recursion_scope($u)),
                     \%links, \%redirects);
- 
- 
-  foreach my $u (keys %links) {
     &hprintf("\tReturn code: %s\n", $results{$u}{location}{code})
       if ($Opts{Verbose});
     if ($results{$u}{location}{success}) {
@@ -1087,13 +1041,7 @@ sub get_uri ($$;$\%$$$$)
   return $response if $response;
 
   # Do the query
-  $ua->register($request);
-  my $entries = $ua->wait();
-
-  foreach (keys %$entries) {
-     $response = $entries->{$_}->response;
-
-   
+  $response = $ua->request($request);
 
   # Get the results
   # Record the very first response
@@ -1128,95 +1076,6 @@ sub get_uri ($$;$\%$$$$)
   $response->{Realm} = $realm if defined($realm);
 
   return $response;
-  
-  } # end foreach above
-}
-
-sub get_uris (\%\@;$\%$$$$)
-{
-  # Here we have a lot of extra parameters in order not to lose information
-  # if the function is called several times (401's)
-  my ($methods, $uris, $start, $redirects, $code, $realm, $message, $auth) = @_;
-
-  # $method contains a reference to the hash of methods used
-  # $uris contains the target of the request
-  # $start is a timestamp (not defined the first time the function is
-  #                        called)
-  # $redirects is a map of redirects
-  # $code is the first HTTP return code
-  # $realm is the realm of the request
-  # $message is the HTTP message received
-  # $auth equals 1 if we want to send out authentication information
-
-  # For timing purposes
-  $start = &get_timestamp() unless defined($start);
-
-  # Prepare the queries
-  foreach my $uri (@$uris) { 
-    my $method = $$methods{$uri};
-    my $request = new HTTP::Request($method, $uri);
-    $request->header('Accept-Language' => $Opts{Accept_Language})
-      if $Opts{Accept_Language};
-    $request->header('Accept', $Accept);
-    # Are we providing authentication info?
-    if ($auth && $request->url()->host() =~ $Opts{Trusted}) {
-      if (defined($ENV{HTTP_AUTHORIZATION})) {
-        $request->headers->header(Authorization => $ENV{HTTP_AUTHORIZATION});
-      } elsif (defined($Opts{User}) && defined($Opts{Password})) {
-        $request->authorization_basic($Opts{User}, $Opts{Password});
-      }
-    }
-
- 
-  # Check if the IP address is allowed.
-  my $response = &ip_allowed($request->uri());
-  next if $response;
-  
-  # Do the query
-  $ua->register($request);
-  }
-  my $entries = $ua->wait();
-
-  my %responses;
-print "\n";
-  foreach (keys %$entries) {
-  my $uri;
-  my $response = $entries->{$_}->response;  
-  print $response->as_string;
-  next if ($response->code() == 403);
-  $uri = $response->request->url() || die "something went wrong with a request, exiting: $!";
-   # Get the results
-  # Record the very first response
-  if (! defined($code)) {
-    ($code, $message) = delete(@$ua{qw(FirstResponse FirstMessage)});
-  }
-  # Authentication requested?
-  if ($response->code() == 401 &&
-      !defined($auth) &&
-      (defined($ENV{HTTP_AUTHORIZATION})
-       || (defined($Opts{User}) && defined($Opts{Password})))) {
-
-    # Set host as trusted domain unless we already have one.
-    if (!$Opts{Trusted}) {
-      my $re = sprintf('^%s$', quotemeta($response->base()->host()));
-      $Opts{Trusted} = qr/$re/io;
-    }
-
-    # Deal with authentication and avoid loops
-    if (! defined($realm)) {
-      $response->headers->www_authenticate =~ /Basic realm=\"([^\"]+)\"/;
-      $realm = $1;
-    }
-    return &get_uri(%{$methods->{$uri}}, $response->request()->url(),
-                    $start, $redirects, $code, $realm, $message, 1);
-  }
-  # @@@ subtract robot delay from the "fetched in" time?
-    $response->{Realm} = $realm if defined($realm);
-  
-  $responses{$response->request()->url()} = $response;
-  } # end foreach above
-  
-  return %responses;
 }
 
 #########################################
@@ -1483,73 +1342,53 @@ sub declaration
 # Check the validity of a link #
 ################################
 
-sub check_validity ($\@$\%\%)
+sub check_validity ($$$\%\%)
 {
-  my ($testing, $links_to_check, $want_links, $links, $redirects) = @_;
+  my ($testing, $uri, $want_links, $links, $redirects) = @_;
   # $testing is the URI of the document checked
   # $uri is the URI of the target that we are verifying
   # $want_links is true if we're interested in links in the target doc
   # $links is a hash of the links in the documents checked
   # $redirects is a map of the redirects encountered
 
-  my @links_checked_final;
-  my %methods;
-  my %being_processed;
-  foreach my $uri (@$links_to_check) 
-  {
-    # Checking file: URI's is not allowed with a CGI
-    if ($testing ne $uri) {
-      if (!$Opts{Command_Line} && $testing !~ m/^file:/ && $uri =~ m/^file:/) {
-        my $msg = 'Error: \'file:\' URI not allowed';
-        # Can't test? Return 400 Bad request.
-        $results{$uri}{location}{code}    = 400;
-        $results{$uri}{location}{record}  = 400;
-        $results{$uri}{location}{success} = 0;
-        $results{$uri}{location}{message} = $msg;
-        &hprintf("Error: %d %s\n", 400, $msg) if $Opts{Verbose};
-      }
-    else {
-        push @links_checked_final, $uri;
-      }
-    }
-  
-
-    # Get the document with the appropriate method
-    # Only use GET if there are fragments. HEAD is enough if it's not the
-    # case.
-    my @fragments = keys %{$links->{$uri}{fragments}};
-    my $method = scalar(@fragments) ? 'GET' : 'HEAD';
-    $methods{$uri}=$method;
-    my $response;
-    $being_processed{$uri} = 0;
-    if ((! defined($results{$uri}))
-        || (($method eq 'GET') && ($results{$uri}{method} eq 'HEAD'))) {
-      $being_processed{$uri} = 1;
+  # Checking file: URI's is not allowed with a CGI
+  if ($testing ne $uri) {
+    if (!$Opts{Command_Line} && $testing !~ m/^file:/ && $uri =~ m/^file:/) {
+      my $msg = 'Error: \'file:\' URI not allowed';
+      # Can't test? Return 400 Bad request.
+      $results{$uri}{location}{code}    = 400;
+      $results{$uri}{location}{record}  = 400;
+      $results{$uri}{location}{success} = 0;
+      $results{$uri}{location}{message} = $msg;
+      &hprintf("Error: %d %s\n", 400, $msg) if $Opts{Verbose};
+      return;
     }
   }
 
-  my %responses = &get_uris(\%methods, \@links_checked_final);
+  # Get the document with the appropriate method
+  # Only use GET if there are fragments. HEAD is enough if it's not the
+  # case.
+  my @fragments = keys %{$links->{$uri}{fragments}};
+  my $method = scalar(@fragments) ? 'GET' : 'HEAD';
 
-    
-
-    
-  foreach my $uri (keys %responses) {  
-    my $response = $responses{$uri};
-    my $method = $methods{$uri};
+  my $response;
+  my $being_processed = 0;
+  if ((! defined($results{$uri}))
+      || (($method eq 'GET') && ($results{$uri}{method} eq 'HEAD'))) {
+    $being_processed = 1;
+    $response = &get_uri($method, $uri);
     # Get the information back from get_uri()
     &record_results($uri, $method, $response);
     # Record the redirects
-    # FIXME where were these set?!
-    #&record_redirects($redirects, $response);
-  
+    &record_redirects($redirects, $response);
+  }
 
-  
   # We got the response of the HTTP request. Stop here if it was a HEAD.
-  next if ($method eq 'HEAD');
+  return if ($method eq 'HEAD');
 
   # There are fragments. Parse the document.
   my $p;
-  if ($being_processed{$uri}) {
+  if ($being_processed) {
     # Can we really parse the document?
     return unless defined($results{$uri}{location}{type});
     if ($results{$uri}{location}{type} !~ $ContentTypes) {
@@ -1573,7 +1412,6 @@ sub check_validity ($\@$\%\%)
     } else {
       $results{$uri}{fragments}{$fragment} = 0;
     }
-  }
   }
 }
 
