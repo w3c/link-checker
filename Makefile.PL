@@ -23,7 +23,7 @@ WriteMakefile(
   PREREQ_PM     => {
                      CGI             => 0,
                      Config::General => 2.06,
-                     HTML::Parser    => 3.00,
+                     HTML::Parser    => 3.20,
                      LWP             => 5.66,
                      Net::IP         => 0, # Optional, see the docs.
                      Term::ReadKey   => 2.00,
