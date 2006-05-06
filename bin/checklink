@@ -5,7 +5,7 @@
 # (c) 1999-2005 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.28 2006-05-06 18:19:49 ville Exp $
+# $Id: checklink,v 4.29 2006-05-06 18:24:10 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -102,7 +102,7 @@ use vars qw($AGENT $PACKAGE $PROGRAM $VERSION $REVISION
             $DocType $Head $Accept $ContentTypes %Cfg);
 
 use HTML::Entities       qw();
-use HTML::Parser    3.00 qw();
+use HTML::Parser    3.20 qw(); # >= 3.20 for "line" argspec identifier
 use HTTP::Request        qw();
 use HTTP::Response       qw();
 use Time::HiRes          qw();
@@ -123,7 +123,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.2.1';
   $REVISION    = sprintf('version %s (c) 1999-2005 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.28 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.29 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver, LWP::RobotUA->_agent());
 
@@ -1196,17 +1196,15 @@ sub new
   my $p = HTML::Parser::new(@_, api_version => 3);
 
   # Start tags
-  $p->handler(start => 'start', 'self, tagname, attr, text');
+  $p->handler(start => 'start', 'self, tagname, attr, text, line');
   # Declarations
   $p->handler(declaration =>
               sub {
                 my $self = shift;
                 $self->declaration(substr($_[0], 2, -1));
-              }, 'self, text');
+              }, 'self, text, line');
   # Other stuff
-  $p->handler(default => 'text', 'self, text');
-  # Line count
-  $p->{Line} = 1;
+  $p->handler(default => 'parse_progress', 'self, line') if $Opts{Progress};
   # Check <a [..] name="...">?
   $p->{check_name} = 1;
   # Check <[..] id="..">?
@@ -1242,16 +1240,14 @@ sub doctype
   $self->xml_mode(1) if (m%^-//W3C//DTD XHTML %);
 }
 
-#######################################
-# Count the number of lines in a file #
-#######################################
+###################################
+# Print parse progress indication #
+###################################
 
-sub new_line
+sub parse_progress
 {
-  my ($self, $string) = @_;
-  my $count = ($string =~ tr/\n//);
-  $self->{Line} = $self->{Line} + $count;
-  printf("\r%4d%%", int($self->{Line}/$self->{Total}*100)) if $Opts{Progress};
+  my ($self, $line) = @_;
+  printf("\r%4d%%", int($line/$self->{Total}*100));
 }
 
 #############################
@@ -1280,17 +1276,17 @@ sub get_anchor
 
 sub add_link
 {
-  my ($self, $uri) = @_;
-  $self->{Links}{$uri}{$self->{Line}}++ if defined($uri);
+  my ($self, $uri, $line) = @_;
+  $self->{Links}{$uri}{$line}++ if defined($uri);
 }
 
 sub start
 {
-  my ($self, $tag, $attr, $text) = @_;
+  my ($self, $tag, $attr, $text, $line) = @_;
 
   # Anchors
   my $anchor = $self->get_anchor($tag, $attr);
-  $self->{Anchors}{$anchor}{$self->{Line}}++ if defined($anchor);
+  $self->{Anchors}{$anchor}{$line}++ if defined($anchor);
 
   # Links
   if (!$self->{only_anchors}) {
@@ -1302,31 +1298,19 @@ sub start
         $self->{base} = $attr->{href};
       }
     } else {
-      $self->add_link($attr->{href});
+      $self->add_link($attr->{href}, $line);
     }
-    $self->add_link($attr->{src});
-    $self->add_link($attr->{data}) if ($tag eq 'object');
-    $self->add_link($attr->{cite}) if ($tag eq 'blockquote');
+    $self->add_link($attr->{src}, $line);
+    $self->add_link($attr->{data}, $line) if ($tag eq 'object');
+    $self->add_link($attr->{cite}, $line) if ($tag eq 'blockquote');
   }
 
-  # Line counting
-  $self->new_line($text) if ($text =~ m/\n/);
-}
-
-sub text
-{
-  my ($self, $text) = @_;
-  if (!$Opts{Progress}) {
-    # If we are just extracting information about anchors,
-    # parsing this part is only cosmetic (progress indicator)
-    return unless !$self->{only_anchors};
-  }
-  $self->new_line($text) if ($text =~ /\n/);
+  $self->parse_progress($line) if $Opts{Progress};
 }
 
 sub declaration
 {
-  my ($self, $text) = @_;
+  my ($self, $text, $line) = @_;
   # Extract the doctype
   my @declaration = split(/\s+/, $text, 4);
   if (($#declaration >= 3) &&
@@ -1337,7 +1321,7 @@ sub declaration
     # Store the doctype
     $self->doctype($1) if $1;
     # If there is a link to the DTD, record it
-    $self->{Links}{$3}{$self->{Line}}++ if (!$self->{only_anchors} && $3);
+    $self->{Links}{$3}{$line}++ if (!$self->{only_anchors} && $3);
   }
   return unless !$self->{only_anchors};
   $self->text($text);
