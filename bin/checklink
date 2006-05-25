@@ -5,7 +5,7 @@
 # (c) 1999-2005 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.30 2006-05-25 07:59:58 ville Exp $
+# $Id: checklink,v 4.31 2006-05-25 08:50:50 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -123,7 +123,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.2.1';
   $REVISION    = sprintf('version %s (c) 1999-2005 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.30 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.31 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver, LWP::RobotUA->_agent());
 
@@ -1194,6 +1194,7 @@ sub parse_document ($$$$$)
 sub new
 {
   my $p = HTML::Parser::new(@_, api_version => 3);
+  eval { local $SIG{__DIE__}; $p->utf8_mode(1); };
 
   # Start tags
   $p->handler(start => 'start', 'self, tagname, attr, text, line');
