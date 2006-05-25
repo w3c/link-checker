@@ -5,7 +5,7 @@
 # (c) 1999-2005 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.31 2006-05-25 08:50:50 ville Exp $
+# $Id: checklink,v 4.32 2006-05-25 14:07:52 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -114,6 +114,8 @@ use URI::file            qw();
 use constant RC_ROBOTS_TXT => -1;
 use constant RC_DNS_ERROR  => -2;
 
+use constant LINE_UNKNOWN  => -1;
+
 @W3C::LinkChecker::ISA =  qw(HTML::Parser);
 
 BEGIN
@@ -123,7 +125,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.2.1';
   $REVISION    = sprintf('version %s (c) 1999-2005 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.31 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.32 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver, LWP::RobotUA->_agent());
 
@@ -1285,7 +1287,7 @@ sub add_link
 sub start
 {
   my ($self, $tag, $attr, $text, $line) = @_;
-  $line = -1 unless defined($line);
+  $line = LINE_UNKNOWN() unless defined($line);
 
   # Anchors
   my $anchor = $self->get_anchor($tag, $attr);
@@ -1314,7 +1316,7 @@ sub start
 sub declaration
 {
   my ($self, $text, $line) = @_;
-  $line = -1 unless defined($line);
+  $line = LINE_UNKNOWN() unless defined($line);
 
   # Extract the doctype
   my @declaration = split(/\s+/, $text, 4);
@@ -1537,6 +1539,20 @@ sub sort_unique (@)
 # Print the results #
 #####################
 
+sub line_number ($)
+{
+  my $line = shift;
+  return $line if ($line >= 0);
+  return "(N/A)";
+}
+
+sub http_rc ($)
+{
+  my $rc = shift;
+  return $rc if ($rc >= 0);
+  return "(N/A)";
+}
+
 sub anchors_summary (\%\%)
 {
   my ($anchors, $errors) = @_;
@@ -1578,7 +1594,7 @@ EOF
 
   foreach my $anchor (@errors) {
     my $format;
-    my @unique = &sort_unique(map { $_ < 0 ? "(N/A)" : $_ }
+    my @unique = &sort_unique(map { line_number($_) }
                               keys %{$anchors->{$anchor}});
     if ($Opts{HTML}) {
       $format = "<tr class=\"broken\"><td>%s</td><td>%s</td></tr>\n";
@@ -1613,7 +1629,7 @@ sub show_link_report (\%\%\%\%\@;$\%)
       push (@total_lines, $l);
     }
     foreach my $f (keys %{$links->{$u}{fragments}}) {
-      next if ($f eq $u && defined($links->{$u}{$u}{-1}));
+      next if ($f eq $u && defined($links->{$u}{$u}{LINE_UNKNOWN()}));
       foreach my $l (keys %{$links->{$u}{fragments}{$f}}) {
         push (@total_lines, $l);
       }
@@ -1663,14 +1679,14 @@ on how to solve this</a>.';
       $whattodo = 'Add a trailing slash to the URL.';
     }
 
-    my @unique = &sort_unique(map { $_ < 0 ? "(N/A)" : $_ } @total_lines);
+    my @unique = &sort_unique(map { line_number($_) } @total_lines);
     my $lines_list = join(', ', @unique);
     my $s = (scalar(@unique) > 1) ? 's' : '';
     undef @unique;
 
     my @http_codes = ($currloc->{code});
     unshift(@http_codes, $currloc->{orig}) if $currloc->{orig};
-    @http_codes = map { $_ < 0 ? '(N/A)' : $_ } @http_codes;
+    @http_codes = map { http_rc($_) } @http_codes;
 
     if ($Opts{HTML}) {
       # Style stuff
@@ -1944,7 +1960,7 @@ EOF
       foreach my $code (sort(keys(%code_summary))) {
         printf('<tr%s>', &bgcolor($code));
         printf('<td><a href="#d%scode_%s">%s</a></td>',
-               $doc_count, $code, $code < 0 ? '(N/A)' : $code);
+               $doc_count, $code, http_rc($code));
         printf('<td>%s</td>', $code_summary{$code});
         printf('<td>%s</td>', $todo{$code});
         print "</tr>\n";
