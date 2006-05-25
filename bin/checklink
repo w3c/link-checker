@@ -5,7 +5,7 @@
 # (c) 1999-2005 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.29 2006-05-06 18:24:10 ville Exp $
+# $Id: checklink,v 4.30 2006-05-25 07:59:58 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -123,7 +123,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.2.1';
   $REVISION    = sprintf('version %s (c) 1999-2005 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.29 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.30 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver, LWP::RobotUA->_agent());
 
@@ -1247,7 +1247,8 @@ sub doctype
 sub parse_progress
 {
   my ($self, $line) = @_;
-  printf("\r%4d%%", int($line/$self->{Total}*100));
+  printf("\r%4d%%", int($line/$self->{Total}*100))
+    if (defined($line) && $line >= 0);
 }
 
 #############################
@@ -1283,6 +1284,7 @@ sub add_link
 sub start
 {
   my ($self, $tag, $attr, $text, $line) = @_;
+  $line = -1 unless defined($line);
 
   # Anchors
   my $anchor = $self->get_anchor($tag, $attr);
@@ -1311,6 +1313,8 @@ sub start
 sub declaration
 {
   my ($self, $text, $line) = @_;
+  $line = -1 unless defined($line);
+
   # Extract the doctype
   my @declaration = split(/\s+/, $text, 4);
   if (($#declaration >= 3) &&
@@ -1573,7 +1577,8 @@ EOF
 
   foreach my $anchor (@errors) {
     my $format;
-    my @unique = &sort_unique(keys %{$anchors->{$anchor}});
+    my @unique = &sort_unique(map { $_ < 0 ? "(N/A)" : $_ }
+                              keys %{$anchors->{$anchor}});
     if ($Opts{HTML}) {
       $format = "<tr class=\"broken\"><td>%s</td><td>%s</td></tr>\n";
     } else {
@@ -1657,7 +1662,7 @@ on how to solve this</a>.';
       $whattodo = 'Add a trailing slash to the URL.';
     }
 
-    my @unique = &sort_unique(@total_lines);
+    my @unique = &sort_unique(map { $_ < 0 ? "(N/A)" : $_ } @total_lines);
     my $lines_list = join(', ', @unique);
     my $s = (scalar(@unique) > 1) ? 's' : '';
     undef @unique;
