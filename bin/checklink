@@ -5,7 +5,7 @@
 # (c) 1999-2006 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.33 2006-05-25 14:11:02 ville Exp $
+# $Id: checklink,v 4.34 2006-05-25 15:13:22 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -125,7 +125,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.2.1';
   $REVISION    = sprintf('version %s (c) 1999-2006 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.33 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.34 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver, LWP::RobotUA->_agent());
 
@@ -1324,7 +1324,7 @@ sub declaration
       ($declaration[0] eq 'DOCTYPE') &&
       (lc($declaration[1]) eq 'html')) {
     # Parse the doctype declaration
-    $text =~ m/^DOCTYPE\s+html\s+PUBLIC\s+\"([^\"]*)\"(\s+\"([^\"]*)\")?\s*$/i;
+    $text =~ m/^DOCTYPE\s+html\s+(?:PUBLIC\s+"([^"]+)"|SYSTEM)(\s+"([^"]+)")?\s*$/i;
     # Store the doctype
     $self->doctype($1) if $1;
     # If there is a link to the DTD, record it
