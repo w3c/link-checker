@@ -5,7 +5,7 @@
 # (c) 1999-2006 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.35 2006-06-15 17:53:14 ville Exp $
+# $Id: checklink,v 4.36 2006-06-15 17:57:27 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -116,6 +116,9 @@ use constant RC_DNS_ERROR  => -2;
 
 use constant LINE_UNKNOWN  => -1;
 
+use constant MP2 =>
+  (exists($ENV{MOD_PERL_API_VERSION}) && $ENV{MOD_PERL_API_VERSION} >= 2);
+
 @W3C::LinkChecker::ISA =  qw(HTML::Parser);
 
 BEGIN
@@ -125,15 +128,15 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.2.1';
   $REVISION    = sprintf('version %s (c) 1999-2006 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.35 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.36 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver, LWP::RobotUA->_agent());
 
   # Pull in mod_perl modules if applicable.
-  if ($ENV{MOD_PERL}) {
-    eval "require Apache2::compat"; # For mod_perl 2
-    require Apache;
-  }
+  eval {
+    local $SIG{__DIE__};
+    require Apache2::RequestUtil;
+  } if MP2();
 
   my @content_types = qw(application/xhtml+xml text/html);
   $Accept = join(', ', @content_types) . ', */*;q=0.5';
@@ -388,10 +391,11 @@ if ($Opts{Command_Line}) {
 
   # All Apache configurations don't set HTTP_AUTHORIZATION for CGI scripts.
   # If we're under mod_perl, there is a way around it...
-  if ($ENV{MOD_PERL}) {
-    my $auth = Apache->request()->header_in('Authorization');
-    $ENV{HTTP_AUTHORIZATION} ||= $auth if $auth;
-  }
+  eval {
+    local $SIG{__DIE__};
+    my $auth = Apache2::RequestUtil->request()->headers_in()->{Authorization};
+    $ENV{HTTP_AUTHORIZATION} = $auth if $auth;
+  } if (MP2() && !$ENV{HTTP_AUTHORIZATION});
 
   $uri =~ s/^\s+//g;
   if ($uri =~ m/^file:/) {
