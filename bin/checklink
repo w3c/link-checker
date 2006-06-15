@@ -5,7 +5,7 @@
 # (c) 1999-2006 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.34 2006-05-25 15:13:22 ville Exp $
+# $Id: checklink,v 4.35 2006-06-15 17:53:14 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -125,7 +125,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.2.1';
   $REVISION    = sprintf('version %s (c) 1999-2006 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.34 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.35 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver, LWP::RobotUA->_agent());
 
@@ -215,7 +215,7 @@ my %Opts =
     Max_Documents     => 150,  # For the online version.
     User              => undef,
     Password          => undef,
-    Base_Location     => '.',
+    Base_Locations    => [],
     Exclude_Docs      => undef,
     Masquerade        => 0,
     Masquerade_From   => '',
@@ -423,6 +423,7 @@ sub parse_arguments ()
   Getopt::Long->import('GetOptions');
   Getopt::Long::Configure('bundling', 'no_ignore_case');
   my $masq = '';
+  my @locs = ();
 
   GetOptions('help|h|?'        => sub { usage(0) },
              'q|quiet'         => sub { $Opts{Quiet} = 1;
@@ -438,7 +439,7 @@ sub parse_arguments ()
              'H|html'          => \$Opts{HTML},
              'r|recursive'     => sub { $Opts{Depth} = -1
                                           if $Opts{Depth} == 0; },
-             'l|location=s'    => \$Opts{Base_Location},
+             'l|location=s'    => \@locs,
              'exclude-docs=s', => \$Opts{Exclude_Docs},
              'u|user=s'        => \$Opts{User},
              'p|password=s'    => \$Opts{Password},
@@ -486,6 +487,10 @@ sub parse_arguments ()
     warn("*** Warning: minimum allowed sleep time is 1 second, resetting.\n");
     $Opts{Sleep_Time} = 1;
   }
+
+  push(@{$Opts{Base_Locations}}, map { URI->new($_)->canonical() } @locs);
+
+  $Opts{Depth} = -1 if ($Opts{Depth} == 0 && @locs);
 }
 
 sub version ()
@@ -516,10 +521,11 @@ Options:
  -r, --recursive            Check the documents linked from the first one.
  -D, --depth N              Check the documents linked from the first one to
                             depth N (implies --recursive).
- -l, --location URI         Scope of the documents checked in recursive mode.
-                            By default, for example for
+ -l, --location URI         Scope of the documents checked in recursive mode
+                            (implies --recursive).  Can be specified multiple
+                            times.  If not specified, the default eg. for
                             http://www.w3.org/TR/html4/Overview.html
-                            it would be http://www.w3.org/TR/html4/
+                            would be http://www.w3.org/TR/html4/
  --exclude-docs REGEXP      In recursive mode, do not check links in documents
                             whose URIs match REGEXP.
  -L, --languages LANGS      Accept-Language header to send.  The special value
@@ -642,9 +648,8 @@ sub check_uri ($$$;$)
 
   if ($first) {
     # Use the first URI as the recursion base unless specified otherwise.
-    $Opts{Base_Location} = ($Opts{Base_Location} eq '.')
-      ? $response->{absolute_uri}->canonical() :
-        URI->new($Opts{Base_Location})->canonical();
+    push(@{$Opts{Base_Locations}}, $response->{absolute_uri}->canonical())
+      unless @{$Opts{Base_Locations}};
   } else {
     # Before fetching the document, we don't know if we'll be within the
     # recursion scope or not (think redirects).
@@ -964,14 +969,19 @@ sub in_recursion_scope ($)
   my ($uri) = @_;
   return undef unless $uri;
 
-  my $current = URI->new($uri)->canonical();
-  my $rel = $current->rel($Opts{Base_Location}); # base -> current!
+  my $candidate = URI->new($uri)->canonical();
 
-  return undef if ($current eq $rel);     # Relative path not possible?
-  return undef if ($rel =~ m|^(\.\.)?/|); # Relative path starts with ../ or /?
-  return undef if (defined($Opts{Exclude_Docs}) &&
-                   $current =~ $Opts{Exclude_Docs});
-  return 1;
+  return undef
+    if (defined($Opts{Exclude_Docs}) && $candidate =~ $Opts{Exclude_Docs});
+
+  foreach my $base (@{$Opts{Base_Locations}}) {
+    my $rel = $candidate->rel($base);
+    next if ($candidate eq $rel);   # Relative path not possible?
+    next if ($rel =~ m|^(\.\.)?/|); # Relative path upwards?
+    return 1;
+  }
+
+  return undef; # We always have at least one base location.
 }
 
 ##################################################
