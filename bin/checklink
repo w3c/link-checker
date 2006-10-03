@@ -5,7 +5,7 @@
 # (c) 1999-2006 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.36 2006-06-15 17:57:27 ville Exp $
+# $Id: checklink,v 4.37 2006-10-03 19:00:57 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -128,7 +128,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.2.1';
   $REVISION    = sprintf('version %s (c) 1999-2006 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.36 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.37 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver, LWP::RobotUA->_agent());
 
@@ -675,7 +675,8 @@ sub check_uri ($$$;$)
   my $result_anchor = 'results'.$doc_count;
 
   printf("\nProcessing\t%s\n\n",
-         $Opts{HTML} ? &show_url($absolute_uri) : $absolute_uri);
+         $Opts{HTML} ? &show_url($absolute_uri) : $absolute_uri)
+    unless $Opts{Quiet};
 
   if ($Opts{HTML}) {
     print("</h2>\n");
@@ -717,11 +718,11 @@ Settings used:
 EOF
   }
 
-  if ($Opts{Summary_Only}) {
-    if ($Opts{HTML}) { print '<p>'}
+  if ($Opts{Summary_Only} && !$Opts{Quiet}) {
+    print '<p>' if $Opts{HTML};
     print 'This may take some time';
-    if ($Opts{HTML}) { print '... (<a href="'.$Cfg{Doc_URI}.'#wait">why?</a>)</p>'}
-    else { print " if the document has many links to check.\n"}
+    print "... (<a href=\"$Cfg{Doc_URI}#wait\">why?</a>)</p>" if $Opts{HTML};
+    print " if the document has many links to check.\n" unless $Opts{HTML};
   }
   # Record that we have processed this resource
   $processed{$absolute_uri} = 1;
