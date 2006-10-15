@@ -5,7 +5,7 @@
 # (c) 1999-2006 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.37 2006-10-03 19:00:57 ville Exp $
+# $Id: checklink,v 4.38 2006-10-15 16:28:05 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -128,7 +128,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.2.1';
   $REVISION    = sprintf('version %s (c) 1999-2006 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.37 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.38 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver, LWP::RobotUA->_agent());
 
@@ -674,6 +674,18 @@ sub check_uri ($$$;$)
 
   my $result_anchor = 'results'.$doc_count;
 
+  if ($first && !$Opts{HTML} && !$Opts{Summary_Only}) {
+    my $s = $Opts{Sleep_Time} == 1 ? '' : 's';
+    my $acclang = $Opts{Accept_Language} || '(not sent)';
+    printf(<<'EOF', $Accept, $acclang, $Opts{Sleep_Time}, $s);
+
+Settings used:
+- Accept: %s
+- Accept-Language: %s
+- Sleeping %d second%s between requests to each server
+EOF
+  }
+
   printf("\nProcessing\t%s\n\n",
          $Opts{HTML} ? &show_url($absolute_uri) : $absolute_uri)
     unless $Opts{Quiet};
@@ -706,16 +718,6 @@ EOF
              &encode($Opts{_Self_URI}));
       print("<pre>\n");
     }
-  } elsif (! $Opts{Summary_Only}) {
-    my $s = $Opts{Sleep_Time} == 1 ? '' : 's';
-    my $acclang = $Opts{Accept_Language} || '(not sent)';
-    printf(<<'EOF', $Accept, $acclang, $Opts{Sleep_Time}, $s);
-Settings used:
-- Accept: %s
-- Accept-Language: %s
-- Sleeping %d second%s between requests to each server
-
-EOF
   }
 
   if ($Opts{Summary_Only} && !$Opts{Quiet}) {
