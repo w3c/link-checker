@@ -5,7 +5,7 @@
 # (c) 1999-2006 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.38 2006-10-15 16:28:05 ville Exp $
+# $Id: checklink,v 4.39 2006-10-15 16:33:32 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -128,7 +128,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.2.1';
   $REVISION    = sprintf('version %s (c) 1999-2006 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.38 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.39 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver, LWP::RobotUA->_agent());
 
@@ -289,7 +289,8 @@ if ($Opts{Command_Line}) {
 
   &ask_password() if ($Opts{User} && !$Opts{Password});
 
-  my $first = 1;
+  my $is_first = 1;
+  my @bases = @{$Opts{Base_Locations}};
   foreach my $uri (@ARGV) {
     if (!$Opts{Summary_Only}) {
       printf("%s %s\n", $PACKAGE, $REVISION) unless $Opts{HTML};
@@ -297,12 +298,15 @@ if ($Opts{Command_Line}) {
       $Opts{Verbose} = 0;
       $Opts{Progress} = 0;
     }
+    # Reset base locations so that previous URI's given on the command line
+    # won't affect the recursion scope for this URI
+    @{$Opts{Base_Locations}} = @bases;
     # Transform the parameter into a URI
     $uri = &urize($uri);
-    &check_uri($uri, $first, $Opts{Depth});
-    $first &&= 0;
+    &check_uri($uri, $is_first, $Opts{Depth}, undef, 1);
+    $is_first &&= 0;
   }
-  undef $first;
+  undef $is_first;
 
   if ($Opts{HTML}) {
     &html_footer();
@@ -637,10 +641,11 @@ sub urize ($)
 # Check for broken links in a resource #
 ########################################
 
-sub check_uri ($$$;$)
+sub check_uri ($$$;$$)
 {
 
-  my ($uri, $first, $depth, $cookie) = @_;
+  my ($uri, $is_first, $depth, $cookie, $is_start) = @_;
+  $is_start ||= $is_first;
 
   my $start = &get_timestamp() unless $Opts{Quiet};
 
@@ -650,7 +655,7 @@ sub check_uri ($$$;$)
   # Can we check the resource? If not, we exit here...
   return -1 if defined($response->{Stop});
 
-  if ($first) {
+  if ($is_start) { # Starting point of a new check, eg. from the command line
     # Use the first URI as the recursion base unless specified otherwise.
     push(@{$Opts{Base_Locations}}, $response->{absolute_uri}->canonical())
       unless @{$Opts{Base_Locations}};
@@ -666,7 +671,7 @@ sub check_uri ($$$;$)
   $doc_count++;
 
   if ($Opts{HTML}) {
-    &html_header($uri, 0, $cookie) if $first;
+    &html_header($uri, 0, $cookie) if $is_first;
     print('<h2>');
   }
 
@@ -674,7 +679,7 @@ sub check_uri ($$$;$)
 
   my $result_anchor = 'results'.$doc_count;
 
-  if ($first && !$Opts{HTML} && !$Opts{Summary_Only}) {
+  if ($is_first && !$Opts{HTML} && !$Opts{Summary_Only}) {
     my $s = $Opts{Sleep_Time} == 1 ? '' : 's';
     my $acclang = $Opts{Accept_Language} || '(not sent)';
     printf(<<'EOF', $Accept, $acclang, $Opts{Sleep_Time}, $s);
