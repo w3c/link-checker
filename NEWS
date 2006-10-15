@@ -1,3 +1,12 @@
+This document contains information about high level changes between
+Link Checker releases, see ChangeLog for a detailed list of changes.
+
+Version x.x
+- Various minor improvements to result output, both in text and HTML modes.
+- Fix --quiet and checking multiple documents to match documentation.
+- Eliminate various warnings (emitted by code, not from results).
+- Documentation improvements.
+
 Version 4.2.1
 - Include documentation of the reorganized access keys.
 
