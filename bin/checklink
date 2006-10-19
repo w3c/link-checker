@@ -5,7 +5,7 @@
 # (c) 1999-2006 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.40 2006-10-15 18:25:50 ville Exp $
+# $Id: checklink,v 4.41 2006-10-19 21:14:40 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -128,7 +128,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.2.1';
   $REVISION    = sprintf('version %s (c) 1999-2006 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.40 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.41 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver, LWP::RobotUA->_agent());
 
@@ -404,6 +404,7 @@ if ($Opts{Command_Line}) {
   $uri =~ s/^\s+//g;
   if ($uri =~ m/^file:/) {
     # Only the http scheme is allowed
+    # TODO: bug 29
     &file_uri($uri);
   } elsif ($uri !~ m/:/) {
     if ($uri =~ m|^//|) {
@@ -799,6 +800,7 @@ EOF
   foreach my $u (keys %links) {
 
     # Don't check mailto: URI's
+    # TODO: bug 29
     next if ($u =~ m/^mailto:/);
 
     if ($Opts{Summary_Only}) {
@@ -1370,6 +1372,7 @@ sub check_validity ($$$\%\%)
   # $redirects is a map of the redirects encountered
 
   # Checking file: URI's is not allowed with a CGI
+  # TODO: bug 29
   if ($testing ne $uri) {
     if (!$Opts{Command_Line} && $testing !~ m/^file:/ && $uri =~ m/^file:/) {
       my $msg = 'Error: \'file:\' URI not allowed';
