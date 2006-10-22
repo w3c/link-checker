@@ -1,5 +1,5 @@
 This file contains message digests of all files listed in MANIFEST,
-signed via the Module::Signature module, version 0.44.
+signed via the Module::Signature module, version 0.55.
 
 To verify the content in this distribution, first make sure you have
 Module::Signature installed, then type:
@@ -14,26 +14,26 @@ not run its Makefile.PL or Build.PL.
 -----BEGIN PGP SIGNED MESSAGE-----
 Hash: SHA1
 
-SHA1 333ccbe55e09c3375e0ec3081966f471d73282c3 ChangeLog
+SHA1 2c5134f49f7eb5d51acfcdc3730e45165fac3db5 ChangeLog
 SHA1 bcb07f9feaa907ee1f23e760591f8d6151acc2d8 ChangeLog.old
 SHA1 c5388018966a549ca86da9f8de0b6939d6130f30 MANIFEST
-SHA1 fa0315b268d1585fc741027d61aed7189ea068d1 META.yml
-SHA1 d6002c7c4347c553a9006f5256b7905ec37a7398 Makefile.PL
-SHA1 f7ca4705053d9ac87c129ebca0286ab520c81654 NEWS
-SHA1 31356e6e9096412951a6dd3010db4891bf12852c README
-SHA1 dde6dc9d3f9196c0a3c5bcfea64989763cdedf05 bin/checklink
-SHA1 1c6aa1008e89b65c1845fa6542f6a3e631934ac9 bin/checklink.pod
-SHA1 86184219c1d0ff8429109068d0b4cf9cdb2158bf docs/checklink.html
-SHA1 5e1ac28462d49c95bbec26317d51c93198320816 docs/linkchecker.css
+SHA1 d86dc62e05b37e588ad4ac1774502cb9faf2fb27 META.yml
+SHA1 59b049b306e1f6f6fccc5c3781059d716ca40b20 Makefile.PL
+SHA1 e9872de4696f50b900a47b43f691ecf658aa6614 NEWS
+SHA1 3ea1bc3499ab4ac150d3f7ba3bdd36568d19ad87 README
+SHA1 6c999178efacbb21eaa2c7a5dd8b03ad811c13cc bin/checklink
+SHA1 f03a48c6e3899b3a4e4a0d803f9b0e859e531938 bin/checklink.pod
+SHA1 1937cbce7eefd686b852154ab014a6c095963894 docs/checklink.html
+SHA1 3c2c87dbb123390513c039b24bbf67ab6b475a45 docs/linkchecker.css
 SHA1 a1cc961571daf700c9290860ae9c439d1b462162 docs/qa-small.png
 SHA1 54dfdab40c6dcaddb41915cf4253fb0e7cfa6d26 docs/valid-xhtml10.png
 SHA1 4e8a17dce3368969e174359f430c23d1da2adeae docs/w3c_home.png
 SHA1 5236c48740127421fb2afd7d1ff35aadbb01f46f etc/checklink.conf
 SHA1 f024acb384e9cdf15f40aee69ebdcf313124a41e t/00compile.t
 -----BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.6 (GNU/Linux)
+Version: GnuPG v1.4.5 (GNU/Linux)
 
-iD8DBQFCh1Nm2YzWNbzSQcsRAkFpAJ9dRXL9U6lCCZZhuH+EL3xbHOvS1QCfb8SA
-bDNEvoC4PUujLokO9XOlm84=
-=bK+B
+iD8DBQFFO6D/2YzWNbzSQcsRAqhGAJ9VcQempM3TyhoMzTz4xT4PyJdZ7ACeL8kY
+ibxnp4CbXNcBVfZBR0DlBTg=
+=DBQX
 -----END PGP SIGNATURE-----

@@ -1,3 +1,127 @@
+2006-10-22  ville
+
+	* bin/checklink: 4.3.
+
+2006-10-19  ville
+
+	* bin/checklink: Add some TODOs for #29.
+
+2006-10-15  ville
+
+	* bin/checklink, docs/linkchecker.css: Avoid multiple "settings"
+	IDs in HTML output.
+
+2006-10-15  ville
+
+	* bin/checklink: Don't let earlier URIs on the command line
+	implicitly limit recursion scope of subsequent ones (Debian
+	#277969).
+
+2006-10-15  ville
+
+	* bin/checklink: Print used settings only once and at start in
+	command line output.
+
+2006-10-03  ville
+
+	* bin/checklink: Make --quiet more quiet (Brian St. Pierre, Debian
+	#390788, rt.cpan.org #15053).
+
+2006-09-21  ville
+
+	* docs/checklink.html: Add blurb about SSL/TLS support.
+
+2006-06-15  ville
+
+	* bin/checklink: Update mod_perl HTTP_AUTHORIZATION hack for recent
+	2.x, drop support for 1.x.
+
+2006-06-15  ville
+
+	* bin/checklink, bin/checklink.pod: Allow specifying --location
+	multiple times, make it imply --recursive.
+
+2006-05-25  ville
+
+	* bin/checklink: Extract system IDs also from doctype declarations
+	that have no public part.
+
+2006-05-25  ville
+
+	* README, bin/checklink, docs/checklink.html, docs/linkchecker.css:
+	2006.
+
+2006-05-25  ville
+
+	* bin/checklink: Code cleanup: eliminate some magic numbers.
+
+2006-05-25  ville
+
+	* bin/checklink: Try enabling UTF-8 mode in HTML::Parser (#3289).
+
+2006-05-25  ville
+
+	* bin/checklink: Improve unknown line number handling.
+
+2006-05-06  ville
+
+	* bin/checklink, docs/checklink.html: Outsource line counting to
+	HTML::Parser; version >= 3.20 is now required.
+
+2006-05-06  ville
+
+	* bin/checklink: Clean up arguments passed to HTML::Parser
+	handlers.
+
+2006-05-05  ville
+
+	* bin/checklink: Sort broken fragment line numbers numerically, not
+	alphabetically.
+
+2006-05-05  ville
+
+	* bin/checklink: Suppress RobotRules warnings, rt.cpan.org #18902.
+
+2006-05-05  ville
+
+	* bin/checklink: Revert parallel user agent code from between
+	revisions 4.21 and 4.24 per discussion on public-qa-dev.
+
+2005-10-25  ot
+
+	* bin/checklink: The (hopefully temporary) workaround for responses
+	not storing the original request should not be for cases of 401's,
+	but 403 Forbidden by robots.txt See:
+	http://lists.w3.org/Archives/Public/public-qa-dev/2005Sep/0002
+
+	Hopefully we should be able to get rid of this if we manage to get
+	Dom's patch to RobotUA accepted.
+
+	http://lists.w3.org/Archives/Public/public-qa-dev/2005Sep/0018.html
+
+2005-08-31  ot
+
+	* bin/checklink: fixing a few brainos in passing arguments around
+
+2005-08-29  ot
+
+	* bin/checklink: WARNING: this code is rather broken...
+
+	This is not much more than a proof of concept of how we could be
+	using LWP::Parallel::RobotUA for our requests. The basic idea is to
+	send the list of links as an array to $ua->register() instead of
+	request()ing them sequentially.
+
+	Done by - modifying check_uri to pass an array of URIs to
+	check_validity - modifying check_validity to pass this array to
+	get_uris (a clone of get_uri) - cloning get_uri into get_uris
+
+	The latter is only roughly done, and there probably is some loss of
+	information (recursion, etc) in the process.
+
+	This is a rather poor patch but the best I can wrap my head around
+	right now, feel free to revert if it's too ugly.
+
 2005-05-15  ville
 
 	* bin/checklink: Release 4.2.1.

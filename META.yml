@@ -1,14 +1,14 @@
 # http://module-build.sourceforge.net/META-spec.html
 #XXXXXXX This is a prototype!!!  It will change in the future!!! XXXXX#
 name:         W3C-LinkChecker
-version:      4.2.1
+version:      4.3
 version_from: bin/checklink
 installdirs:  site
 requires:
     CGI:                           0
     Config::General:               2.06
     File::Spec:                    0
-    HTML::Parser:                  3
+    HTML::Parser:                  3.2
     LWP:                           5.66
     Net::IP:                       0
     Term::ReadKey:                 2
@@ -17,4 +17,4 @@ requires:
     URI:                           0
 
 distribution_type: module
-generated_by: ExtUtils::MakeMaker version 6.17
+generated_by: ExtUtils::MakeMaker version 6.30
