@@ -5,7 +5,7 @@
 # (c) 1999-2006 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.42 2006-10-22 16:48:13 ville Exp $
+# $Id: checklink,v 4.43 2006-11-25 12:48:51 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -128,7 +128,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.3';
   $REVISION    = sprintf('version %s (c) 1999-2006 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.42 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.43 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver, LWP::RobotUA->_agent());
 
@@ -283,7 +283,7 @@ if ($Opts{Command_Line}) {
   require Text::Wrap;
   Text::Wrap->import('wrap');
 
-  &usage(1) unless @ARGV;
+  &usage(1) unless scalar(@ARGV);
 
   $Opts{_Self_URI} = 'http://validator.w3.org/checklink'; # For HTML output
 
