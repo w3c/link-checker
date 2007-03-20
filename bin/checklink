@@ -5,7 +5,7 @@
 # (c) 1999-2006 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.45 2007-03-20 19:57:06 ville Exp $
+# $Id: checklink,v 4.46 2007-03-20 20:29:18 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -128,7 +128,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.3';
   $REVISION    = sprintf('version %s (c) 1999-2007 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.45 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.46 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver, LWP::RobotUA->_agent());
 
@@ -139,8 +139,8 @@ BEGIN
   } if MP2();
 
   my @content_types = qw(application/xhtml+xml text/html);
-  $Accept = join(', ', @content_types) . ', */*;q=0.5';
-  my $re = join('|', map { s/\+/\\+/g; $_ } @content_types);
+  $Accept = join(', ', @content_types, '*/*;q=0.5');
+  (my $re = join('|', @content_types)) =~ s/\+/\\+/g;
   $ContentTypes = qr{\b(?:$re)\b}io;
 
   #
@@ -500,6 +500,8 @@ sub parse_arguments ()
   push(@{$Opts{Base_Locations}}, map { URI->new($_)->canonical() } @locs);
 
   $Opts{Depth} = -1 if ($Opts{Depth} == 0 && @locs);
+
+  return;
 }
 
 sub version ()
@@ -593,6 +595,7 @@ sub ask_password ()
   chomp($Opts{Password} = <STDIN>);
   ReadMode('restore', *STDIN);
   print(STDERR "ok.\n");
+  return;
 }
 
 ###############################################################################
@@ -603,7 +606,7 @@ sub ask_password ()
 
 sub guess_language ()
 {
-  my $lang = $ENV{LANG} or return undef;
+  my $lang = $ENV{LANG} or return;
 
   $lang =~ s/[\.@].*$//; # en_US.UTF-8, fi_FI@euro...
 
@@ -644,17 +647,16 @@ sub urize ($)
 
 sub check_uri ($$$;$$)
 {
-
   my ($uri, $is_first, $depth, $cookie, $is_start) = @_;
   $is_start ||= $is_first;
 
-  my $start = &get_timestamp() unless $Opts{Quiet};
+  my $start = $Opts{Summary_Only} ? 0 : &get_timestamp();
 
   # Get and parse the document
   my $response = &get_document('GET', $uri, $doc_count, \%redirects);
 
   # Can we check the resource? If not, we exit here...
-  return -1 if defined($response->{Stop});
+  return if defined($response->{Stop});
 
   if ($is_start) { # Starting point of a new check, eg. from the command line
     # Use the first URI as the recursion base unless specified otherwise.
@@ -663,7 +665,7 @@ sub check_uri ($$$;$$)
   } else {
     # Before fetching the document, we don't know if we'll be within the
     # recursion scope or not (think redirects).
-    return -1 unless &in_recursion_scope($response->{absolute_uri});
+    return unless &in_recursion_scope($response->{absolute_uri});
 
     print $Opts{HTML} ? '<hr>' : '-' x 40, "\n";
   }
@@ -847,6 +849,7 @@ EOF
       }
     }
   }
+
   &hprintf("Processed in %ss.\n", &time_diff($start, &get_timestamp()))
     unless $Opts{Summary_Only};
 
@@ -897,6 +900,7 @@ EOF
       }
     }
   }
+  return;
 }
 
 #######################################
@@ -981,11 +985,11 @@ sub get_document ($$$;\%)
 sub in_recursion_scope ($)
 {
   my ($uri) = @_;
-  return undef unless $uri;
+  return 0 unless $uri;
 
   my $candidate = URI->new($uri)->canonical();
 
-  return undef
+  return 0
     if (defined($Opts{Exclude_Docs}) && $candidate =~ $Opts{Exclude_Docs});
 
   foreach my $base (@{$Opts{Base_Locations}}) {
@@ -995,7 +999,7 @@ sub in_recursion_scope ($)
     return 1;
   }
 
-  return undef; # We always have at least one base location.
+  return 0; # We always have at least one base location.
 }
 
 ##################################################
@@ -1092,10 +1096,11 @@ sub get_uri ($$;$\%$$$$)
     }
 
     # Deal with authentication and avoid loops
-    if (! defined($realm)) {
-      $response->headers->www_authenticate =~ /Basic realm=\"([^\"]+)\"/;
+    if (!defined($realm) &&
+        $response->headers->www_authenticate =~ /Basic realm=\"([^\"]+)\"/) {
       $realm = $1;
     }
+
     print "\n" if $verbose_progress;
     return &get_uri($method, $response->request()->url(),
                     $start, $redirects, $code, $realm, $message, 1);
@@ -1265,6 +1270,8 @@ sub doctype
   }
   # Enable XML extensions
   $self->xml_mode(1) if (m%^-//W3C//DTD XHTML %);
+
+  return;
 }
 
 ###################################
@@ -1276,6 +1283,7 @@ sub parse_progress
   my ($self, $line) = @_;
   printf("\r%4d%%", int($line/$self->{Total}*100))
     if (defined($line) && $line >= 0);
+  return;
 }
 
 #############################
@@ -1306,6 +1314,7 @@ sub add_link
 {
   my ($self, $uri, $line) = @_;
   $self->{Links}{$uri}{$line}++ if defined($uri);
+  return;
 }
 
 sub start
@@ -1335,6 +1344,8 @@ sub start
   }
 
   $self->parse_progress($line) if $Opts{Progress};
+
+  return;
 }
 
 sub declaration
@@ -1348,14 +1359,17 @@ sub declaration
       ($declaration[0] eq 'DOCTYPE') &&
       (lc($declaration[1]) eq 'html')) {
     # Parse the doctype declaration
-    $text =~ m/^DOCTYPE\s+html\s+(?:PUBLIC\s+"([^"]+)"|SYSTEM)(\s+"([^"]+)")?\s*$/i;
-    # Store the doctype
-    $self->doctype($1) if $1;
-    # If there is a link to the DTD, record it
-    $self->{Links}{$3}{$line}++ if (!$self->{only_anchors} && $3);
+    if ($text =~ m/^DOCTYPE\s+html\s+(?:PUBLIC\s+"([^"]+)"|SYSTEM)(\s+"([^"]+)")?\s*$/i) {
+      # Store the doctype
+      $self->doctype($1) if $1;
+      # If there is a link to the DTD, record it
+      $self->{Links}{$3}{$line}++ if (!$self->{only_anchors} && $3);
+    }
   }
-  return unless !$self->{only_anchors};
-  $self->text($text);
+
+  $self->text($text) unless $self->{only_anchors};
+
+  return;
 }
 
 ################################
@@ -1434,6 +1448,7 @@ sub check_validity ($$$\%\%)
       $results{$uri}{fragments}{$fragment} = 0;
     }
   }
+  return;
 }
 
 sub escape_match ($\%)
@@ -1452,9 +1467,11 @@ sub escape_match ($\%)
 sub authentication ($)
 {
   my $r = $_[0];
-  $r->headers->www_authenticate =~ /Basic realm=\"([^\"]+)\"/;
-  my $realm = $1;
-  $realm = '' unless defined($realm);
+
+  my $realm = '';
+  if ($r->headers->www_authenticate =~ /Basic realm=\"([^\"]+)\"/) {
+    $realm = $1;
+  }
 
   if ($Opts{Command_Line}) {
     printf STDERR <<EOF, $r->request()->url(), $realm;
@@ -1488,6 +1505,7 @@ EOF
 
     print "</p>\n";
   }
+  return;
 }
 
 ##################
@@ -1520,6 +1538,7 @@ sub record_redirects (\%$)
   for (my $prev = $response->previous(); $prev; $prev = $prev->previous()) {
     $redirects->{$prev->request()->url()} = $response->request()->url();
   }
+  return;
 }
 
 # Determine if a request is redirected
@@ -1633,6 +1652,8 @@ EOF
   }
 
   print("</tbody>\n</table>\n") if $Opts{HTML};
+
+  return;
 }
 
 sub show_link_report (\%\%\%\%\@;$\%)
@@ -1825,6 +1846,8 @@ Response message: %s%s%s</dd>
 
   # End of the table
   print("</dl>\n") if $Opts{HTML};
+
+  return;
 }
 
 sub code_shown ($$)
@@ -1848,11 +1871,11 @@ sub code_shown ($$)
 sub ip_allowed ($)
 {
   my ($uri) = @_;
-  return undef if $Opts{Allow_Private_IPs}; # Short-circuit
+  return 0 if $Opts{Allow_Private_IPs}; # Short-circuit
 
   my $hostname = undef;
   eval { $hostname = $uri->host() }; # Not all URIs implement host()...
-  return undef unless $hostname;
+  return 0 unless $hostname;
 
   my $addr = my $iptype = my $resp = undef;
   if (my $host = Net::hostent::gethostbyname($hostname)) {
@@ -2006,6 +2029,8 @@ EOF
     &show_link_report($links, $results, $broken, $redirects,
                       \@dir_redirect_urls);
   }
+
+  return;
 }
 
 ###############################################################################
@@ -2077,6 +2102,7 @@ EOF
 ", $Head, $script, "</head>
 <body", $onload, '>';
   &banner($title);
+  return;
 }
 
 sub banner ($)
@@ -2093,6 +2119,7 @@ sub banner ($)
 </ul>
 <div id="main">
 EOF
+  return;
 }
 
 sub bgcolor ($)
@@ -2144,6 +2171,7 @@ sub html_footer ()
 </body>
 </html>
 EOF
+  return;
 }
 
 sub file_uri ($)
@@ -2216,6 +2244,7 @@ of a document that you would like to check:</label></p>
 <p><input type=\"submit\" name=\"check\" value=\"Check\"></p>
 </form>
 ";
+  return;
 }
 
 sub encode (@)
@@ -2230,6 +2259,7 @@ sub hprintf (@)
   } else {
     print HTML::Entities::encode(sprintf($_[0], @_[1..@_-1]));
   }
+  return;
 }
 
 # Local Variables:
