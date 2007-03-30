@@ -5,7 +5,7 @@
 # (c) 1999-2006 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.47 2007-03-20 21:16:23 ville Exp $
+# $Id: checklink,v 4.48 2007-03-30 19:42:09 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -128,7 +128,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.3';
   $REVISION    = sprintf('version %s (c) 1999-2007 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.47 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.48 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver, LWP::RobotUA->_agent());
 
@@ -1628,7 +1628,7 @@ sub anchors_summary (\%\%)
 <table border="1" summary="List of duplicate and empty anchors.">
 <thead>
 <tr>
-<th>Anchors</th>
+<th>Anchor</th>
 <th>Lines</th>
 </tr>
 </thead>
