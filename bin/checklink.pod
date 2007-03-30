@@ -1,4 +1,4 @@
-$Id: checklink.pod,v 1.14 2006-06-15 17:53:14 ville Exp $
+$Id: checklink.pod,v 1.15 2007-03-30 20:47:55 ville Exp $
 
 =head1 NAME
 
@@ -70,8 +70,8 @@ L<http://www.w3.org/TR/html4/>.
 
 =item B<--exclude-docs> I<regexp>
 
-In recursive mode, do not check links in documents whose URIs match
-I<regexp>.
+In recursive mode, do not check links in documents whose full, canonical
+URIs match I<regexp>.
 
 =item B<-L, --languages> I<accept-language>
 
