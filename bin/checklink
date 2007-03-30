@@ -5,7 +5,7 @@
 # (c) 1999-2007 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.49 2007-03-30 19:47:23 ville Exp $
+# $Id: checklink,v 4.50 2007-03-30 20:13:53 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -128,7 +128,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.3';
   $REVISION    = sprintf('version %s (c) 1999-2007 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.49 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.50 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver, LWP::RobotUA->_agent());
 
@@ -1363,7 +1363,7 @@ sub declaration
       # Store the doctype
       $self->doctype($1) if $1;
       # If there is a link to the DTD, record it
-      $self->{Links}{$3}{$line}++ if (!$self->{only_anchors} && $3);
+      $self->add_link($3, $line) if (!$self->{only_anchors} && $3);
     }
   }
 
