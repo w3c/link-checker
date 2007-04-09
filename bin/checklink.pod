@@ -1,4 +1,4 @@
-$Id: checklink.pod,v 1.15 2007-03-30 20:47:55 ville Exp $
+$Id: checklink.pod,v 1.16 2007-04-09 22:18:21 ville Exp $
 
 =head1 NAME
 
@@ -67,6 +67,12 @@ the bases, it is considered to be within the scope.  If not specified, the
 default is the base URI of the initial document, for example for
 L<http://www.w3.org/TR/html4/Overview.html> it would be
 L<http://www.w3.org/TR/html4/>.
+
+=item B<-X, --exclude> I<regexp>
+
+Do not check links whose full, canonical URIs match I<regexp>.  Note that
+this option limits recursion the same way as B<--exclude-docs> with the same
+regular expression would.
 
 =item B<--exclude-docs> I<regexp>
 
