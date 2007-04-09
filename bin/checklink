@@ -5,7 +5,7 @@
 # (c) 1999-2007 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.51 2007-03-30 20:47:54 ville Exp $
+# $Id: checklink,v 4.52 2007-04-09 22:18:21 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -128,7 +128,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.3';
   $REVISION    = sprintf('version %s (c) 1999-2007 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.51 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.52 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver, LWP::RobotUA->_agent());
 
@@ -219,6 +219,7 @@ my %Opts =
     User              => undef,
     Password          => undef,
     Base_Locations    => [],
+    Exclude           => undef,
     Exclude_Docs      => undef,
     Masquerade        => 0,
     Masquerade_From   => '',
@@ -262,6 +263,10 @@ my $timestamp = &get_timestamp();
 &parse_arguments() if $Opts{Command_Line};
 
 # Precompile/error-check regular expressions.
+if (defined($Opts{Exclude})) {
+  eval { $Opts{Exclude} = qr/$Opts{Exclude}/o; };
+  &usage(1, "Error in exclude regexp: $@") if $@;
+}
 if (defined($Opts{Exclude_Docs})) {
   eval { $Opts{Exclude_Docs} = qr/$Opts{Exclude_Docs}/o; };
   &usage(1, "Error in exclude-docs regexp: $@") if $@;
@@ -449,6 +454,7 @@ sub parse_arguments ()
              'r|recursive'     => sub { $Opts{Depth} = -1
                                           if $Opts{Depth} == 0; },
              'l|location=s'    => \@locs,
+             'X|exclude=s',    => \$Opts{Exclude},
              'exclude-docs=s', => \$Opts{Exclude_Docs},
              'u|user=s'        => \$Opts{User},
              'p|password=s'    => \$Opts{Password},
@@ -537,6 +543,9 @@ Options:
                             times.  If not specified, the default eg. for
                             http://www.w3.org/TR/html4/Overview.html
                             would be http://www.w3.org/TR/html4/
+ -X, --exclude REGEXP       Do not check links whose full, canonical URIs
+                            match REGEXP; also limits recursion the same way
+                            as --exclude-docs with the same regexp would.
  --exclude-docs REGEXP      In recursive mode, do not check links in documents
                             whose full, canonical URIs match REGEXP.
  -L, --languages LANGS      Accept-Language header to send.  The special value
@@ -692,6 +701,8 @@ Settings used:
 - Accept-Language: %s
 - Sleeping %d second%s between requests to each server
 EOF
+    printf("- Excluding links matching %s\n", $Opts{Exclude})
+      if defined($Opts{Exclude});
     printf("- Excluding links in documents whose URIs match %s\n",
       $Opts{Exclude_Docs}) if defined($Opts{Exclude_Docs});
   }
@@ -786,10 +797,10 @@ EOF
       };
     }
     foreach my $lines (keys %{$p->{Links}{$link}}) {
-      my $canonical = URI->new($abs_link_uri->canonical());
-      my $url = $canonical->scheme().':'.$canonical->opaque();
-      my $fragment = $canonical->fragment();
-      if (! $fragment) {
+      my $url = URI->new($abs_link_uri->canonical());
+      my $fragment = $url->fragment(undef);
+      next if (defined($Opts{Exclude}) && $url =~ $Opts{Exclude});
+      if (!defined($fragment) || $fragment eq '') {
         # Document without fragment
         $links{$url}{location}{$lines} = 1;
       } else {
@@ -992,7 +1003,8 @@ sub in_recursion_scope ($)
   my $candidate = URI->new($uri)->canonical();
 
   return 0
-    if (defined($Opts{Exclude_Docs}) && $candidate =~ $Opts{Exclude_Docs});
+      if ((defined($Opts{Exclude}) && $candidate =~ $Opts{Exclude}) ||
+          (defined($Opts{Exclude_Docs}) && $candidate =~ $Opts{Exclude_Docs}));
 
   foreach my $base (@{$Opts{Base_Locations}}) {
     my $rel = $candidate->rel($base);
