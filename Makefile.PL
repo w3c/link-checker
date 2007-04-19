@@ -37,13 +37,14 @@ WriteMakefile(
   MAN1PODS      => { 'bin/checklink.pod' =>
                      '$(INST_MAN1DIR)/checklink.$(MAN1EXT)',
                    },
+  depend        => { distdir => 'ChangeLog' },
   dist          => { TARFLAGS => '--owner=0 --group=0 -cvf' },
   clean         => { FILES => 'ChangeLog.bak' },
 );
 
 sub MY::postamble {
   return <<'MAKE_FRAG';
-changelog:
+ChangeLog: bin/checklink bin/checklink.pod docs/checklink.html docs/linkchecker.css docs/qa-small.png docs/valid-xhtml10.png docs/w3c_home.png README t/00compile.t
 	cvs2cl --FSF --utc --prune \
 	  --ignore ChangeLog --ignore cvsignore --ignore SIGNATURE \
 	  --ignore Makefile.PL --ignore META.yml --ignore MANIFEST \
