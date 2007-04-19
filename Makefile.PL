@@ -30,9 +30,11 @@ WriteMakefile(
                      Time::HiRes     => 0,
                      URI             => 0,
                      # For the test suite:
-                     Test::Simple    => 0,
+                     Test::More      => 0,
                      File::Spec      => 0,
                    },
+  PM            => { 'lib/W3C/LinkChecker.pm' =>
+                     '$(INST_LIB)/W3C/LinkChecker.pm' },
   EXE_FILES     => [ 'bin/checklink' ],
   MAN1PODS      => { 'bin/checklink.pod' =>
                      '$(INST_MAN1DIR)/checklink.$(MAN1EXT)',
@@ -49,5 +51,14 @@ ChangeLog: bin/checklink bin/checklink.pod docs/checklink.html docs/linkchecker.
 	  --ignore ChangeLog --ignore cvsignore --ignore SIGNATURE \
 	  --ignore Makefile.PL --ignore META.yml --ignore MANIFEST \
 	  --ignore NEWS
+
+lib/W3C/LinkChecker.pm: Makefile.PL bin/checklink
+	$(MKPATH) lib/W3C
+	$(ECHO) "# Dummy module for CPAN indexing purposes."  > $@
+	$(ECHO) "package $(NAME);"                           >> $@
+	$(ECHO) "use strict;"                                >> $@
+	$(ECHO) "use vars qw(\$$VERSION);"                   >> $@
+	$(ECHO) "\$$VERSION = \"$(VERSION)\";"               >> $@
+	$(ECHO) "1;"                                         >> $@
 MAKE_FRAG
 }

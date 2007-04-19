@@ -12,7 +12,7 @@ requires:
     LWP:                           5.66
     Net::IP:                       0
     Term::ReadKey:                 2
-    Test::Simple:                  0
+    Test::More:                    0
     Time::HiRes:                   0
     URI:                           0
 
