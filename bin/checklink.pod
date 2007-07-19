@@ -1,4 +1,4 @@
-$Id: checklink.pod,v 1.16 2007-04-09 22:18:21 ville Exp $
+$Id: checklink.pod,v 1.17 2007-07-19 16:40:16 ville Exp $
 
 =head1 NAME
 
@@ -89,7 +89,7 @@ the client as is.
 
 =item B<-q, --quiet>
 
-No output if no errors are found.
+No output if no errors are found.  Implies B<--summary>.
 
 =item B<-v, --verbose>
 
