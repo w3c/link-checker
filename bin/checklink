@@ -5,7 +5,7 @@
 # (c) 1999-2007 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.54 2007-07-28 10:41:15 ville Exp $
+# $Id: checklink,v 4.55 2007-07-28 10:44:32 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -128,7 +128,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.3';
   $REVISION    = sprintf('version %s (c) 1999-2007 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.54 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.55 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver, LWP::RobotUA->_agent());
 
@@ -211,7 +211,6 @@ my %Opts =
     Redirects         => 1,
     Dir_Redirects     => 1,
     Accept_Language   => $cmdline ? undef : $ENV{HTTP_ACCEPT_LANGUAGE},
-    HTTP_Proxy        => undef,
     Hide_Same_Realm   => 0,
     Depth             => 0,    # < 0 means unlimited recursion.
     Sleep_Time        => 1,
@@ -279,7 +278,6 @@ my $ua = W3C::UserAgent->new($AGENT); # @@@ TODO: admin address
 $ua->conn_cache({ total_capacity => 1}); # 1 keep-alive connection
 $ua->delay($Opts{Sleep_Time}/60);
 $ua->timeout($Opts{Timeout});
-$ua->proxy('http', 'http://' . $Opts{HTTP_Proxy}) if $Opts{HTTP_Proxy};
 
 if ($Opts{Command_Line}) {
 
@@ -465,17 +463,6 @@ sub parse_arguments ()
              'masquerade=s'    => \$masq,
              'hide-same-realm' => \$Opts{Hide_Same_Realm},
              'V|version'       => \&version,
-             # Deprecated options:
-             'n|noacclanguage' => sub { warn("*** Warning: The " .
-                                        "-n/--noacclanguage option is " .
-                                        "deprecated and has no effect.\n");
-                                      },
-             'y|proxy=s'       => sub { warn("*** Warning: The -y/--proxy " .
-                                        "option is deprecated, use the " .
-                                        "http_proxy\n             " .
-                                        "environment variable instead.\n");
-                                        $Opts{HTTP_Proxy} = $_[1];
-                                      },
             )
     || usage(1);
 
