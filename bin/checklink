@@ -5,7 +5,7 @@
 # (c) 1999-2007 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.53 2007-07-28 08:02:19 ville Exp $
+# $Id: checklink,v 4.54 2007-07-28 10:41:15 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -128,7 +128,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.3';
   $REVISION    = sprintf('version %s (c) 1999-2007 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.53 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.54 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver, LWP::RobotUA->_agent());
 
@@ -1876,7 +1876,7 @@ sub code_shown ($$)
 #
 # Checks whether we're allowed to retrieve the document based on it's IP
 # address.  Takes an URI object and returns a HTTP::Response containing the
-# appropriate status and error message if the IP was disallowed, undef
+# appropriate status and error message if the IP was disallowed, 0
 # otherwise.  URIs without hostname or IP address are always allowed,
 # including schemes where those make no sense (eg. data:, often javascript:).
 #
