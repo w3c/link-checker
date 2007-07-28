@@ -5,7 +5,7 @@
 # (c) 1999-2007 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.52 2007-04-09 22:18:21 ville Exp $
+# $Id: checklink,v 4.53 2007-07-28 08:02:19 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -128,7 +128,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.3';
   $REVISION    = sprintf('version %s (c) 1999-2007 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.52 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.53 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver, LWP::RobotUA->_agent());
 
@@ -247,8 +247,6 @@ $@
 }
 
 # Global variables
-# What is our query?
-my $query;
 # What URI's did we process? (used for recursive mode)
 my %processed;
 # Result of the HTTP query
@@ -324,7 +322,7 @@ if ($Opts{Command_Line}) {
   require CGI;
   require CGI::Carp;
   CGI::Carp->import(qw(fatalsToBrowser));
-  $query = new CGI;
+  my $query = new CGI;
   # Set a few parameters in CGI mode
   $Opts{Verbose}   = 0;
   $Opts{Progress}  = 0;
