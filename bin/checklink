@@ -5,7 +5,7 @@
 # (c) 1999-2007 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.56 2007-07-29 13:25:21 ville Exp $
+# $Id: checklink,v 4.57 2007-07-29 13:35:35 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -109,6 +109,9 @@ sub redirect_ok
   my ($self, $request, $response) = @_;
 
   if (my $callback = $self->redirect_progress_callback()) {
+    # @@@ TODO: when an LWP internal robots.txt request gets redirected, this
+    # will a bit confusingly fire for it too.  Would need a robust way to
+    # determine whether the request is such a LWP "internal robots.txt" one.
     &$callback($request->method(), $request->uri());
   }
 
@@ -189,7 +192,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.3';
   $REVISION    = sprintf('version %s (c) 1999-2007 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.56 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.57 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver, LWP::RobotUA->_agent());
 
@@ -1123,7 +1126,7 @@ sub get_uri ($$;$\%$$$$)
   }
 
   # Tell the user agent if we want progress reports for redirects or not.
-  $ua->redirect_progress_callback(sub { &hprintf("\n%s %s ", @_); })
+  $ua->redirect_progress_callback(sub { &hprintf("\n-> %s %s ", @_); })
     if $verbose_progress;
 
   # Do the query
