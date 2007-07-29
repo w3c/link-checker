@@ -5,7 +5,7 @@
 # (c) 1999-2007 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.57 2007-07-29 13:35:35 ville Exp $
+# $Id: checklink,v 4.58 2007-07-29 13:48:29 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -192,7 +192,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.3';
   $REVISION    = sprintf('version %s (c) 1999-2007 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.57 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.58 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver, LWP::RobotUA->_agent());
 
@@ -717,7 +717,10 @@ sub check_uri ($$$;$$)
   } else {
     # Before fetching the document, we don't know if we'll be within the
     # recursion scope or not (think redirects).
-    return unless &in_recursion_scope($response->{absolute_uri});
+    if (!&in_recursion_scope($response->{absolute_uri})) {
+      $response->content("");
+      return;
+    }
 
     print $Opts{HTML} ? '<hr>' : '-' x 40, "\n";
   }
@@ -796,6 +799,7 @@ EOF
   my $p = &parse_document($uri, $absolute_uri,
                           $response->content(), 1,
                           $depth != 0);
+  $response->content("");
   my $base = URI->new($p->{base});
 
   # Check anchors
@@ -998,6 +1002,7 @@ sub get_document ($$$;\%)
       }
     }
     $response->{Stop} = 1;
+    $response->content("");
     return($response);
   }
 
@@ -1028,6 +1033,7 @@ sub get_document ($$$;\%)
       print "</p>\n" if $Opts{HTML};
     }
     $response->{Stop} = 1;
+    $response->content("");
   }
 
   # Ok, return the information
@@ -1212,8 +1218,8 @@ sub record_results ($$$)
              $results{$uri}{location}{code},
              $results{$uri}{location}{message})
       if ($Opts{Verbose});
-    return;
   }
+  return;
 }
 
 ####################
@@ -1479,16 +1485,21 @@ sub check_validity ($$$\%\%)
   my $p;
   if ($being_processed) {
     # Can we really parse the document?
-    return unless defined($results{$uri}{location}{type});
-    if ($results{$uri}{location}{type} !~ $ContentTypes) {
+    my $done = 0;
+    if (!defined($results{$uri}{location}{type}) ||
+        $results{$uri}{location}{type} !~ $ContentTypes)
+    {
       &hprintf("Can't check content: Content-Type for '%s' is '%s'.\n",
                $uri, $results{$uri}{location}{type})
         if ($Opts{Verbose});
-      return;
+      $done = 1;
+    } else {
+      # Do it then
+      $p = &parse_document($uri, $response->base(),
+                           $response->content(), 0, $want_links);
     }
-    # Do it then
-    $p = &parse_document($uri, $response->base(),
-                         $response->content(), 0, $want_links);
+    $response->content("");
+    return if $done;
   } else {
     # We already had the information
     $p->{Anchors} = $results{$uri}{parsing}{Anchors};
