@@ -5,7 +5,7 @@
 # (c) 1999-2007 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.58 2007-07-29 13:48:29 ville Exp $
+# $Id: checklink,v 4.59 2007-07-29 16:49:00 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -192,7 +192,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.3';
   $REVISION    = sprintf('version %s (c) 1999-2007 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.58 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.59 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver, LWP::RobotUA->_agent());
 
@@ -796,10 +796,7 @@ EOF
   # Record that we have processed this resource
   $processed{$absolute_uri} = 1;
   # Parse the document
-  my $p = &parse_document($uri, $absolute_uri,
-                          $response->content(), 1,
-                          $depth != 0);
-  $response->content("");
+  my $p = &parse_document($uri, $absolute_uri, $response, 1, ($depth != 0));
   my $base = URI->new($p->{base});
 
   # Check anchors
@@ -1228,7 +1225,7 @@ sub record_results ($$$)
 
 sub parse_document ($$$$$)
 {
-  my ($uri, $location, $document, $links, $rec_needs_links) = @_;
+  my ($uri, $location, $response, $links, $rec_needs_links) = @_;
 
   my $p;
 
@@ -1240,6 +1237,12 @@ sub parse_document ($$$$$)
     return $p;
   }
 
+  my $docref = undef;
+  # @@@TODO: maybe also do charset decoding some day?
+  $docref = $response->decoded_content(ref => 1, charset => "none")
+    if ($response->can('decoded_content')); # LWP >= 5.802
+  $docref ||= $response->content_ref();
+
   my $start;
   $p = W3C::LinkChecker->new();
   $p->{base} = $location;
@@ -1248,7 +1251,7 @@ sub parse_document ($$$$$)
     print("Parsing...\n");
   }
   if (!$Opts{Summary_Only} || $Opts{Progress}) {
-    $p->{Total} = ($document =~ tr/\n//);
+    $p->{Total} = ($$docref =~ tr/\n//);
   }
   # We only look for anchors if we are not interested in the links
   # obviously, or if we are running a recursive checking because we
@@ -1259,9 +1262,10 @@ sub parse_document ($$$$$)
   # Processing instructions are not parsed by process, but in this case
   # it should be. It's expensive, it's horrible, but it's the easiest way
   # for right now.
-  $document =~ s/\<\?(xml:stylesheet.*?)\?\>/\<$1\>/ unless $p->{only_anchors};
+  $$docref =~ s/\<\?(xml:stylesheet.*?)\?\>/\<$1\>/ unless $p->{only_anchors};
 
-  $p->parse($document);
+  $p->parse($$docref);
+  $response->content("");
 
   if (! $Opts{Summary_Only}) {
     my $stop = &get_timestamp();
@@ -1485,21 +1489,17 @@ sub check_validity ($$$\%\%)
   my $p;
   if ($being_processed) {
     # Can we really parse the document?
-    my $done = 0;
     if (!defined($results{$uri}{location}{type}) ||
         $results{$uri}{location}{type} !~ $ContentTypes)
     {
       &hprintf("Can't check content: Content-Type for '%s' is '%s'.\n",
                $uri, $results{$uri}{location}{type})
         if ($Opts{Verbose});
-      $done = 1;
-    } else {
-      # Do it then
-      $p = &parse_document($uri, $response->base(),
-                           $response->content(), 0, $want_links);
+      $response->content("");
+      return;
     }
-    $response->content("");
-    return if $done;
+    # Do it then
+    $p = &parse_document($uri, $response->base(), $response, 0, $want_links);
   } else {
     # We already had the information
     $p->{Anchors} = $results{$uri}{parsing}{Anchors};
