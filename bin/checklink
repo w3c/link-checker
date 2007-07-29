@@ -5,7 +5,7 @@
 # (c) 1999-2007 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.55 2007-07-28 10:44:32 ville Exp $
+# $Id: checklink,v 4.56 2007-07-29 13:25:21 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -34,7 +34,6 @@ $ENV{PATH} = ''; # undef would output warnings with Perl 5.6.1's Cwd.pm.
 package W3C::UserAgent;
 
 use LWP::RobotUA 1.19 qw();
-# @@@ Needs also W3C::LinkChecker but can't use() it here.
 
 @W3C::UserAgent::ISA = qw(LWP::RobotUA);
 
@@ -55,43 +54,105 @@ sub new
   $self->from(undef) unless $from_ok;
 
   $self->env_proxy();
+
+  $self->allow_private_ips(1);
+
   return $self;
+}
+
+sub allow_private_ips
+{
+  my $self = shift;
+  if (@_) {
+    $self->{Checklink_allow_private_ips} = shift;
+    if (!$self->{Checklink_allow_private_ips}) {
+      # Pull in dependencies
+      require Net::IP;
+      require Socket;
+      require Net::hostent;
+    }
+  }
+  return $self->{Checklink_allow_private_ips};
+}
+
+sub redirect_progress_callback
+{
+  my $self = shift;
+  $self->{Checklink_redirect_callback} = shift if @_;
+  return $self->{Checklink_redirect_callback};
 }
 
 sub simple_request
 {
   my $self = shift;
-  my $response = do {
+
+  my $response = $self->ip_disallowed($_[0]->uri());
+
+  $response ||= do {
     local $SIG{__WARN__} = sub { # Suppress some warnings, rt.cpan.org #18902
       warn($_[0]) if ($_[0] && $_[0] !~ /^RobotRules/);
     };
+    # @@@ Why not just $self->SUPER::simple_request?
     $self->W3C::UserAgent::SUPER::simple_request(@_);
   };
+
   if (! defined($self->{FirstResponse})) {
     $self->{FirstResponse} = $response->code();
     $self->{FirstMessage} = $response->message() || '(no message)';
   }
+
   return $response;
 }
 
 sub redirect_ok
 {
   my ($self, $request, $response) = @_;
-  if ($self->{Checklink_verbose_progress}) {
-    # @@@ TODO: when an LWP internal robots.txt request gets redirected,
-    # this will a bit confusingly print out info about it.  Would need a
-    # robust way of determining whether something is a LWP "internal" request.
-    &W3C::LinkChecker::hprintf("\n%s %s ", $request->method(),$request->uri());
+
+  if (my $callback = $self->redirect_progress_callback()) {
+    &$callback($request->method(), $request->uri());
   }
+
   return 0 unless $self->SUPER::redirect_ok($request, $response);
-  if (my $res = &W3C::LinkChecker::ip_allowed($request->uri())) {
+
+  if (my $res = $self->ip_disallowed($request->uri())) {
     $response->previous($response->clone());
     $response->request($request);
     $response->code($res->code());
     $response->message($res->message());
     return 0;
   }
+
   return 1;
+}
+
+#
+# Checks whether we're allowed to retrieve the document based on it's IP
+# address.  Takes an URI object and returns a HTTP::Response containing the
+# appropriate status and error message if the IP was disallowed, 0
+# otherwise.  URIs without hostname or IP address are always allowed,
+# including schemes where those make no sense (eg. data:, often javascript:).
+#
+sub ip_disallowed
+{
+  my ($self, $uri) = @_;
+  return 0 if $self->allow_private_ips(); # Short-circuit
+
+  my $hostname = undef;
+  eval { $hostname = $uri->host() }; # Not all URIs implement host()...
+  return 0 unless $hostname;
+
+  my $addr = my $iptype = my $resp = undef;
+  if (my $host = Net::hostent::gethostbyname($hostname)) {
+    $addr = Socket::inet_ntoa($host->addr()) if $host->addr();
+    if ($addr && (my $ip = Net::IP->new($addr))) {
+      $iptype = $ip->iptype();
+    }
+  }
+  if ($iptype && $iptype ne 'PUBLIC') {
+    $resp = HTTP::Response->new(403,
+    'Checking non-public IP address disallowed by link checker configuration');
+  }
+  return $resp;
 }
 
 # -----------------------------------------------------------------------------
@@ -128,7 +189,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.3';
   $REVISION    = sprintf('version %s (c) 1999-2007 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.55 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.56 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver, LWP::RobotUA->_agent());
 
@@ -229,22 +290,6 @@ my %Opts =
   );
 undef $cmdline;
 
-unless ($Opts{Allow_Private_IPs}) {
-  eval {
-    require Net::IP;
-    require Socket;
-    Socket->import('inet_ntoa');
-    require Net::hostent;
-  };
-  if ($@) {
-    die <<".EOF.";
-Allow_Private_IPs is false; this feature requires the Net::IP, Socket, and
-Net::hostent modules:
-$@
-.EOF.
-  }
-}
-
 # Global variables
 # What URI's did we process? (used for recursive mode)
 my %processed;
@@ -278,6 +323,16 @@ my $ua = W3C::UserAgent->new($AGENT); # @@@ TODO: admin address
 $ua->conn_cache({ total_capacity => 1}); # 1 keep-alive connection
 $ua->delay($Opts{Sleep_Time}/60);
 $ua->timeout($Opts{Timeout});
+eval {
+  $ua->allow_private_ips($Opts{Allow_Private_IPs});
+};
+if ($@) {
+  die <<".EOF.";
+Allow_Private_IPs is false; this feature requires the Net::IP, Socket, and
+Net::hostent modules:
+$@
+.EOF.
+}
 
 if ($Opts{Command_Line}) {
 
@@ -1067,15 +1122,12 @@ sub get_uri ($$;$\%$$$$)
     }
   }
 
-  # Tell the user agent if we want progress reports (in redirects) or not.
-  $ua->{Checklink_verbose_progress} = $verbose_progress;
-
-  # Check if the IP address is allowed.
-  my $response = &ip_allowed($request->uri());
-  return $response if $response;
+  # Tell the user agent if we want progress reports for redirects or not.
+  $ua->redirect_progress_callback(sub { &hprintf("\n%s %s ", @_); })
+    if $verbose_progress;
 
   # Do the query
-  $response = $ua->request($request);
+  my $response = $ua->request($request);
 
   # Get the results
   # Record the very first response
@@ -1858,36 +1910,6 @@ sub code_shown ($$)
   } else {
     return $results->{$u}{location}{record};
   }
-}
-
-#
-# Checks whether we're allowed to retrieve the document based on it's IP
-# address.  Takes an URI object and returns a HTTP::Response containing the
-# appropriate status and error message if the IP was disallowed, 0
-# otherwise.  URIs without hostname or IP address are always allowed,
-# including schemes where those make no sense (eg. data:, often javascript:).
-#
-sub ip_allowed ($)
-{
-  my ($uri) = @_;
-  return 0 if $Opts{Allow_Private_IPs}; # Short-circuit
-
-  my $hostname = undef;
-  eval { $hostname = $uri->host() }; # Not all URIs implement host()...
-  return 0 unless $hostname;
-
-  my $addr = my $iptype = my $resp = undef;
-  if (my $host = Net::hostent::gethostbyname($hostname)) {
-    $addr = inet_ntoa($host->addr()) if $host->addr();
-    if ($addr && (my $ip = Net::IP->new($addr))) {
-      $iptype = $ip->iptype();
-    }
-  }
-  if ($iptype && $iptype ne 'PUBLIC') {
-    $resp = HTTP::Response->new(403,
-    'Checking non-public IP address disallowed by link checker configuration');
-  }
-  return $resp;
 }
 
 sub links_summary (\%\%\%\%)
