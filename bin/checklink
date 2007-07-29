@@ -5,7 +5,7 @@
 # (c) 1999-2007 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.60 2007-07-29 16:51:00 ville Exp $
+# $Id: checklink,v 4.61 2007-07-29 18:56:18 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -192,7 +192,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.3';
   $REVISION    = sprintf('version %s (c) 1999-2007 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.60 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.61 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver, LWP::RobotUA->_agent());
 
@@ -831,12 +831,12 @@ EOF
       if (!defined($abs_link_uri) && $link_uri->scheme() =~ /^sips?$/);
 
     if ($Opts{Masquerade}) {
-      if ($abs_link_uri =~ m|^$Opts{Masquerade_From}|) {
+      if ($abs_link_uri =~ m|^\Q$Opts{Masquerade_From}\E|) {
         printf("processing %s in base %s\n",
                $abs_link_uri, $Opts{Masquerade_To});
         my $nlink = $abs_link_uri;
         $nlink =~
-          s|^$Opts{Masquerade_From}|$Opts{Masquerade_To}|;
+          s|^\Q$Opts{Masquerade_From}\E|$Opts{Masquerade_To}|;
         $abs_link_uri = URI->new($nlink);
       };
     }
