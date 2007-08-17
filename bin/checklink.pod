@@ -1,4 +1,4 @@
-$Id: checklink.pod,v 1.17 2007-07-19 16:40:16 ville Exp $
+$Id: checklink.pod,v 1.18 2007-08-17 21:04:42 ville Exp $
 
 =head1 NAME
 
@@ -86,6 +86,10 @@ this header is not sent by default.  The special value C<auto> causes
 a value to be detected from the C<LANG> environment variable, and sent
 if found.  In CGI mode, the default is to send the value received from
 the client as is.
+
+=item B<-R, --no-referer>
+
+Do not send the C<Referer> HTTP header.
 
 =item B<-q, --quiet>
 

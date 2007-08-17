@@ -5,7 +5,7 @@
 # (c) 1999-2007 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.61 2007-07-29 18:56:18 ville Exp $
+# $Id: checklink,v 4.62 2007-08-17 21:04:41 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -88,6 +88,11 @@ sub simple_request
 
   my $response = $self->ip_disallowed($_[0]->uri());
 
+  # RFC 2616, section 15.1.3
+  $_[0]->remove_header("Referer")
+    if ($_[0]->referer() &&
+        (secure_scheme($_[0]->referer()) && !secure_scheme($_[0]->uri())));
+
   $response ||= do {
     local $SIG{__WARN__} = sub { # Suppress some warnings, rt.cpan.org #18902
       warn($_[0]) if ($_[0] && $_[0] !~ /^RobotRules/);
@@ -158,6 +163,13 @@ sub ip_disallowed
   return $resp;
 }
 
+sub secure_scheme
+{
+  my $uri = shift or return 0;
+  $uri = URI->new($uri) unless ref($uri);
+  return ($uri->scheme() =~ /^(?:file|https|ldaps|sips|snews|ssh)$/i);
+}
+
 # -----------------------------------------------------------------------------
 
 package W3C::LinkChecker;
@@ -192,7 +204,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.3';
   $REVISION    = sprintf('version %s (c) 1999-2007 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.61 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.62 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver, LWP::RobotUA->_agent());
 
@@ -275,6 +287,7 @@ my %Opts =
     Redirects         => 1,
     Dir_Redirects     => 1,
     Accept_Language   => $cmdline ? undef : $ENV{HTTP_ACCEPT_LANGUAGE},
+    No_Referer        => 0,
     Hide_Same_Realm   => 0,
     Depth             => 0,    # < 0 means unlimited recursion.
     Sleep_Time        => 1,
@@ -362,7 +375,7 @@ if ($Opts{Command_Line}) {
     @{$Opts{Base_Locations}} = @bases;
     # Transform the parameter into a URI
     $uri = &urize($uri);
-    &check_uri($uri, $is_first, $Opts{Depth}, undef, 1);
+    &check_uri($uri, $is_first, $Opts{Depth}, undef, undef, 1);
     $is_first &&= 0;
   }
   undef $is_first;
@@ -419,6 +432,7 @@ if ($Opts{Command_Line}) {
   }
 
   $Opts{Accept_Language} = undef if $query->param('no_accept_language');
+  $Opts{No_Referer} = $query->param('no_referer');
 
   $Opts{Depth} = -1 if ($query->param('recursive') && $Opts{Depth} == 0);
   if (my $depth = $query->param('depth')) {
@@ -515,6 +529,7 @@ sub parse_arguments ()
              't|timeout=i'     => \$Opts{Timeout},
              'S|sleep=i'       => \$Opts{Sleep_Time},
              'L|languages=s'   => \$Opts{Accept_Language},
+             'R|no-referer'    => \$Opts{No_Referer},
              'D|depth=i'       => sub { $Opts{Depth} = $_[1]
                                           unless $_[1] == 0; },
              'd|domain=s'      => \$Opts{Trusted},
@@ -697,15 +712,15 @@ sub urize ($)
 # Check for broken links in a resource #
 ########################################
 
-sub check_uri ($$$;$$)
+sub check_uri ($$$;$$$)
 {
-  my ($uri, $is_first, $depth, $cookie, $is_start) = @_;
+  my ($uri, $is_first, $depth, $cookie, $referer, $is_start) = @_;
   $is_start ||= $is_first;
 
   my $start = $Opts{Summary_Only} ? 0 : &get_timestamp();
 
   # Get and parse the document
-  my $response = &get_document('GET', $uri, $doc_count, \%redirects);
+  my $response = &get_document('GET', $uri, $doc_count, \%redirects, $referer);
 
   # Can we check the resource? If not, we exit here...
   return if defined($response->{Stop});
@@ -740,11 +755,13 @@ sub check_uri ($$$;$$)
   if ($is_first && !$Opts{HTML} && !$Opts{Summary_Only}) {
     my $s = $Opts{Sleep_Time} == 1 ? '' : 's';
     my $acclang = $Opts{Accept_Language} || '(not sent)';
-    printf(<<'EOF', $Accept, $acclang, $Opts{Sleep_Time}, $s);
+    my $send_referer = $Opts{No_Referer} ? 'not sent' : 'sending';
+    printf(<<'EOF', $Accept, $acclang, $send_referer, $Opts{Sleep_Time}, $s);
 
 Settings used:
 - Accept: %s
 - Accept-Language: %s
+- Referer: %s
 - Sleeping %d second%s between requests to each server
 EOF
     printf("- Excluding links matching %s\n", $Opts{Exclude})
@@ -762,13 +779,15 @@ EOF
     if (! $Opts{Summary_Only}) {
       my $accept = &encode($Accept);
       my $acclang = &encode($Opts{Accept_Language} || '(not sent)');
+      my $send_referer = $Opts{No_Referer} ? 'not sent' : 'sending';
       my $s = $Opts{Sleep_Time} == 1 ? '' : 's';
-      printf(<<'EOF', $accept, $acclang, $Opts{Sleep_Time}, $s);
+      printf(<<'EOF', $accept, $acclang, $send_referer, $Opts{Sleep_Time}, $s);
 <div class="settings">
 Settings used:
  <ul>
   <li><tt><a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.1">Accept</a></tt>: %s</li>
   <li><tt><a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.4">Accept-Language</a></tt>: %s</li>
+  <li><tt><a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.36">Referer</a></tt>: %s</li>
   <li>Sleeping %d second%s between requests to each server</li>
  </ul>
 </div>
@@ -933,7 +952,7 @@ EOF
       next unless ($results{$u}{location}{type} =~ $ContentTypes);
 
       # Have we already processed this URI?
-      next if &already_processed($u);
+      next if &already_processed($u, $uri);
 
       # Do the job
       print "\n";
@@ -951,9 +970,9 @@ EOF
         }
       }
       if ($depth < 0) {
-        &check_uri($u, 0, -1);
+        &check_uri($u, 0, -1, undef, $uri);
       } else {
-        &check_uri($u, 0, $depth-1);
+        &check_uri($u, 0, $depth-1, undef, $uri);
       }
     }
   }
@@ -964,14 +983,15 @@ EOF
 # Get and parse a resource to process #
 #######################################
 
-sub get_document ($$$;\%)
+sub get_document ($$$;\%$)
 {
-  my ($method, $uri, $in_recursion, $redirects) = @_;
+  my ($method, $uri, $in_recursion, $redirects, $referer) = @_;
   # $method contains the HTTP method the use (GET or HEAD)
   # $uri contains the identifier of the resource
   # $in_recursion is > 0 if we are in recursion mode (i.e. it is at least
   #                        the second resource checked)
   # $redirects is a pointer to the hash containing the map of the redirects
+  # $referer is the URI of the referring document
 
   # Get the resource
   my $response;
@@ -979,7 +999,7 @@ sub get_document ($$$;\%)
       && !(($method eq 'GET') && ($results{$uri}{method} eq 'HEAD'))) {
     $response = $results{$uri}{response};
   } else {
-    $response = &get_uri($method, $uri);
+    $response = &get_uri($method, $uri, $referer);
     &record_results($uri, $method, $response);
     &record_redirects($redirects, $response);
   }
@@ -1066,14 +1086,14 @@ sub in_recursion_scope ($)
 # Check whether a URI has already been processed #
 ##################################################
 
-sub already_processed ($)
+sub already_processed ($$)
 {
-  my ($uri) = @_;
+  my ($uri, $referer) = @_;
   # Don't be verbose for that part...
   my $summary_value = $Opts{Summary_Only};
   $Opts{Summary_Only} = 1;
   # Do a GET: if it fails, we stop, if not, the results are cached
-  my $response = &get_document('GET', $uri, 1);
+  my $response = &get_document('GET', $uri, 1, undef, $referer);
   # ... but just for that part
   $Opts{Summary_Only} = $summary_value;
   # Can we process the resource?
@@ -1088,16 +1108,17 @@ sub already_processed ($)
 # Get the content of a URI #
 ############################
 
-sub get_uri ($$;$\%$$$$)
+sub get_uri ($$;$$\%$$$$)
 {
   # Here we have a lot of extra parameters in order not to lose information
   # if the function is called several times (401's)
-  my ($method, $uri, $start, $redirects, $code, $realm, $message, $auth) = @_;
+  my ($method, $uri, $referer, $start, $redirects, $code, $realm, $message,
+      $auth) = @_;
 
   # $method contains the method used
   # $uri contains the target of the request
-  # $start is a timestamp (not defined the first time the function is
-  #                        called)
+  # $referer is the URI of the referring document
+  # $start is a timestamp (not defined the first time the function is called)
   # $redirects is a map of redirects
   # $code is the first HTTP return code
   # $realm is the realm of the request
@@ -1132,6 +1153,9 @@ sub get_uri ($$;$\%$$$$)
   $ua->redirect_progress_callback(sub { &hprintf("\n-> %s %s ", @_); })
     if $verbose_progress;
 
+  # Set referer
+  $request->referer($referer) if (!$Opts{No_Referer} && $referer);
+
   # Do the query
   my $response = $ua->request($request);
 
@@ -1159,7 +1183,7 @@ sub get_uri ($$;$\%$$$$)
     }
 
     print "\n" if $verbose_progress;
-    return &get_uri($method, $response->request()->url(),
+    return &get_uri($method, $response->request()->url(), $referer,
                     $start, $redirects, $code, $realm, $message, 1);
   }
   # @@@ subtract robot delay from the "fetched in" time?
@@ -1442,8 +1466,8 @@ sub declaration
 
 sub check_validity ($$$\%\%)
 {
-  my ($testing, $uri, $want_links, $links, $redirects) = @_;
-  # $testing is the URI of the document checked
+  my ($referer, $uri, $want_links, $links, $redirects) = @_;
+  # $referer is the URI of the document checked
   # $uri is the URI of the target that we are verifying
   # $want_links is true if we're interested in links in the target doc
   # $links is a hash of the links in the documents checked
@@ -1451,8 +1475,8 @@ sub check_validity ($$$\%\%)
 
   # Checking file: URI's is not allowed with a CGI
   # TODO: bug 29
-  if ($testing ne $uri) {
-    if (!$Opts{Command_Line} && $testing !~ m/^file:/ && $uri =~ m/^file:/) {
+  if ($referer ne $uri) {
+    if (!$Opts{Command_Line} && $referer !~ m/^file:/ && $uri =~ m/^file:/) {
       my $msg = 'Error: \'file:\' URI not allowed';
       # Can't test? Return 400 Bad request.
       $results{$uri}{location}{code}    = 400;
@@ -1475,7 +1499,7 @@ sub check_validity ($$$\%\%)
   if ((! defined($results{$uri}))
       || (($method eq 'GET') && ($results{$uri}{method} eq 'HEAD'))) {
     $being_processed = 1;
-    $response = &get_uri($method, $uri);
+    $response = &get_uri($method, $uri, $referer);
     # Get the information back from get_uri()
     &record_results($uri, $method, $response);
     # Record the redirects
@@ -2242,6 +2266,7 @@ sub print_form ($)
   my $all = ($q->param('hide_type') ne 'dir') ? $chk : '';
   my $dir = $all                              ? ''   : $chk;
   my $acc = $q->param('no_accept_language')   ? $chk : '';
+  my $ref = $q->param('no_referer')           ? $chk : '';
   my $rec = $q->param('recursive')            ? $chk : '';
   my $dep = &encode($q->param('depth')              || '');
 
@@ -2270,6 +2295,8 @@ of a document that you would like to check:</label></p>
     <label for=\"hide_type_dir\"><input type=\"radio\" id=\"hide_type_dir\" name=\"hide_type\" value=\"dir\"", $dir, "> for directories only</label>
     <br>
     <label for=\"no_accept_language\"><input type=\"checkbox\" id=\"no_accept_language\" name=\"no_accept_language\" value=\"on\"", $acc, "> Don't send the <tt><a href=\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.4\">Accept-Language</a></tt> header</label>
+    <br>
+    <label for=\"no_referer\"><input type=\"checkbox\" id=\"no_referer\" name=\"no_referer\" value=\"on\"", $ref, "> Don't send the <tt><a href=\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.36\">Referer</a></tt> header</label>
     <br>
     <label title=\"Check linked documents recursively (maximum: ", $Opts{Max_Documents}, " documents)\" for=\"recursive\"><input type=\"checkbox\" id=\"recursive\" name=\"recursive\" value=\"on\"", $rec, "> Check linked documents recursively</label>,
     <label title=\"Depth of the recursion (-1 is the default and means unlimited)\" for=\"depth\">recursion depth: <input type=\"text\" size=\"3\" maxlength=\"3\" id=\"depth\" name=\"depth\" value=\"", $dep, "\"></label>
