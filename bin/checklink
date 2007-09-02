@@ -5,7 +5,7 @@
 # (c) 1999-2007 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.63 2007-08-17 21:06:56 ville Exp $
+# $Id: checklink,v 4.64 2007-09-02 08:48:36 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -204,7 +204,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.3';
   $REVISION    = sprintf('version %s (c) 1999-2007 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.63 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.64 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver, LWP::RobotUA->_agent());
 
@@ -718,6 +718,11 @@ sub check_uri ($$$;$$$)
   my ($uri, $is_first, $depth, $cookie, $referer, $is_start) = @_;
   $is_start ||= $is_first;
 
+  if ($Opts{HTML}) {
+    &html_header($uri, 0, $cookie) if $is_first;
+    print('<h2>');
+  }
+
   my $start = $Opts{Summary_Only} ? 0 : &get_timestamp();
 
   # Get and parse the document
@@ -743,11 +748,6 @@ sub check_uri ($$$;$$$)
 
   # We are checking a new document
   $doc_count++;
-
-  if ($Opts{HTML}) {
-    &html_header($uri, 0, $cookie) if $is_first;
-    print('<h2>');
-  }
 
   my $absolute_uri = $response->{absolute_uri}->as_string();
 
