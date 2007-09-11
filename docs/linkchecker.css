@@ -4,7 +4,7 @@
    Copyright 2000-2007 W3C (MIT, INRIA, Keio). All Rights Reserved.
    See http://www.w3.org/Consortium/Legal/ipr-notice.html#Copyright
 
-   $Id: linkchecker.css,v 1.15 2007-03-20 19:57:06 ville Exp $
+   $Id: linkchecker.css,v 1.16 2007-09-11 08:20:09 ot Exp $
 */
 
 html, body {
@@ -18,10 +18,14 @@ html, body {
 }
 
 div#main {
-  padding-top: 1em;
-  padding-left: 1em;
-  padding-right: 1em;
-  margin: 0;
+	margin: 1em 2em;
+}
+
+div#main form {
+	clear: both;
+	background: #EAEBEE url(../images/round-tr.png) no-repeat top right;
+	padding: 0.5em 1.3em;
+	border-bottom: 1px solid #DCDDE0;
 }
 
 a:link, a:visited {
@@ -98,19 +102,12 @@ address img {
 }
 
 address {
-  padding-top: 0;
-  padding-right: 1em;
-  padding-left: 1em;
-  padding-bottom: 0;
-  margin-top: 3em;
-  border-top: 1px solid black;
-  background-color: #eee;
-  clear: right;
-  background-image: url(http://validator.w3.org/images/footer.jpg);
-  background-repeat: no-repeat;
-  background-attachment: scroll;
-  height: 50px;
-  background-position: center;
+	padding: 0 2em;
+  font-size:      small;
+  text-align: center;
+  color: #888;
+  background-color: white;
+
 }
 
 p.copyright {
@@ -139,35 +136,38 @@ h1, h2, h3, h4, h5, h6, dt {
   font-size-adjust: .53;
 }
 
-h1 {
-  font-size: 2em;
-  font-weight: bold;
-  font-style: normal;
-  text-decoration: none;
-  color: #053188;
-}
-#banner h1 {
-  font-size: 1.3em;
-  display: inline;
-}
-
-#banner {
-  background-image: url(http://validator.w3.org/images/header.jpg);
-  background-repeat: no-repeat;
-  background-attachment: scroll;
-  height: 50px;
-  background-position: right;
-  margin: 0;
-  padding: 0;
-  border-bottom: 1px solid black;
-}
 
 h1#title {
-  padding: 0;
-  margin: 0;
-  color: #053188;
+	font-family: "Myriad Web", "Myriad Pro", "Gill Sans", Helvetica, Arial, Sans-Serif;
+	background-color: #365D95;
+	color: #fdfdfd;
+	font-size: 1.6em;
+	background: url(../images/head-bl.png) bottom left no-repeat;
+	padding-bottom: 0.430em;
+}
+h1#title a, h1#title a img {
+background-color: #365D95;
 }
 
+h1 span {
+	border-bottom: 1px solid #6383b1;
+	border-color: #4e6f9e;
+}
+
+h1#title a:link, h1#title a:hover, h1#title a:visited, h1#title a:active {
+  color: #fdfdfd !important;
+  text-decoration: none;
+}
+
+h1#title img {
+	vertical-align: middle;
+	margin-right: 0.7em;
+}
+
+div#banner {
+	background: #365D95 url(../images/head-br.png) bottom right no-repeat;
+	margin: 1.5em 2em;}
+	
 h2 {
   font-size: 1.5em;
   text-align: left;
@@ -191,59 +191,40 @@ h3 {
 }
 
 
+
+
 /*
    Navbar
 */
 
-#menu {
-  /* min-width: 63em; */
-  list-style-type: none;
-  padding: 0;
-  margin: 0;
-  height: 1.5em;
-  background-color: #eee;
-  border-bottom: solid 1px black;
+ul#menu {
+	text-align: center;
+	margin: 1em 2em;
+	background: #EAEBEE url(http://validator.w3.org/images/round-br.png) no-repeat bottom right;
+	padding: 0.5em 0 0.3em;
+	border-top: 1px solid #DCDDE0;
 }
 
-#menu li {
-  display: inline;
-  padding: 0;
-  margin: 0;
+ul#menu span {
+	display: none;
 }
 
-#menu li a:link, #menu li a:visited {
-  text-decoration: none;
-  text-align: center;
-  float: left;
-  display: block;
-  width: 8em;
-  padding: 2px 0px;
-  margin: 0;
-  background-color: #eee;
-  color: #053188;
-  font-size: smaller;
-  font-variant: small-caps;
-  border-right: solid 1px #bbb;
-  border-bottom: solid 1px #ddd;
+ul#menu a:link, ul#menu a:visited {
+	background: #EAEBEE;
+	color: #365D95;
+	text-decoration: none;
 }
 
-#menu li a#selected:link, #menu li a#selected:visited {
-  text-decoration: underline;
-  background-color: #fff;
-  color: #053188;
+ul#menu a:hover, ul#menu a:active {
+	color: #1f2126;
+	text-decoration: underline;
 }
 
-#menu li a:hover {
-  text-decoration: underline;
-  background-color: #fff;
-  color: #053188;
+ul#menu li {
+	display: inline;
+	margin-right: 0.8em;
 }
 
-#menu li a:active {
-  background-color: #fff;
-  color: #053188;
-  border-right: solid 1px #ddd;
-}
 
 /* Results */
 .report {
