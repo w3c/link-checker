@@ -4,7 +4,7 @@
    Copyright 2000-2007 W3C (MIT, INRIA, Keio). All Rights Reserved.
    See http://www.w3.org/Consortium/Legal/ipr-notice.html#Copyright
 
-   $Id: linkchecker.css,v 1.16 2007-09-11 08:20:09 ot Exp $
+   $Id: linkchecker.css,v 1.17 2007-09-12 02:45:55 ot Exp $
 */
 
 html, body {
@@ -28,16 +28,18 @@ div#main form {
 	border-bottom: 1px solid #DCDDE0;
 }
 
+a img {
+	border: 0;
+}
+
 a:link, a:visited {
-  color: blue;
+	text-decoration: underline;
+	color: #365D95;
 }
-a:hover {
-  color: blue;
-  background-color: #eee;
-}
-a:active {
-  color: red;
-  background-color: yellow;
+
+a:hover, a:active {
+	text-decoration: underline;
+	color: #1f2126;
 }
 
 acronym:hover, abbr:hover {
@@ -58,10 +60,70 @@ pre {
 }
 
 fieldset {
-  background: #fcfcfc;
-  border: 1px dotted #053188;
-  padding: 0.8em;
+  border: 0;
+  padding :0;
 }
+legend {
+	font-size: 1.1em;
+	padding: 1em 0 0.23em;
+	letter-spacing: 0.06em;
+}
+
+fieldset p {
+  margin: 0 !important;
+  padding: 0.7em 0 0.5em 1em;
+  border-top: 1px solid #cbcdd5;
+  background: #EAEBEE url(../images/double.png) left top repeat-x;
+}
+
+input#uri {
+	font-family: Monaco, "Courier New", Monospace;
+	font-size: 0.9em;
+	border: 1px solid #bbb;
+	border-top: 1px solid #777;
+	border-bottom: 1px solid #ddd;
+	background: #fefefe url(../images/textbg.png) no-repeat top left;
+	padding: 0.2em 0.2em;
+	max-width: 1000px;
+	font-variant: normal;
+	width: 95%;
+	margin: 0.3em 0 0 1em;
+}
+
+
+p.submit_button {
+  padding: 0.6em 0 0;
+  margin: 0;
+  text-align: center;
+  border-top: 1px solid #cbcdd5;
+  background: #EAEBEE url(../images/double.png) left top repeat-x;
+}
+
+p.submit_button input {
+	overflow: visible;
+	width: auto;
+	background: #fff;
+  color: #365D95;
+  padding: 0.3em 0.4em 0.1em 0.3em;
+	font-size: 1em;
+	width: 9em;
+	text-align: center;
+	border-bottom: 2px solid #444;
+	border-right: 2px solid #444;
+	border-top: 1px solid #aaa;
+	border-left: 1px solid #aaa;
+	background: #eee url(../images/grad.png) repeat-x top left;
+	cursor: pointer;
+}
+
+p.submit_button input:active {
+  color: #1f2126;
+	border-bottom: 1px solid #aaa;
+	border-right: 1px solid #aaa;
+	border-top: 2px solid #444;
+	border-left: 2px solid #444;
+}
+
 
 a:link img, a:visited img {
   border-style: none;
