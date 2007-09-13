@@ -4,7 +4,7 @@
    Copyright 2000-2007 W3C (MIT, INRIA, Keio). All Rights Reserved.
    See http://www.w3.org/Consortium/Legal/ipr-notice.html#Copyright
 
-   $Id: linkchecker.css,v 1.17 2007-09-12 02:45:55 ot Exp $
+   $Id: linkchecker.css,v 1.18 2007-09-13 07:44:12 ot Exp $
 */
 
 html, body {
@@ -193,19 +193,17 @@ p.copyright a {
 
 /* Various header(ish) things. Definitions cribbed from the CORE Styles. */
 
-h1, h2, h3, h4, h5, h6, dt {
-  font-family: "Bitstream Vera Sans", sans-serif;
-  font-size-adjust: .53;
-}
-
 
 h1#title {
 	font-family: "Myriad Web", "Myriad Pro", "Gill Sans", Helvetica, Arial, Sans-Serif;
 	background-color: #365D95;
 	color: #fdfdfd;
 	font-size: 1.6em;
+	  font-weight: normal;
 	background: url(../images/head-bl.png) bottom left no-repeat;
 	padding-bottom: 0.430em;
+	margin:0;
+	line-height: 1;
 }
 h1#title a, h1#title a img {
 background-color: #365D95;
@@ -224,6 +222,16 @@ h1#title a:link, h1#title a:hover, h1#title a:visited, h1#title a:active {
 h1#title img {
 	vertical-align: middle;
 	margin-right: 0.7em;
+}
+
+p#tagline {
+	font-size: 0.7em;
+	margin: -2em 0 0 12.1em;
+	padding-bottom: 1em;
+	letter-spacing: 0.1em;
+	line-height: 100% !important;
+	color: #D0DCEE;
+	background-color: transparent;
 }
 
 div#banner {
