@@ -5,7 +5,7 @@
 # (c) 1999-2007 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.64 2007-09-02 08:48:36 ville Exp $
+# $Id: checklink,v 4.65 2007-09-13 07:28:21 ot Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -204,7 +204,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.3';
   $REVISION    = sprintf('version %s (c) 1999-2007 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.64 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.65 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver, LWP::RobotUA->_agent());
 
@@ -2168,15 +2168,8 @@ EOF
 sub banner ($)
 {
   my ($title) = @_;
-  printf(<<'EOF', &encode($title), $Cfg{Doc_URI}, $Cfg{Doc_URI});
-<div id="banner"><h1 id="title"><a href="http://www.w3.org/" title="W3C"><img alt="W3C" id="logo" src="http://www.w3.org/Icons/w3c_home" height="48" width="72"></a> Link Checker%s</h1></div>
-<ul class="navbar" id="menu">
-  <li><span class="hideme"><a href="#results1" accesskey="2" title="Skip past navigation to main part of page">Skip Navigation</a> |</span>
-      <a href="%s" accesskey="3" title="Documentation for this Link Checker Service">Docs</a></li>
-  <li><a href="http://search.cpan.org/dist/W3C-LinkChecker/" title="Download the source / Install this service">Download</a></li>
-  <li><a href="%s#csb" title="feedback: comments, suggestions and bugs" accesskey="4">Feedback</a></li>
-  <li><a href="http://validator.w3.org/" title="Validate your markup with the W3C Markup Validation Service">Validator</a></li>
-</ul>
+  printf(<<'EOF', &encode($title));
+<div id="banner"><h1 id="title"><a href="http://www.w3.org/" title="W3C"><img alt="W3C" id="logo" src="http://validator.w3.org/images/w3c.png"></a> Link Checker%s</h1></div>
 <div id="main">
 EOF
   return;
@@ -2221,8 +2214,19 @@ sub show_url ($;$)
 sub html_footer ()
 {
   printf("<p>%s</p>\n", &global_stats()) if ($doc_count > 0 && !$Opts{Quiet});
-  printf(<<'EOF', $PACKAGE, $REVISION);
+  printf(<<'EOF', $Cfg{Doc_URI}, $Cfg{Doc_URI}, $PACKAGE, $REVISION);
+  <div class="intro">
+      <p>This Link Checker looks for issues in links, anchors and referenced objects in a Web page, or recursively on a whole Web site. 
+      For best results, it is recommended to first ensure that the documents checked use <a href="http://validator.w3.org/">Valid (X)HTML Markup</a>. The Link Checker is part of the W3C's <a href="http://www.w3.org/QA/Tools/">validators and Quality Web tools</a>.</p>
+  </div>
 </div><!-- main -->
+<ul class="navbar" id="menu">
+  <li><span class="hideme"><a href="#results1" accesskey="2" title="Skip past navigation to main part of page">Skip Navigation</a> |</span>
+      <a href="%s" accesskey="3" title="Documentation for this Link Checker Service">Docs</a></li>
+  <li><a href="http://search.cpan.org/dist/W3C-LinkChecker/" title="Download the source / Install this service">Download</a></li>
+  <li><a href="%s#csb" title="feedback: comments, suggestions and bugs" accesskey="4">Feedback</a></li>
+  <li><a href="http://validator.w3.org/" title="Validate your markup with the W3C Markup Validation Service">Validator</a></li>
+</ul>
 <div>
 <address>
 %s<br> %s
@@ -2304,7 +2308,7 @@ of a document that you would like to check:</label></p>
     <br><br>", $cookie_options, "
   </p>
 </fieldset>
-<p><input type=\"submit\" name=\"check\" value=\"Check\"></p>
+<p class=\"submit_button\"><input type=\"submit\" name=\"check\" value=\"Check\"></p>
 </form>
 ";
   return;
