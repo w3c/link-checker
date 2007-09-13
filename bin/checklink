@@ -5,7 +5,7 @@
 # (c) 1999-2007 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.65 2007-09-13 07:28:21 ot Exp $
+# $Id: checklink,v 4.66 2007-09-13 07:43:56 ot Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -204,7 +204,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.3';
   $REVISION    = sprintf('version %s (c) 1999-2007 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.65 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.66 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver, LWP::RobotUA->_agent());
 
@@ -2167,9 +2167,13 @@ EOF
 
 sub banner ($)
 {
-  my ($title) = @_;
-  printf(<<'EOF', &encode($title));
-<div id="banner"><h1 id="title"><a href="http://www.w3.org/" title="W3C"><img alt="W3C" id="logo" src="http://validator.w3.org/images/w3c.png"></a> Link Checker%s</h1></div>
+  
+  my $tagline ="Check links and anchors in Web pages or full Web sites";
+  
+  printf(<<'EOF', $tagline);
+<div id="banner"><h1 id="title"><a href="http://www.w3.org/" title="W3C"><img alt="W3C" id="logo" src="http://validator.w3.org/images/w3c.png"></a>
+<a href="checklink"><span>Link Checker</span></a></h1>
+<p id="tagline">%s</p></div>
 <div id="main">
 EOF
   return;
