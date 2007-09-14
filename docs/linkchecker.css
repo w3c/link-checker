@@ -4,7 +4,7 @@
    Copyright 2000-2007 W3C (MIT, INRIA, Keio). All Rights Reserved.
    See http://www.w3.org/Consortium/Legal/ipr-notice.html#Copyright
 
-   $Id: linkchecker.css,v 1.19 2007-09-14 05:15:06 ot Exp $
+   $Id: linkchecker.css,v 1.20 2007-09-14 05:30:56 ot Exp $
 */
 
 html, body {
@@ -308,6 +308,27 @@ ul#menu li {
 dt.report {
   font-weight: bold;
 }
+
+dl.report {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding:0;
+    border-bottom: 1px solid #EAEBEE;
+}
+dl.report dt {border-top: 1px solid #EAEBEE;}
+dl.report dt, dl.report dd {
+  border-left: 1px solid #EAEBEE;
+  border-right: 1px solid #EAEBEE;
+  border-bottom: 0;
+  padding: 1em;
+}
+dl.report dd {
+  border-top: 0;
+  margin: 0;
+  padding: 0 0 0 2em;
+  text-indent: 0;  
+}
+
 div.settings {
   font-size: smaller;
   float: right;
