@@ -5,7 +5,7 @@
 # (c) 1999-2007 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.68 2007-09-13 16:38:22 ville Exp $
+# $Id: checklink,v 4.69 2007-09-14 05:14:29 ot Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -204,7 +204,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.3';
   $REVISION    = sprintf('version %s (c) 1999-2007 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.68 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.69 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver, LWP::RobotUA->_agent());
 
@@ -375,7 +375,7 @@ if ($Opts{Command_Line}) {
     @{$Opts{Base_Locations}} = @bases;
     # Transform the parameter into a URI
     $uri = &urize($uri);
-    &check_uri($uri, $is_first, $Opts{Depth}, undef, undef, 1);
+    &check_uri(undef, $uri, $is_first, $Opts{Depth}, undef, undef, 1);
     $is_first &&= 0;
   }
   undef $is_first;
@@ -464,7 +464,6 @@ if ($Opts{Command_Line}) {
     $cookie = $query->cookie(%cookie);
   }
 
-  undef $query; # Not needed any more.
 
   # All Apache configurations don't set HTTP_AUTHORIZATION for CGI scripts.
   # If we're under mod_perl, there is a way around it...
@@ -487,7 +486,8 @@ if ($Opts{Command_Line}) {
     }
   }
 
-  &check_uri($uri, 1, $Opts{Depth}, $cookie);
+  &check_uri($query, $uri, 1, $Opts{Depth}, $cookie);
+  undef $query; # Not needed any more.
   &html_footer();
 }
 
@@ -713,13 +713,15 @@ sub urize ($)
 # Check for broken links in a resource #
 ########################################
 
-sub check_uri ($$$;$$$)
+sub check_uri ($$$$;$$$)
 {
-  my ($uri, $is_first, $depth, $cookie, $referer, $is_start) = @_;
+  my ($query, $uri, $is_first, $depth, $cookie, $referer, $is_start) = @_;
   $is_start ||= $is_first;
 
   if ($Opts{HTML}) {
     &html_header($uri, 0, $cookie) if $is_first;
+    &print_form($query) if $is_start;
+    
     print('<h2>');
   }
 
@@ -803,7 +805,7 @@ EOF
              &encode(sprintf($Cfg{Markup_Validator_URI}, $esc_uri)),
              &encode(sprintf($Cfg{CSS_Validator_URI}, $esc_uri)),
              &encode($Opts{_Self_URI}));
-      print("<pre>\n");
+      print("<pre id=\"progress\">\n");
     }
   }
 
@@ -971,9 +973,9 @@ EOF
         }
       }
       if ($depth < 0) {
-        &check_uri($u, 0, -1, undef, $uri);
+        &check_uri($query, $u, 0, -1, undef, $uri);
       } else {
-        &check_uri($u, 0, $depth-1, undef, $uri);
+        &check_uri($query, $u, 0, $depth-1, undef, $uri);
       }
     }
   }
@@ -2218,11 +2220,15 @@ sub show_url ($;$)
 sub html_footer ()
 {
   printf("<p>%s</p>\n", &global_stats()) if ($doc_count > 0 && !$Opts{Quiet});
-  printf(<<'EOF', $Cfg{Doc_URI}, $Cfg{Doc_URI}, $PACKAGE, $REVISION);
+  if (! $doc_count) {
+  printf(<<'EOF', $Cfg{Doc_URI}, $Cfg{Doc_URI}); 
   <div class="intro">
       <p>This Link Checker looks for issues in links, anchors and referenced objects in a Web page, or recursively on a whole Web site. 
       For best results, it is recommended to first ensure that the documents checked use <a href="http://validator.w3.org/">Valid (X)HTML Markup</a>. The Link Checker is part of the W3C's <a href="http://www.w3.org/QA/Tools/">validators and Quality Web tools</a>.</p>
   </div>
+EOF
+}
+printf(<<'EOF', $PACKAGE, $REVISION);
 </div><!-- main -->
 <ul class="navbar" id="menu">
   <li><a href="%s" accesskey="3" title="Documentation for this Link Checker Service">Docs</a></li>
@@ -2269,6 +2275,7 @@ sub print_form ($)
   my $chk = ' checked="checked"';
   $q->param('hide_type', 'all') unless $q->param('hide_type');
 
+  my $requested_uri = &encode($q->param('uri') || ''); 
   my $sum = $q->param('summary')              ? $chk : '';
   my $red = $q->param('hide_redirects')       ? $chk : '';
   my $all = ($q->param('hide_type') ne 'dir') ? $chk : '';
@@ -2292,7 +2299,7 @@ sub print_form ($)
   print "<form action=\"", $Opts{_Self_URI}, "\" method=\"get\" onsubmit=\"return uriOk()\">
 <p><label for=\"uri\">Enter the address (<a href=\"http://www.w3.org/Addressing/\">URL</a>)
 of a document that you would like to check:</label></p>
-<p><input type=\"text\" size=\"50\" id=\"uri\" name=\"uri\" value=\"\"></p>
+<p><input type=\"text\" size=\"50\" id=\"uri\" name=\"uri\" value=\"",$requested_uri,"\"></p>
 <fieldset>
   <legend>Options</legend>
   <p>
