@@ -4,7 +4,7 @@
    Copyright 2000-2007 W3C (MIT, INRIA, Keio). All Rights Reserved.
    See http://www.w3.org/Consortium/Legal/ipr-notice.html#Copyright
 
-   $Id: linkchecker.css,v 1.18 2007-09-13 07:44:12 ot Exp $
+   $Id: linkchecker.css,v 1.19 2007-09-14 05:15:06 ot Exp $
 */
 
 html, body {
@@ -55,8 +55,13 @@ pre, code, tt {
   line-height: 100%;
   white-space: pre;
 }
-pre {
-  padding-left: 2em;
+
+pre#progress {
+  height: 12em;
+  font-size: small;
+  overflow: auto;
+	padding: 0.5em 1.3em;
+	border: 1px solid #DCDDE0;
 }
 
 fieldset {
