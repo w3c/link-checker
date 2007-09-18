@@ -5,7 +5,7 @@
 # (c) 1999-2007 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.70 2007-09-15 07:47:40 ville Exp $
+# $Id: checklink,v 4.71 2007-09-18 06:06:32 ot Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -204,7 +204,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.3';
   $REVISION    = sprintf('version %s (c) 1999-2007 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.70 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.71 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver, LWP::RobotUA->_agent());
 
@@ -1807,14 +1807,17 @@ on how to solve this</a>.';
       } else {
         $whattodo = $todo->{$c};
       }
-      # @@@ 303 and 307 ???
-      if (defined($redirects{$u}) && ($c != 301) && ($c != 302)) {
-        $redirect_too = 'The original request has been redirected.';
-        $whattodo .= ' '.$redirect_too unless $Opts{HTML};
+    } elsif (defined($redirects{$u})) {
+      # Redirects
+      if (($u.'/') eq $redirects{$u}) {
+        $whattodo = 'The link is missing a trailing slash, and caused a redirect. Adding the trailing slash would speed up browsing.';
       }
-    } else {
-      # Directory redirects
-      $whattodo = 'Add a trailing slash to the URL.';
+      elsif  (($c eq 307) || ($c eq 302)) {
+        $whattodo = 'This is a temporary redirect. Update the link if you believe it makes sense, or leave it as is.';
+      }
+      elsif ($c eq 301) {
+        $whattodo = 'This is a permanent redirect. The link should be updated.';
+      }
     }
 
     my @unique = &sort_unique(map { line_number($_) } @total_lines);
@@ -1858,7 +1861,7 @@ Response message: %s%s%s</dd>
              $idref,
              # List of redirects
              $redirected ?
-             join(' redirected to<br>', @redirects_urls) . $redirmsg :
+             join(' redirected to ', @redirects_urls) . $redirmsg :
              &show_url($u),
              # Color
              &bgcolor($c),
@@ -1959,10 +1962,10 @@ sub links_summary (\%\%\%\%)
 
   my %todo = ( 200 => 'There are broken fragments which must be fixed.',
                300 => 'It usually means that there is a typo in a link that triggers mod_speling action - this must be fixed!',
-               301 => 'You should update the link.',
-               302 => 'Usually nothing.',
+               301 => 'This is a permanent redirect. The link should be updated.',
+               302 => 'This is a temporary redirect. Update the link if you believe it makes sense, or leave it as is.',
                303 => 'Usually nothing.',
-               307 => 'Usually nothing.',
+               307 => 'This is a temporary redirect. Update the link if you believe it makes sense, or leave it as is.',
                400 => 'Usually the sign of a malformed URL that cannot be parsed by the server.',
                401 => "The link is not public. You'd better specify it.",
                403 => 'The link is forbidden! This needs fixing. Usual suspects: a missing index.html or Overview.html, or a missing ACL.',
@@ -2002,8 +2005,7 @@ sub links_summary (\%\%\%\%)
       # Check whether we have a "directory redirect"
       # e.g. http://www.w3.org/TR -> http://www.w3.org/TR/
       my ($redirect_loop, @redirects) = get_redirects($l, %$redirects);
-      if (($#redirects == 1)
-          && (($redirects[0].'/') eq $redirects[1])) {
+      if ($#redirects == 1) {
         push(@dir_redirect_urls, $l);
         next;
       }
@@ -2086,8 +2088,8 @@ EOF
   # Show directory redirects
   if ($Opts{Dir_Redirects} && ($#dir_redirect_urls > -1)) {
     print('<h3>') if $Opts{HTML};
-    print("\nList of directory redirects");
-    print("</h3>\n<p>The links below are not broken, but the document does not use the exact URL.</p>") if $Opts{HTML};
+    print("\nList of redirects");
+    print("</h3>\n<p>The links below are not broken, but the document does not use the exact URL, and the links were redirected. It may be a good idea to link to the final location, for the sake of speed.</p>") if $Opts{HTML};
     &show_link_report($links, $results, $broken, $redirects,
                       \@dir_redirect_urls);
   }
