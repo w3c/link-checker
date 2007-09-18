@@ -5,7 +5,7 @@
 # (c) 1999-2007 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.71 2007-09-18 06:06:32 ot Exp $
+# $Id: checklink,v 4.72 2007-09-18 06:09:56 ot Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -204,7 +204,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.3';
   $REVISION    = sprintf('version %s (c) 1999-2007 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.71 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.72 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver, LWP::RobotUA->_agent());
 
@@ -1969,7 +1969,7 @@ sub links_summary (\%\%\%\%)
                400 => 'Usually the sign of a malformed URL that cannot be parsed by the server.',
                401 => "The link is not public. You'd better specify it.",
                403 => 'The link is forbidden! This needs fixing. Usual suspects: a missing index.html or Overview.html, or a missing ACL.',
-               404 => 'The link is broken. Fix it NOW!',
+               404 => 'The link is broken. Fix it.',
                405 => 'The server does not allow HEAD requests. Go ask the guys who run this server why. Check the link manually.',
                406 => "The server isn't capable of responding according to the Accept* headers sent. Check it out.",
                407 => 'The link is a proxy, but requires Authentication.',
@@ -1981,7 +1981,7 @@ sub links_summary (\%\%\%\%)
                503 => 'The server cannot service the request, for some unknown reason.',
                # Non-HTTP codes:
                RC_ROBOTS_TXT() => "The link was not checked due to <a href=\"http://www.robotstxt.org/wc/exclusion.html#robotstxt\">robots exclusion rules</a>. Check the link manually, and see also the link checker <a href=\"$Cfg{Doc_URI}#bot\">documentation on robots exclusion</a>.",
-               RC_DNS_ERROR() => 'The hostname could not be resolved. This link needs to be fixed.',
+               RC_DNS_ERROR() => 'The hostname could not be resolved. Check the link for typos.',
              );
   my %priority = ( 410 => 1,
                    404 => 2,
