@@ -5,7 +5,7 @@
 # (c) 1999-2007 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.74 2007-09-18 07:18:46 ot Exp $
+# $Id: checklink,v 4.75 2007-09-18 16:24:13 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -204,7 +204,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.3';
   $REVISION    = sprintf('version %s (c) 1999-2007 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.74 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.75 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver, LWP::RobotUA->_agent());
 
@@ -1158,6 +1158,9 @@ sub get_uri ($$;$$\%$$$$)
 
   # Set referer
   $request->referer($referer) if (!$Opts{No_Referer} && $referer);
+
+  # Telling caches in the middle we want a fresh copy (Bug 4998)
+  $request->header(Cache_Control => "max-age=0");
 
   # Do the query
   my $response = $ua->request($request);
