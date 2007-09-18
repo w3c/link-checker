@@ -5,7 +5,7 @@
 # (c) 1999-2007 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.73 2007-09-18 06:43:25 ot Exp $
+# $Id: checklink,v 4.74 2007-09-18 07:18:46 ot Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -204,7 +204,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.3';
   $REVISION    = sprintf('version %s (c) 1999-2007 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.73 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.74 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver, LWP::RobotUA->_agent());
 
@@ -1888,12 +1888,7 @@ Response message: %s%s%s</dd>
              $lines_list);
       if ($#fragments >= 0) {
         my $fragment_direction = '';
-        if ($currloc->{code} == 200) {
-          $fragment_direction =
-            ' <strong>They need to be fixed!</strong>';
-        }
-        printf("<dd><dl><dt>Broken fragments and their line numbers: %s</dt>\n",
-               $fragment_direction);
+        printf("<dd>Broken fragments: <ul>\n");
       }
     } else {
       my $redirmsg = $redirect_loop ? ' redirect loop detected' : '';
@@ -1919,9 +1914,9 @@ Response message: %s%s%s</dd>
     # Fragments
     foreach my $f (@fragments) {
       if ($Opts{HTML}) {
-        printf("<dd>%s: %s</dd>\n",
+        printf("<li>$u<em>#%s</em> (Linked on line(s) %s)</li>\n",
                # Broken fragment
-               &show_url($u, $f),
+               $f,
                # List of lines
                join(', ', &sort_unique(keys %{$links->{$u}{fragments}{$f}})));
       } else {
@@ -1936,7 +1931,7 @@ Response message: %s%s%s</dd>
       }
     }
 
-    print("</dl></dd>\n") if ($Opts{HTML} && scalar(@fragments));
+    print("</ul></dd>\n") if ($Opts{HTML} && scalar(@fragments));
   }
 
   # End of the table
@@ -1960,7 +1955,7 @@ sub links_summary (\%\%\%\%)
 {
   # Advices to fix the problems
 
-  my %todo = ( 200 => 'There are broken fragments which must be fixed.',
+  my %todo = ( 200 => 'Some of the links to this resource point to broken URI fragments, which should be removed or fixed.',
                300 => 'It usually means that there is a typo in a link that triggers mod_speling action - this must be fixed!',
                301 => 'This is a permanent redirect. The link should be updated.',
                302 => 'This is a temporary redirect. Update the link if you believe it makes sense, or leave it as is.',
@@ -2189,7 +2184,7 @@ sub status_icon($)
   my $icon_type;
   my $r = HTTP::Response->new($code);
   if ($r->is_success()) {
-    return '';
+    $icon_type = 'error'; # if is success but reported, it's because of broken frags => error
   } elsif ($code == RC_ROBOTS_TXT()) {
     $icon_type = 'info';
   } elsif ($code == 300) {
