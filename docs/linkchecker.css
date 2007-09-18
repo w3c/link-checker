@@ -4,7 +4,7 @@
    Copyright 2000-2007 W3C (MIT, INRIA, Keio). All Rights Reserved.
    See http://www.w3.org/Consortium/Legal/ipr-notice.html#Copyright
 
-   $Id: linkchecker.css,v 1.20 2007-09-14 05:30:56 ot Exp $
+   $Id: linkchecker.css,v 1.21 2007-09-18 06:43:26 ot Exp $
 */
 
 html, body {
@@ -315,12 +315,14 @@ dl.report {
     padding:0;
     border-bottom: 1px solid #EAEBEE;
 }
-dl.report dt {border-top: 1px solid #EAEBEE;}
 dl.report dt, dl.report dd {
   border-left: 1px solid #EAEBEE;
   border-right: 1px solid #EAEBEE;
   border-bottom: 0;
   padding: 1em;
+}
+dl.report dt {border-top: 1px solid #EAEBEE;
+  padding-left: .5em;
 }
 dl.report dd {
   border-top: 0;
@@ -341,7 +343,8 @@ div.settings ul {
   background-color: aqua;
 }
 .redirect {
-  background-color: yellow;
+  font-weight: normal;
+  font-style: italic;
 }
 .broken {
   background-color: red;
@@ -350,5 +353,13 @@ div.settings ul {
   background-color: fuchsia;
 }
 .dubious {
-  background-color: #ccc;
+  background-color: #dadada;
+}
+
+span.err_type img {
+    width: 1.2em;
+    height: 1.2em;
+    padding-bottom: .2em;
+    margin-right: .5em;
+    vertical-align: middle;
 }
