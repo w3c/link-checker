@@ -5,7 +5,7 @@
 # (c) 1999-2007 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.75 2007-09-18 16:24:13 ville Exp $
+# $Id: checklink,v 4.76 2007-10-23 07:19:04 ot Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -204,7 +204,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.3';
   $REVISION    = sprintf('version %s (c) 1999-2007 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.75 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.76 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver, LWP::RobotUA->_agent());
 
@@ -260,6 +260,15 @@ $@
 <meta http-equiv="Content-Script-Type" content="text/javascript">
 <meta name="generator" content="%s">
 <link rel="stylesheet" type="text/css" href="%s">
+<script type="text/javascript">
+function show_progress(progress_text, progress_head_id) {
+var progressHead = document.getElementById(progress_head_id);
+var txt = document.createTextNode(progress_text);
+oChild=progressHead.childNodes[1];
+oNewChild=document.createElement("span");
+oNewChild.appendChild(txt);
+progressHead.replaceChild(oNewChild, oChild);
+};</script>
 EOF
 
   # Trusted environment variables that need laundering in taint mode.
@@ -805,7 +814,10 @@ EOF
              &encode(sprintf($Cfg{Markup_Validator_URI}, $esc_uri)),
              &encode(sprintf($Cfg{CSS_Validator_URI}, $esc_uri)),
              &encode($Opts{_Self_URI}));
-      print("<pre id=\"progress\">\n");
+      
+      printf ('<h3 class="status_progress" id="status_progress%s">Status: <span></span></h3>', $result_anchor);
+      print("<pre class=\"progress\">\n");
+      
     }
   }
 
@@ -888,6 +900,8 @@ EOF
       # Hack: avoid browser/server timeouts in summary only CGI mode, bug 896
       print ' ' if ($Opts{HTML} && !$Opts{Command_Line});
     } else {
+      printf('<script type="text/javascript">show_progress("Checking link %s", "status_progress%s");</script>' , $u, $result_anchor)
+      if ($Opts{HTML} && !$Opts{Summary_Only}); 
       &hprintf("Checking link %s\n", $u);
     }
 
@@ -928,9 +942,10 @@ EOF
       }
     }
   }
-
+  printf('<script type="text/javascript">show_progress("Done. Document processed in %ss.\n");</script>' , &time_diff($start, &get_timestamp()))
+  if ($Opts{HTML} && !$Opts{Summary_Only}); 
   &hprintf("Processed in %ss.\n", &time_diff($start, &get_timestamp()))
-    unless $Opts{Summary_Only};
+   unless $Opts{Summary_Only};
 
   # Display results
   if ($Opts{HTML} && !$Opts{Summary_Only}) {
@@ -2323,8 +2338,9 @@ sub print_form ($)
 <p><label for=\"uri\">Enter the address (<a href=\"http://www.w3.org/Addressing/\">URL</a>)
 of a document that you would like to check:</label></p>
 <p><input type=\"text\" size=\"50\" id=\"uri\" name=\"uri\" value=\"",$requested_uri,"\"></p>
-<fieldset>
-  <legend>Options</legend>
+<fieldset id=\"extra_opt_uri\" class=\"moreoptions\">
+	<legend class=\"toggletext\">More Options</legend>
+	<div class=\"options\">
   <p>
     <label for=\"summary\"><input type=\"checkbox\" id=\"summary\" name=\"summary\" value=\"on\"", $sum, "> Summary only</label>
     <br>
@@ -2340,6 +2356,7 @@ of a document that you would like to check:</label></p>
     <label title=\"Depth of the recursion (-1 is the default and means unlimited)\" for=\"depth\">recursion depth: <input type=\"text\" size=\"3\" maxlength=\"3\" id=\"depth\" name=\"depth\" value=\"", $dep, "\"></label>
     <br><br>", $cookie_options, "
   </p>
+  </div>
 </fieldset>
 <p class=\"submit_button\"><input type=\"submit\" name=\"check\" value=\"Check\"></p>
 </form>
