@@ -5,7 +5,7 @@
 # (c) 1999-2007 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.76 2007-10-23 07:19:04 ot Exp $
+# $Id: checklink,v 4.77 2007-10-24 05:18:20 ot Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -204,7 +204,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.3';
   $REVISION    = sprintf('version %s (c) 1999-2007 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.76 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.77 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver, LWP::RobotUA->_agent());
 
@@ -942,7 +942,7 @@ EOF
       }
     }
   }
-  printf('<script type="text/javascript">show_progress("Done. Document processed in %ss.\n");</script>' , &time_diff($start, &get_timestamp()))
+  printf('<script type="text/javascript">show_progress("Done. Document processed in %ss.\n", "status_progress%s");</script>' , &time_diff($start, &get_timestamp()), $result_anchor)
   if ($Opts{HTML} && !$Opts{Summary_Only}); 
   &hprintf("Processed in %ss.\n", &time_diff($start, &get_timestamp()))
    unless $Opts{Summary_Only};
