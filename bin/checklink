@@ -5,7 +5,7 @@
 # (c) 1999-2007 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.79 2008-01-24 01:28:00 ot Exp $
+# $Id: checklink,v 4.80 2008-01-24 01:29:38 ot Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -204,7 +204,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.3';
   $REVISION    = sprintf('version %s (c) 1999-2007 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.79 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.80 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver, LWP::RobotUA->_agent());
 
@@ -1596,7 +1596,7 @@ EOF
     printf("Status: 401 Authorization Required\nWWW-Authenticate: %s\nConnection: close\nContent-Language: en\nContent-Type: text/html; charset=utf-8\n\n", $r->headers->www_authenticate);
 
     printf("%s
-<html lang=\"en\" xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" >
+<html lang=\"en\" xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\">
 <head>
 <title>W3C Link Checker: 401 Authorization Required</title>
 %s</head>
@@ -2173,7 +2173,7 @@ EOF
   }
 
   print $headers, $DocType, "
-<html lang=\"en\">
+<html lang=\"en\" xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\">
 <head>
 <title>W3C Link Checker", &encode($title), "</title>
 ", $Head, $script, "</head>
