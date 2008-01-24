@@ -5,7 +5,7 @@
 # (c) 1999-2007 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.77 2007-10-24 05:18:20 ot Exp $
+# $Id: checklink,v 4.78 2008-01-24 01:21:39 ot Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -204,7 +204,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.3';
   $REVISION    = sprintf('version %s (c) 1999-2007 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.77 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.78 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver, LWP::RobotUA->_agent());
 
@@ -255,11 +255,11 @@ $@
   $Cfg{Style_URI} ||=
     'http://validator.w3.org/docs/linkchecker.css';
 
-  $DocType = '<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">';
+  $DocType = '  <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">';
   $Head = sprintf(<<'EOF', HTML::Entities::encode($AGENT), $Cfg{Style_URI});
-<meta http-equiv="Content-Script-Type" content="text/javascript">
-<meta name="generator" content="%s">
-<link rel="stylesheet" type="text/css" href="%s">
+<meta http-equiv="Content-Script-Type" content="text/javascript" />
+<meta name="generator" content="%s" />
+<link rel="stylesheet" type="text/css" href="%s" />
 <script type="text/javascript">
 function show_progress(progress_text, progress_head_id) {
 var progressHead = document.getElementById(progress_head_id);
@@ -754,7 +754,7 @@ sub check_uri ($$$$;$$$)
       return;
     }
 
-    print $Opts{HTML} ? '<hr>' : '-' x 40, "\n";
+    print $Opts{HTML} ? '<hr />' : '-' x 40, "\n";
   }
 
   # We are checking a new document
@@ -977,7 +977,7 @@ EOF
       if ($Opts{HTML}) {
         if (!$Opts{Command_Line}) {
           if ($doc_count == $Opts{Max_Documents}) {
-            print("<hr>\n<p><strong>Maximum number of documents reached!</strong></p>\n");
+            print("<hr />\n<p><strong>Maximum number of documents reached!</strong></p>\n");
           }
           if ($doc_count >= $Opts{Max_Documents}) {
             $doc_count++;
@@ -1603,7 +1603,7 @@ EOF
 <body>", $DocType, $Head);
     &banner(': 401 Authorization Required');
     printf("<p>
-  You need \"%s\" access to <a href=\"%s\">%s</a> to perform link checking.<br>
+  You need \"%s\" access to <a href=\"%s\">%s</a> to perform link checking.<br />
 ", &encode($realm), (&encode($r->request()->url())) x 2);
 
     if ($Opts{Trusted}) {
@@ -1871,8 +1871,8 @@ on how to solve this</a>.';
         $redirect_loop ? ' <em>redirect loop detected</em>' : '';
       printf("
 <dt%s>%s%s</dt>
-<dd>What to do: <em>%s</em>%s<br></dd>
-<dd>Response status code: %s<br>
+<dd>What to do: <em>%s</em>%s<br /></dd>
+<dd>Response status code: %s<br />
 Response message: %s%s%s</dd>
 <dd>Line%s: %s</dd>\n",
              # Anchor for return codes
@@ -1893,7 +1893,7 @@ Response message: %s%s%s</dd>
                   map { &encode($_) } @http_codes),
              # Realm
              defined($currloc->{realm})
-             ? sprintf('Realm: %s<br>', &encode($currloc->{realm})) : '',
+             ? sprintf('Realm: %s<br />', &encode($currloc->{realm})) : '',
              # HTTP original message
              defined($currloc->{orig_message})
              ? &encode($currloc->{orig_message}).
@@ -2188,7 +2188,7 @@ sub banner ($)
   my $tagline ="Check links and anchors in Web pages or full Web sites";
   
   printf(<<'EOF', $tagline);
-<div id="banner"><h1 id="title"><a href="http://www.w3.org/" title="W3C"><img alt="W3C" id="logo" src="http://validator.w3.org/images/w3c.png"></a>
+<div id="banner"><h1 id="title"><a href="http://www.w3.org/" title="W3C"><img alt="W3C" id="logo" src="http://validator.w3.org/images/w3c.png" /></a>
 <a href="checklink"><span>Link Checker</span></a></h1>
 <p id="tagline">%s</p></div>
 <div id="main">
@@ -2276,7 +2276,7 @@ EOF
 </ul>
 <div>
 <address>
-%s<br> %s
+%s<br /> %s
 </address>
 </div>
 </body>
@@ -2343,18 +2343,18 @@ of a document that you would like to check:</label></p>
 	<div class=\"options\">
   <p>
     <label for=\"summary\"><input type=\"checkbox\" id=\"summary\" name=\"summary\" value=\"on\"", $sum, "> Summary only</label>
-    <br>
+    <br />
     <label for=\"hide_redirects\"><input type=\"checkbox\" id=\"hide_redirects\" name=\"hide_redirects\" value=\"on\"", $red, "> Hide <a href=\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.3\">redirects</a>:</label>
     <label for=\"hide_type_all\"><input type=\"radio\" id=\"hide_type_all\" name=\"hide_type\" value=\"all\"", $all, "> all</label>
     <label for=\"hide_type_dir\"><input type=\"radio\" id=\"hide_type_dir\" name=\"hide_type\" value=\"dir\"", $dir, "> for directories only</label>
-    <br>
+    <br />
     <label for=\"no_accept_language\"><input type=\"checkbox\" id=\"no_accept_language\" name=\"no_accept_language\" value=\"on\"", $acc, "> Don't send the <tt><a href=\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.4\">Accept-Language</a></tt> header</label>
-    <br>
+    <br />
     <label for=\"no_referer\"><input type=\"checkbox\" id=\"no_referer\" name=\"no_referer\" value=\"on\"", $ref, "> Don't send the <tt><a href=\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.36\">Referer</a></tt> header</label>
-    <br>
+    <br />
     <label title=\"Check linked documents recursively (maximum: ", $Opts{Max_Documents}, " documents)\" for=\"recursive\"><input type=\"checkbox\" id=\"recursive\" name=\"recursive\" value=\"on\"", $rec, "> Check linked documents recursively</label>,
     <label title=\"Depth of the recursion (-1 is the default and means unlimited)\" for=\"depth\">recursion depth: <input type=\"text\" size=\"3\" maxlength=\"3\" id=\"depth\" name=\"depth\" value=\"", $dep, "\"></label>
-    <br><br>", $cookie_options, "
+    <br /><br />", $cookie_options, "
   </p>
   </div>
 </fieldset>
