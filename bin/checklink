@@ -5,7 +5,7 @@
 # (c) 1999-2007 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.78 2008-01-24 01:21:39 ot Exp $
+# $Id: checklink,v 4.79 2008-01-24 01:28:00 ot Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -204,7 +204,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.3';
   $REVISION    = sprintf('version %s (c) 1999-2007 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.78 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.79 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver, LWP::RobotUA->_agent());
 
@@ -1596,7 +1596,7 @@ EOF
     printf("Status: 401 Authorization Required\nWWW-Authenticate: %s\nConnection: close\nContent-Language: en\nContent-Type: text/html; charset=utf-8\n\n", $r->headers->www_authenticate);
 
     printf("%s
-<html lang=\"en\">
+<html lang=\"en\" xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" >
 <head>
 <title>W3C Link Checker: 401 Authorization Required</title>
 %s</head>
@@ -2326,39 +2326,39 @@ sub print_form ($)
   my $cookie_options = '';
   if ($got_cookie) {
     $cookie_options = "
-    <label for=\"cookie1\"><input type=\"radio\" id=\"cookie1\" name=\"cookie\" value=\"nochanges\" checked=\"checked\"> Don't modify saved options</label>
-    <label for=\"cookie2\"><input type=\"radio\" id=\"cookie2\" name=\"cookie\" value=\"set\"> Save these options</label>
-    <label for=\"cookie3\"><input type=\"radio\" id=\"cookie3\" name=\"cookie\" value=\"clear\"> Clear saved options</label>";
+    <label for=\"cookie1\"><input type=\"radio\" id=\"cookie1\" name=\"cookie\" value=\"nochanges\" checked=\"checked\" /> Don't modify saved options</label>
+    <label for=\"cookie2\"><input type=\"radio\" id=\"cookie2\" name=\"cookie\" value=\"set\" /> Save these options</label>
+    <label for=\"cookie3\"><input type=\"radio\" id=\"cookie3\" name=\"cookie\" value=\"clear\" /> Clear saved options</label>";
   } else {
     $cookie_options = "
-    <label for=\"cookie\"><input type=\"checkbox\" id=\"cookie\" name=\"cookie\" value=\"set\"> Save options in a <a href=\"http://www.w3.org/Protocols/rfc2109/rfc2109\">cookie</a></label>";
+    <label for=\"cookie\"><input type=\"checkbox\" id=\"cookie\" name=\"cookie\" value=\"set\" /> Save options in a <a href=\"http://www.w3.org/Protocols/rfc2109/rfc2109\">cookie</a></label>";
   }
 
   print "<form action=\"", $Opts{_Self_URI}, "\" method=\"get\" onsubmit=\"return uriOk()\">
 <p><label for=\"uri\">Enter the address (<a href=\"http://www.w3.org/Addressing/\">URL</a>)
 of a document that you would like to check:</label></p>
-<p><input type=\"text\" size=\"50\" id=\"uri\" name=\"uri\" value=\"",$requested_uri,"\"></p>
+<p><input type=\"text\" size=\"50\" id=\"uri\" name=\"uri\" value=\"",$requested_uri,"\" /></p>
 <fieldset id=\"extra_opt_uri\" class=\"moreoptions\">
 	<legend class=\"toggletext\">More Options</legend>
 	<div class=\"options\">
   <p>
-    <label for=\"summary\"><input type=\"checkbox\" id=\"summary\" name=\"summary\" value=\"on\"", $sum, "> Summary only</label>
+    <label for=\"summary\"><input type=\"checkbox\" id=\"summary\" name=\"summary\" value=\"on\"", $sum, " /> Summary only</label>
     <br />
-    <label for=\"hide_redirects\"><input type=\"checkbox\" id=\"hide_redirects\" name=\"hide_redirects\" value=\"on\"", $red, "> Hide <a href=\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.3\">redirects</a>:</label>
-    <label for=\"hide_type_all\"><input type=\"radio\" id=\"hide_type_all\" name=\"hide_type\" value=\"all\"", $all, "> all</label>
-    <label for=\"hide_type_dir\"><input type=\"radio\" id=\"hide_type_dir\" name=\"hide_type\" value=\"dir\"", $dir, "> for directories only</label>
+    <label for=\"hide_redirects\"><input type=\"checkbox\" id=\"hide_redirects\" name=\"hide_redirects\" value=\"on\"", $red, " /> Hide <a href=\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.3\">redirects</a>:</label>
+    <label for=\"hide_type_all\"><input type=\"radio\" id=\"hide_type_all\" name=\"hide_type\" value=\"all\"", $all, " /> all</label>
+    <label for=\"hide_type_dir\"><input type=\"radio\" id=\"hide_type_dir\" name=\"hide_type\" value=\"dir\"", $dir, " /> for directories only</label>
     <br />
-    <label for=\"no_accept_language\"><input type=\"checkbox\" id=\"no_accept_language\" name=\"no_accept_language\" value=\"on\"", $acc, "> Don't send the <tt><a href=\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.4\">Accept-Language</a></tt> header</label>
+    <label for=\"no_accept_language\"><input type=\"checkbox\" id=\"no_accept_language\" name=\"no_accept_language\" value=\"on\"", $acc, " /> Don't send the <tt><a href=\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.4\">Accept-Language</a></tt> header</label>
     <br />
-    <label for=\"no_referer\"><input type=\"checkbox\" id=\"no_referer\" name=\"no_referer\" value=\"on\"", $ref, "> Don't send the <tt><a href=\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.36\">Referer</a></tt> header</label>
+    <label for=\"no_referer\"><input type=\"checkbox\" id=\"no_referer\" name=\"no_referer\" value=\"on\"", $ref, " /> Don't send the <tt><a href=\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.36\">Referer</a></tt> header</label>
     <br />
-    <label title=\"Check linked documents recursively (maximum: ", $Opts{Max_Documents}, " documents)\" for=\"recursive\"><input type=\"checkbox\" id=\"recursive\" name=\"recursive\" value=\"on\"", $rec, "> Check linked documents recursively</label>,
-    <label title=\"Depth of the recursion (-1 is the default and means unlimited)\" for=\"depth\">recursion depth: <input type=\"text\" size=\"3\" maxlength=\"3\" id=\"depth\" name=\"depth\" value=\"", $dep, "\"></label>
+    <label title=\"Check linked documents recursively (maximum: ", $Opts{Max_Documents}, " documents)\" for=\"recursive\"><input type=\"checkbox\" id=\"recursive\" name=\"recursive\" value=\"on\"", $rec, " /> Check linked documents recursively</label>,
+    <label title=\"Depth of the recursion (-1 is the default and means unlimited)\" for=\"depth\">recursion depth: <input type=\"text\" size=\"3\" maxlength=\"3\" id=\"depth\" name=\"depth\" value=\"", $dep, "\" /></label>
     <br /><br />", $cookie_options, "
   </p>
   </div>
 </fieldset>
-<p class=\"submit_button\"><input type=\"submit\" name=\"check\" value=\"Check\"></p>
+<p class=\"submit_button\"><input type=\"submit\" name=\"check\" value=\"Check\" /></p>
 </form>
 ";
   return;
