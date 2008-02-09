@@ -5,7 +5,7 @@
 # (c) 1999-2007 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.80 2008-01-24 01:29:38 ot Exp $
+# $Id: checklink,v 4.81 2008-02-09 14:49:13 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -195,6 +195,46 @@ use constant LINE_UNKNOWN  => -1;
 use constant MP2 =>
   (exists($ENV{MOD_PERL_API_VERSION}) && $ENV{MOD_PERL_API_VERSION} >= 2);
 
+# Tag=>attribute mapping of things we treat as links.
+# Note: base/@href gets a special treatment, see start() for details.
+use constant LINK_ATTRS => {
+    a          => ['href'],
+    area       => ['href'],
+    blockquote => ['cite'],
+    body       => ['background'],
+    del        => ['cite'],
+    embed      => ['href', 'pluginspage', 'pluginurl', 'src'], # proprietary
+    frame      => ['longdesc', 'src'],
+    iframe     => ['longdesc', 'src'],
+    img        => ['longdesc', 'src'],
+    ins        => ['cite'],
+    input      => ['src'],
+    link       => ['href'],
+    object     => ['data'],
+    q          => ['cite'],
+    script     => ['src'],
+};
+
+# Tag=>attribute mapping of things we treat as space separeted lists of links.
+use constant LINK_LIST_ATTRS => {
+    head       => ['profile'],
+};
+
+# TBD/TODO:
+# - applet/@archive, @code?
+# - applet/@codebase: does not need to be dereferenceable but HTML 4 spec says
+#   it may only point to subdirectories of the directory containing the current
+#   document
+# - bgsound/@src?
+# - object/@classid?
+# - object/@archive?
+# - object/@codebase: base URI for @classid, @data, @archive
+# - isindex/@action?
+# - layer/@background,@src?
+# - ilayer/@background?
+# - table,tr,td,th/@background?
+# - xmp/@href?
+
 @W3C::LinkChecker::ISA =  qw(HTML::Parser);
 
 BEGIN
@@ -204,7 +244,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.3';
   $REVISION    = sprintf('version %s (c) 1999-2007 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.80 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.81 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver, LWP::RobotUA->_agent());
 
@@ -1437,19 +1477,34 @@ sub start
 
   # Links
   if (!$self->{only_anchors}) {
-    # Here, we are checking too many things
-    # The right thing to do is to parse the DTD...
+
+    # Special case: base/@href
     if ($tag eq 'base') {
       # Treat <base> (without href) or <base href=""> as if it didn't exist.
       if (defined($attr->{href}) && $attr->{href} ne '') {
         $self->{base} = $attr->{href};
       }
-    } else {
-      $self->add_link($attr->{href}, $line);
+      # Note: base/@href intentionally not treated as a dereferenceable link:
+      # http://www.w3.org/mid/200802091439.27764.ville.skytta%40iki.fi
     }
-    $self->add_link($attr->{src}, $line);
-    $self->add_link($attr->{data}, $line) if ($tag eq 'object');
-    $self->add_link($attr->{cite}, $line) if ($tag eq 'blockquote');
+
+    # Link attributes:
+    if (my $link_attrs = LINK_ATTRS()->{$tag}) {
+      for my $la (@$link_attrs) {
+        $self->add_link($attr->{$la}, $line);
+      }
+    }
+
+    # List of links attributes:
+    if (my $link_attrs = LINK_LIST_ATTRS()->{$tag}) {
+      for my $la (@$link_attrs) {
+        if (defined(my $value = $attr->{$la})) {
+          for my $link (split(/\s+/, $value)) {
+            $self->add_link($link, $line);
+          }
+        }
+      }
+    }
   }
 
   $self->parse_progress($line) if $Opts{Progress};
