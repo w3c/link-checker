@@ -5,7 +5,7 @@
 # (c) 1999-2008 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.92 2008-02-10 18:13:59 ville Exp $
+# $Id: checklink,v 4.93 2008-02-10 18:22:37 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -244,7 +244,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.3';
   $REVISION    = sprintf('version %s (c) 1999-2008 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.92 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.93 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver, LWP::RobotUA->_agent());
 
@@ -1417,16 +1417,14 @@ sub doctype
   $_ = $self->{doctype} = $dc;
 
   # What to look for depending on the doctype
-  $self->{check_name} = 0 if ($_ eq '-//W3C//DTD XHTML Basic 1.0//EN');
 
-  # Check for the id tag
-  if (
-      # HTML 2.0 & 3.0
-      m%^-//IETF//DTD HTML [23]\.0//% ||
-      # HTML 3.2
-      m%^-//W3C//DTD HTML 3\.2//%) {
-    $self->{check_id} = 0;
-  }
+  # Check for <a name="...">?
+  $self->{check_name} = 0
+    if m%^-//(W3C|WAPFORUM)//DTD XHTML (Basic|Mobile) %;
+
+  # Check for <* id="...">?
+  $self->{check_id} = 0
+    if (m%^-//IETF//DTD HTML [23]\.0//% || m%^-//W3C//DTD HTML 3\.2//%);
 
   # Enable XML mode (XHTML, XHTML Mobile, XHTML-Print, XHTML+RDFa, ...)
   $self->xml_mode(1) if (m%^-//(W3C|WAPFORUM)//DTD XHTML[ \-\+]%);
