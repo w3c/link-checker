@@ -5,7 +5,7 @@
 # (c) 1999-2008 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.84 2008-02-10 12:02:29 ville Exp $
+# $Id: checklink,v 4.85 2008-02-10 12:06:32 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -244,7 +244,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.3';
   $REVISION    = sprintf('version %s (c) 1999-2008 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.84 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.85 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver, LWP::RobotUA->_agent());
 
@@ -1431,7 +1431,7 @@ sub parse_progress
 {
   my ($self, $line) = @_;
   printf("\r%4d%%", int($line/$self->{Total}*100))
-    if (defined($line) && $line >= 0);
+    if (defined($line) && $line >= 0 && $self->{Total} > 0);
   return;
 }
 
