@@ -5,7 +5,7 @@
 # (c) 1999-2008 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.88 2008-02-10 13:20:11 ville Exp $
+# $Id: checklink,v 4.89 2008-02-10 13:25:21 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -244,7 +244,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.3';
   $REVISION    = sprintf('version %s (c) 1999-2008 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.88 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.89 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver, LWP::RobotUA->_agent());
 
@@ -1335,9 +1335,12 @@ sub parse_document ($$$$$)
     $start = &get_timestamp();
     print("Parsing...\n");
   }
-  if (!$Opts{Summary_Only} || $Opts{Progress}) {
-    $p->{Total} = ($$docref =~ tr/\n//);
-  }
+
+  # Count lines beforehand if needed for progress indicator.  In all cases,
+  # the actual final number of lines processed shown is populated by our
+  # end_document handler.
+  $p->{Total} = ($$docref =~ tr/\n//) if $Opts{Progress};
+
   # We only look for anchors if we are not interested in the links
   # obviously, or if we are running a recursive checking because we
   # might need this information later
@@ -1386,6 +1389,7 @@ sub new
               }, 'self, text, line');
   # Other stuff
   $p->handler(default => 'parse_progress', 'self, line') if $Opts{Progress};
+  $p->handler(end_document => 'end_document', 'self, line');
   # Check <a [..] name="...">?
   $p->{check_name} = 1;
   # Check <[..] id="..">?
@@ -1533,6 +1537,13 @@ sub declaration
 
   $self->text($text) unless $self->{only_anchors};
 
+  return;
+}
+
+sub end_document
+{
+  my ($self, $line) = @_;
+  $self->{Total} = $line;
   return;
 }
 
