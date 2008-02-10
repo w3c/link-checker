@@ -5,7 +5,7 @@
 # (c) 1999-2008 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.86 2008-02-10 13:17:03 ville Exp $
+# $Id: checklink,v 4.87 2008-02-10 13:18:01 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -244,7 +244,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.3';
   $REVISION    = sprintf('version %s (c) 1999-2008 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.86 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.87 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver, LWP::RobotUA->_agent());
 
@@ -1689,7 +1689,7 @@ sub time_diff ($$)
   for ($start[1], $stop[1]) {
     $_ /= 1_000_000;
   }
-  return(sprintf("%.1f", ($stop[0]+$stop[1])-($start[0]+$start[1])));
+  return(sprintf("%.2f", ($stop[0]+$stop[1])-($start[0]+$start[1])));
 }
 
 ########################
