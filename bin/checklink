@@ -5,7 +5,7 @@
 # (c) 1999-2008 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.87 2008-02-10 13:18:01 ville Exp $
+# $Id: checklink,v 4.88 2008-02-10 13:20:11 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -244,7 +244,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.3';
   $REVISION    = sprintf('version %s (c) 1999-2008 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.87 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.88 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver, LWP::RobotUA->_agent());
 
@@ -1082,7 +1082,7 @@ sub get_document ($$$;\%$)
   }
 
   # What is the URI of the resource that we are processing by the way?
-  my $base_uri = URI->new($response->base());
+  my $base_uri = $response->base();
   my $request_uri = URI->new($response->request->url);
   $response->{absolute_uri} = $request_uri->abs($base_uri);
 
