@@ -5,7 +5,7 @@
 # (c) 1999-2007 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.81 2008-02-09 14:49:13 ville Exp $
+# $Id: checklink,v 4.82 2008-02-10 11:57:21 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -244,7 +244,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.3';
   $REVISION    = sprintf('version %s (c) 1999-2007 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.81 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.82 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver, LWP::RobotUA->_agent());
 
@@ -770,7 +770,7 @@ sub check_uri ($$$$;$$$)
   if ($Opts{HTML}) {
     &html_header($uri, 0, $cookie) if $is_first;
     &print_form($query) if $is_start;
-    
+
     print('<h2>');
   }
 
@@ -854,10 +854,10 @@ EOF
              &encode(sprintf($Cfg{Markup_Validator_URI}, $esc_uri)),
              &encode(sprintf($Cfg{CSS_Validator_URI}, $esc_uri)),
              &encode($Opts{_Self_URI}));
-      
+
       printf ('<h3 class="status_progress" id="status_progress%s">Status: <span></span></h3>', $result_anchor);
       print("<pre class=\"progress\">\n");
-      
+
     }
   }
 
@@ -941,7 +941,7 @@ EOF
       print ' ' if ($Opts{HTML} && !$Opts{Command_Line});
     } else {
       printf('<script type="text/javascript">show_progress("Checking link %s", "status_progress%s");</script>' , $u, $result_anchor)
-      if ($Opts{HTML} && !$Opts{Summary_Only}); 
+      if ($Opts{HTML} && !$Opts{Summary_Only});
       &hprintf("Checking link %s\n", $u);
     }
 
@@ -983,7 +983,7 @@ EOF
     }
   }
   printf('<script type="text/javascript">show_progress("Done. Document processed in %ss.\n", "status_progress%s");</script>' , &time_diff($start, &get_timestamp()), $result_anchor)
-  if ($Opts{HTML} && !$Opts{Summary_Only}); 
+  if ($Opts{HTML} && !$Opts{Summary_Only});
   &hprintf("Processed in %ss.\n", &time_diff($start, &get_timestamp()))
    unless $Opts{Summary_Only};
 
@@ -2239,9 +2239,8 @@ EOF
 
 sub banner ($)
 {
-  
   my $tagline ="Check links and anchors in Web pages or full Web sites";
-  
+
   printf(<<'EOF', $tagline);
 <div id="banner"><h1 id="title"><a href="http://www.w3.org/" title="W3C"><img alt="W3C" id="logo" src="http://validator.w3.org/images/w3c.png" /></a>
 <a href="checklink"><span>Link Checker</span></a></h1>
@@ -2272,8 +2271,9 @@ sub status_icon($)
     $icon_type = 'error';
   }
   return('<span class="err_type"><img src="http://validator.w3.org/images/info_icons/'.$icon_type.'.png" alt="'.$icon_type.'" /></span>');
-  
+
 }
+
 sub bgcolor ($)
 {
   my ($code) = @_;
@@ -2368,7 +2368,7 @@ sub print_form ($)
   my $chk = ' checked="checked"';
   $q->param('hide_type', 'all') unless $q->param('hide_type');
 
-  my $requested_uri = &encode($q->param('uri') || ''); 
+  my $requested_uri = &encode($q->param('uri') || '');
   my $sum = $q->param('summary')              ? $chk : '';
   my $red = $q->param('hide_redirects')       ? $chk : '';
   my $all = ($q->param('hide_type') ne 'dir') ? $chk : '';
