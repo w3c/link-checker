@@ -5,7 +5,7 @@
 # (c) 1999-2008 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.94 2008-02-10 21:41:57 ville Exp $
+# $Id: checklink,v 4.95 2008-02-10 21:48:43 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -222,13 +222,9 @@ use constant LINK_LIST_ATTRS => {
 
 # TBD/TODO:
 # - applet/@archive, @code?
-# - applet/@codebase: does not need to be dereferenceable but HTML 4 spec says
-#   it may only point to subdirectories of the directory containing the current
-#   document
 # - bgsound/@src?
 # - object/@classid?
 # - object/@archive?
-# - object/@codebase: base URI for @classid, @data, @archive
 # - isindex/@action?
 # - layer/@background,@src?
 # - ilayer/@background?
@@ -244,7 +240,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.3';
   $REVISION    = sprintf('version %s (c) 1999-2008 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.94 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.95 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver, LWP::RobotUA->_agent());
 
@@ -1476,8 +1472,11 @@ sub get_anchor
 
 sub add_link
 {
-  my ($self, $uri, $line) = @_;
-  $self->{Links}{$uri}{$line}++ if defined($uri);
+  my ($self, $uri, $base, $line) = @_;
+  if (defined($uri)) {
+    $uri = URI->new_abs($uri, $base) if defined($base);
+    $self->{Links}{$uri}{$line}++;
+  }
   return;
 }
 
@@ -1507,10 +1506,20 @@ sub start
       # http://www.w3.org/mid/200802091439.27764.ville.skytta%40iki.fi
     }
 
+    my $tag_local_base = undef;
+    if ($tag eq 'applet' || $tag eq 'object') {
+      if (my $codebase = $attr->{codebase}) {
+        # TODO: HTML 4 spec says applet/@codebase may only point to subdirs of
+        # the directory containing the current document.  Should we do
+        # something about that?
+        $tag_local_base = URI->new_abs($codebase, $self->{base});
+      }
+    }
+
     # Link attributes:
     if (my $link_attrs = LINK_ATTRS()->{$tag}) {
       for my $la (@$link_attrs) {
-        $self->add_link($attr->{$la}, $line);
+        $self->add_link($attr->{$la}, $tag_local_base, $line);
       }
     }
 
@@ -1519,7 +1528,7 @@ sub start
       for my $la (@$link_attrs) {
         if (defined(my $value = $attr->{$la})) {
           for my $link (split(/\s+/, $value)) {
-            $self->add_link($link, $line);
+            $self->add_link($link, $tag_local_base, $line);
           }
         }
       }
@@ -1546,7 +1555,7 @@ sub declaration
       # Store the doctype
       $self->doctype($1) if $1;
       # If there is a link to the DTD, record it
-      $self->add_link($3, $line) if (!$self->{only_anchors} && $3);
+      $self->add_link($3, undef, $line) if (!$self->{only_anchors} && $3);
     }
   }
 
