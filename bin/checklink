@@ -5,7 +5,7 @@
 # (c) 1999-2008 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.85 2008-02-10 12:06:32 ville Exp $
+# $Id: checklink,v 4.86 2008-02-10 13:17:03 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -244,7 +244,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.3';
   $REVISION    = sprintf('version %s (c) 1999-2008 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.85 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.86 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver, LWP::RobotUA->_agent());
 
@@ -660,7 +660,7 @@ Options:
  -R, --no-referer           Do not send the Referer HTTP header.
  -q, --quiet                No output if no errors are found (implies -s).
  -v, --verbose              Verbose mode.
- -i, --indicator            Show progress while parsing.
+ -i, --indicator            Show percentage of lines processed while parsing.
  -u, --user USERNAME        Specify a username for authentication.
  -p, --password PASSWORD    Specify a password.
  --hide-same-realm          Hide 401's that are in the same realm as the

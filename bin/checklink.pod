@@ -1,4 +1,4 @@
-$Id: checklink.pod,v 1.18 2007-08-17 21:04:42 ville Exp $
+$Id: checklink.pod,v 1.19 2008-02-10 13:17:03 ville Exp $
 
 =head1 NAME
 
@@ -101,7 +101,8 @@ Verbose mode.
 
 =item B<-i, --indicator>
 
-Show progress while parsing.
+Show progress while parsing as percentage of lines processed.  No
+indicator is shown for documents containing no linefeeds.
 
 =item B<-u, --user> I<username>
 
