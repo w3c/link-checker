@@ -5,7 +5,7 @@
 # (c) 1999-2008 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.96 2008-02-14 23:45:38 ville Exp $
+# $Id: checklink,v 4.97 2008-02-14 23:56:42 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -159,6 +159,7 @@ sub ip_disallowed
   if ($iptype && $iptype ne 'PUBLIC') {
     $resp = HTTP::Response->new(403,
     'Checking non-public IP address disallowed by link checker configuration');
+    $resp->header('Client-Warning', 'Internal response');
   }
   return $resp;
 }
@@ -241,7 +242,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.3';
   $REVISION    = sprintf('version %s (c) 1999-2008 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.96 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.97 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver, LWP::RobotUA->_agent());
 
