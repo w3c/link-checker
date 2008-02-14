@@ -5,7 +5,7 @@
 # (c) 1999-2008 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.95 2008-02-10 21:48:43 ville Exp $
+# $Id: checklink,v 4.96 2008-02-14 23:45:38 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -187,8 +187,9 @@ use URI::Escape          qw();
 use URI::file            qw();
 # @@@ Needs also W3C::UserAgent but can't use() it here.
 
-use constant RC_ROBOTS_TXT => -1;
-use constant RC_DNS_ERROR  => -2;
+use constant RC_ROBOTS_TXT    => -1;
+use constant RC_DNS_ERROR     => -2;
+use constant RC_IP_DISALLOWED => -3;
 
 use constant LINE_UNKNOWN  => -1;
 
@@ -240,7 +241,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.3';
   $REVISION    = sprintf('version %s (c) 1999-2008 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.95 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.96 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver, LWP::RobotUA->_agent());
 
@@ -1266,6 +1267,9 @@ sub record_results ($$$)
   $results{$uri}{location}{code} = RC_ROBOTS_TXT()
     if ($results{$uri}{location}{code} == 403 &&
         $response->message() =~ /Forbidden by robots\.txt/);
+  $results{$uri}{location}{code} = RC_IP_DISALLOWED()
+    if ($results{$uri}{location}{code} == 403 &&
+        $response->message() =~ /non-public IP/);
   $results{$uri}{location}{code} = RC_DNS_ERROR()
     if ($results{$uri}{location}{code} == 500 &&
         $response->message() =~ /Bad hostname '[^\']*'/);
@@ -2083,8 +2087,11 @@ sub links_summary (\%\%\%\%)
                501 => 'Could not check this link: method not implemented or scheme not supported.',
                503 => 'The server cannot service the request, for some unknown reason.',
                # Non-HTTP codes:
-               RC_ROBOTS_TXT() => "The link was not checked due to <a href=\"http://www.robotstxt.org/wc/exclusion.html#robotstxt\">robots exclusion rules</a>. Check the link manually, and see also the link checker <a href=\"$Cfg{Doc_URI}#bot\">documentation on robots exclusion</a>.",
+               RC_ROBOTS_TXT() => sprintf('The link was not checked due to %srobots exclusion rules%s. Check the link manually, and see also the link checker %sdocumentation on robots exclusion%s.',
+                                          $Opts{HTML} ? ('<a href="http://www.robotstxt.org/wc/exclusion.html#robotstxt">', '</a>', "<a href=\"$Cfg{Doc_URI}#bot\">", '</a>') : ('') x 4),
                RC_DNS_ERROR() => 'The hostname could not be resolved. Check the link for typos.',
+               RC_IP_DISALLOWED() => sprintf('The link resolved to a %snon-public IP address%s, and this link checker instance has been configured to not access such addresses. This may be a real error or just a quirk of the name resolver configuration on the server where the link checker runs. Check the link manually, in particular its hostname/IP address.',
+                                             $Opts{HTML} ? ('<a href="http://www.ietf.org/rfc/rfc1918.txt">', '</a>') : ('') x 2),
              );
   my %priority = ( 410 => 1,
                    404 => 2,
@@ -2292,7 +2299,7 @@ sub status_icon($)
   my $r = HTTP::Response->new($code);
   if ($r->is_success()) {
     $icon_type = 'error'; # if is success but reported, it's because of broken frags => error
-  } elsif ($code == RC_ROBOTS_TXT()) {
+  } elsif ($code == RC_ROBOTS_TXT() || $code == RC_IP_DISALLOWED()) {
     $icon_type = 'info';
   } elsif ($code == 300) {
     $icon_type = 'info';
@@ -2316,7 +2323,7 @@ sub bgcolor ($)
   my $r = HTTP::Response->new($code);
   if ($r->is_success()) {
     return '';
-  } elsif ($code == RC_ROBOTS_TXT()) {
+  } elsif ($code == RC_ROBOTS_TXT() || $code == RC_IP_DISALLOWED()) {
     $class = 'dubious';
   } elsif ($code == 300) {
     $class = 'multiple';
