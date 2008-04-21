@@ -5,7 +5,7 @@
 # (c) 1999-2008 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.100 2008-04-21 07:26:33 ville Exp $
+# $Id: checklink,v 4.101 2008-04-21 07:31:51 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -242,7 +242,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.3';
   $REVISION    = sprintf('version %s (c) 1999-2008 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.100 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.101 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver, LWP::RobotUA->_agent());
 
@@ -1509,6 +1509,7 @@ sub start
     #       HTML::HeadParser (thus taking care of it in $response->base()
     #       transparently) for application/xhtml+xml and
     #       application/vnd.wap.xhtml+xml documents
+    #       --> it does in LWP >= 5.810
     if ($tag eq 'base') {
       # Treat <base> (without href) or <base href=""> as if it didn't exist.
       if (defined($attr->{href}) && $attr->{href} ne '') {
