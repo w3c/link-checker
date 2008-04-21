@@ -5,7 +5,7 @@
 # (c) 1999-2008 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.101 2008-04-21 07:31:51 ville Exp $
+# $Id: checklink,v 4.102 2008-04-21 08:00:30 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -242,7 +242,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.3';
   $REVISION    = sprintf('version %s (c) 1999-2008 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.101 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.102 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver, LWP::RobotUA->_agent());
 
@@ -769,8 +769,6 @@ sub check_uri ($$$$;$$$)
   if ($Opts{HTML}) {
     &html_header($uri, 0, $cookie) if $is_first;
     &print_form($query) if $is_start;
-
-    print('<h2>');
   }
 
   my $start = $Opts{Summary_Only} ? 0 : &get_timestamp();
@@ -821,12 +819,15 @@ EOF
       $Opts{Exclude_Docs}) if defined($Opts{Exclude_Docs});
   }
 
-  printf("\nProcessing\t%s\n\n",
-         $Opts{HTML} ? &show_url($absolute_uri) : $absolute_uri)
-    unless $Opts{Quiet};
+  unless ($Opts{Quiet}) {
+    if ($Opts{HTML}) {
+      printf("<h2>Processing %s</h2>\n", &show_url($absolute_uri));
+    } else {
+      print "\nProcessing\t$absolute_uri\n\n";
+    }
+  }
 
   if ($Opts{HTML}) {
-    print("</h2>\n");
     if (! $Opts{Summary_Only}) {
       my $accept = &encode($Accept);
       my $acclang = &encode($Opts{Accept_Language} || '(not sent)');
@@ -1066,10 +1067,8 @@ sub get_document ($$$;\%$)
       if ($response->code() == 401) {
         &authentication($response);
       } else {
-        if ($Opts{HTML}) {
-          &html_header($uri);
-          print "<p>";
-        }
+        # TODO: style this message to make it stand out
+        print "<p>" if $Opts{HTML};
         &hprintf("\nError: %d %s\n",
                  $response->code(), $response->message() || '(no message)');
         print "</p>\n" if $Opts{HTML};
@@ -1109,10 +1108,8 @@ sub get_document ($$$;\%$)
   if ($failed_reason) {
     # No, there is a problem...
     if (! $in_recursion) {
-      if ($Opts{HTML}) {
-        &html_header($uri);
-        print "<p>\n";
-      }
+      # TODO: style this message to make it stand out
+      print "<p>" if $Opts{HTML};
       &hprintf("Can't check links: %s.\n", $failed_reason);
       print "</p>\n" if $Opts{HTML};
     }
