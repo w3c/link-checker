@@ -5,7 +5,7 @@
 # (c) 1999-2008 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.98 2008-02-19 22:41:12 ville Exp $
+# $Id: checklink,v 4.99 2008-04-21 07:09:53 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -242,7 +242,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.3';
   $REVISION    = sprintf('version %s (c) 1999-2008 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.98 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.99 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver, LWP::RobotUA->_agent());
 
@@ -1088,13 +1088,25 @@ sub get_document ($$$;\%$)
   # Can we parse the document?
   my $failed_reason;
   my $ct = $response->header('Content-Type');
-  my $ce = $response->header('Content-Encoding');
   if (!$ct || $ct !~ $ContentTypes) {
     $failed_reason = "Content-Type for <$request_uri> is " .
       (defined($ct) ? "'$ct'" : 'undefined');
-  } elsif (defined($ce) && $ce ne 'identity') {
-    # @@@ We could maybe handle gzip...
-    $failed_reason = "Content-Encoding for <$request_uri> is '$ce'";
+  } else {
+    if ($response->can('decoded_content')) { # LWP >= 5.802
+      # Pre-decode Content-Encoding.
+      # @@@TODO: maybe also decode charsets?
+      my $docref = $response->decoded_content(ref => 1, charset => 'none');
+      if (defined($docref)) {
+        $response->content_ref($docref);
+        # Remove Content-Encoding so it won't be decoded again later.
+        $response->remove_header('Content-Encoding')
+      } else {
+        my $ce = $response->header('Content-Encoding');
+        $ce = defined($ce) ? "'$ce'" : 'undefined';
+        $ct = defined($ct) ? "'$ct'" : 'undefined';
+        $failed_reason = "Error decoding document at <$request_uri>, Content-Type $ct, Content-Encoding $ce: '$@'";
+      }
+    }
   }
   if ($failed_reason) {
     # No, there is a problem...
@@ -1324,12 +1336,6 @@ sub parse_document ($$$$$)
     return $p;
   }
 
-  my $docref = undef;
-  # @@@TODO: maybe also do charset decoding some day?
-  $docref = $response->decoded_content(ref => 1, charset => "none")
-    if ($response->can('decoded_content')); # LWP >= 5.802
-  $docref ||= $response->content_ref();
-
   my $start;
   $p = W3C::LinkChecker->new();
   $p->{base} = $base_uri;
@@ -1337,6 +1343,9 @@ sub parse_document ($$$$$)
     $start = &get_timestamp();
     print("Parsing...\n");
   }
+
+  # Content-Encoding etc already decoded in get_document().
+  my $docref = $response->content_ref();
 
   # Count lines beforehand if needed for progress indicator.  In all cases,
   # the actual final number of lines processed shown is populated by our
