@@ -1,20 +1,6 @@
 use 5.00503;
 use ExtUtils::MakeMaker;
 
-eval {
-  require LWP;
-  if ($LWP::VERSION eq "5.76") {
-    print STDERR <<'EOF';
-
-*** Warning: it is not recommended to use this version of link checker with
-*** libwww-perl version 5.76.  Version 5.76 of libwww-perl has a bug which
-*** may cause the link checker to follow redirects to file: URLs.
-
-EOF
-  }
-};
-
-
 WriteMakefile(
   NAME          => 'W3C::LinkChecker',
   ABSTRACT      => 'W3C Link Checker',
@@ -24,7 +10,7 @@ WriteMakefile(
                      CGI             => 0,
                      Config::General => 2.06,
                      HTML::Parser    => 3.20,
-                     LWP             => 5.66,
+                     LWP             => 5.802,
                      Net::IP         => 0, # Optional, see the docs.
                      Term::ReadKey   => 2.00,
                      Time::HiRes     => 0,
