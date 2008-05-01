@@ -5,7 +5,7 @@
 # (c) 1999-2008 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.102 2008-04-21 08:00:30 ville Exp $
+# $Id: checklink,v 4.103 2008-05-01 07:56:13 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -183,7 +183,7 @@ use HTML::Parser    3.20 qw(); # >= 3.20 for "line" argspec identifier
 use HTTP::Request        qw();
 use HTTP::Response  1.50 qw(); # >= 1.50 for decoded_content()
 use Time::HiRes          qw();
-use URI                  qw();
+use URI             1.31 qw(); # >= 1.31 for sip: abs/rel
 use URI::Escape          qw();
 use URI::file            qw();
 # @@@ Needs also W3C::UserAgent but can't use() it here.
@@ -242,7 +242,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.3';
   $REVISION    = sprintf('version %s (c) 1999-2008 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.102 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.103 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver, LWP::RobotUA->_agent());
 
@@ -899,10 +899,6 @@ EOF
   foreach my $link (keys %{$p->{Links}}) {
     my $link_uri = URI->new($link);
     my $abs_link_uri = URI->new_abs($link_uri, $base);
-
-    # Work around a bug in URI::sip(s) (URI 1.22 - 1.30).
-    $abs_link_uri = $link_uri
-      if (!defined($abs_link_uri) && $link_uri->scheme() =~ /^sips?$/);
 
     if ($Opts{Masquerade}) {
       if ($abs_link_uri =~ m|^\Q$Opts{Masquerade_From}\E|) {
