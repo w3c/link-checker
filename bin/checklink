@@ -5,7 +5,7 @@
 # (c) 1999-2008 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.103 2008-05-01 07:56:13 ville Exp $
+# $Id: checklink,v 4.104 2008-05-01 08:03:01 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -242,7 +242,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.3';
   $REVISION    = sprintf('version %s (c) 1999-2008 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.103 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.104 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver, LWP::RobotUA->_agent());
 
@@ -1203,7 +1203,7 @@ sub get_uri ($$;$$\%$$$$)
   # Are we providing authentication info?
   if ($auth && $request->url()->host() =~ $Opts{Trusted}) {
     if (defined($ENV{HTTP_AUTHORIZATION})) {
-      $request->headers->header(Authorization => $ENV{HTTP_AUTHORIZATION});
+      $request->header(Authorization => $ENV{HTTP_AUTHORIZATION});
     } elsif (defined($Opts{User}) && defined($Opts{Password})) {
       $request->authorization_basic($Opts{User}, $Opts{Password});
     }
@@ -1241,7 +1241,7 @@ sub get_uri ($$;$$\%$$$$)
 
     # Deal with authentication and avoid loops
     if (!defined($realm) &&
-        $response->headers->www_authenticate =~ /Basic realm=\"([^\"]+)\"/) {
+        $response->www_authenticate() =~ /Basic realm=\"([^\"]+)\"/) {
       $realm = $1;
     }
 
@@ -1672,15 +1672,15 @@ sub escape_match ($\%)
 
 sub authentication ($)
 {
-  my $r = $_[0];
+  my ($response) = @_;
 
   my $realm = '';
-  if ($r->headers->www_authenticate =~ /Basic realm=\"([^\"]+)\"/) {
+  if ($response->www_authenticate() =~ /Basic realm=\"([^\"]+)\"/) {
     $realm = $1;
   }
 
   if ($Opts{Command_Line}) {
-    printf STDERR <<EOF, $r->request()->url(), $realm;
+    printf STDERR <<EOF, $response->request()->url(), $realm;
 
 Authentication is required for %s.
 The realm is "%s".
@@ -1689,7 +1689,7 @@ to specify trusted domains.
 EOF
   } else {
 
-    printf("Status: 401 Authorization Required\nWWW-Authenticate: %s\nConnection: close\nContent-Language: en\nContent-Type: text/html; charset=utf-8\n\n", $r->headers->www_authenticate);
+    printf("Status: 401 Authorization Required\nWWW-Authenticate: %s\nConnection: close\nContent-Language: en\nContent-Type: text/html; charset=utf-8\n\n", $response->www_authenticate());
 
     printf("%s
 <html lang=\"en\" xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\">
@@ -1700,7 +1700,7 @@ EOF
     &banner(': 401 Authorization Required');
     printf("<p>
   You need \"%s\" access to <a href=\"%s\">%s</a> to perform link checking.<br />
-", &encode($realm), (&encode($r->request()->url())) x 2);
+", &encode($realm), (&encode($response->request()->url())) x 2);
 
     if ($Opts{Trusted}) {
       printf <<EOF, &encode($Opts{Trusted});
