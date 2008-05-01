@@ -5,7 +5,7 @@
 # (c) 1999-2008 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.105 2008-05-01 11:07:18 ville Exp $
+# $Id: checklink,v 4.106 2008-05-01 11:28:23 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -242,7 +242,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.3';
   $REVISION    = sprintf('version %s (c) 1999-2008 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.105 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.106 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver, LWP::RobotUA->_agent());
 
@@ -409,17 +409,18 @@ if ($Opts{Command_Line}) {
 
   &ask_password() if ($Opts{User} && !$Opts{Password});
 
+  if (!$Opts{Summary_Only}) {
+    printf("%s %s\n", $PACKAGE, $REVISION) unless $Opts{HTML};
+  } else {
+    $Opts{Verbose} = 0;
+    $Opts{Progress} = 0;
+  }
+
   my $is_first = 1;
   my @bases = @{$Opts{Base_Locations}};
   foreach my $uri (@ARGV) {
-    if (!$Opts{Summary_Only}) {
-      printf("%s %s\n", $PACKAGE, $REVISION) unless $Opts{HTML};
-    } else {
-      $Opts{Verbose} = 0;
-      $Opts{Progress} = 0;
-    }
     # Reset base locations so that previous URI's given on the command line
-    # won't affect the recursion scope for this URI
+    # won't affect the recursion scope for this URI (see check_uri())
     @{$Opts{Base_Locations}} = @bases;
     # Transform the parameter into a URI
     $uri = &urize($uri);
@@ -879,15 +880,16 @@ EOF
   print "Checking anchors...\n" unless $Opts{Summary_Only};
 
   my %errors;
-  foreach my $anchor (keys %{$p->{Anchors}}) {
-    my $times = 0;
-    foreach my $l (keys %{$p->{Anchors}{$anchor}}) {
-      $times += $p->{Anchors}{$anchor}{$l};
+  while (my ($anchor, $lines) = each(%{$p->{Anchors}})) {
+    if (!length($anchor)) {
+      # Empty IDREF's are not allowed
+      $errors{$anchor} = 1;
+    } else {
+      my $times = 0;
+      $times += $_ for values(%$lines);
+      # They should appear only once
+      $errors{$anchor} = 1 if ($times > 1);
     }
-    # They should appear only once
-    $errors{$anchor} = 1 if ($times > 1);
-    # Empty IDREF's are not allowed
-    $errors{$anchor} = 1 if ($anchor eq '');
   }
   print " done.\n" unless $Opts{Summary_Only};
 
@@ -896,7 +898,7 @@ EOF
 
   my %links;
   # Record all the links found
-  foreach my $link (keys %{$p->{Links}}) {
+  while (my ($link, $lines) = each(%{$p->{Links}})) {
     my $link_uri = URI->new($link);
     my $abs_link_uri = URI->new_abs($link_uri, $base);
 
@@ -908,25 +910,27 @@ EOF
         $nlink =~
           s|^\Q$Opts{Masquerade_From}\E|$Opts{Masquerade_To}|;
         $abs_link_uri = URI->new($nlink);
-      };
+      }
     }
-    foreach my $lines (keys %{$p->{Links}{$link}}) {
-      my $url = URI->new($abs_link_uri->canonical());
-      my $fragment = $url->fragment(undef);
-      next if (defined($Opts{Exclude}) && $url =~ $Opts{Exclude});
-      if (!defined($fragment) || $fragment eq '') {
-        # Document without fragment
-        $links{$url}{location}{$lines} = 1;
-      } else {
-        # Resource with a fragment
-        $links{$url}{fragments}{$fragment}{$lines} = 1;
+
+    my $canon_uri = URI->new($abs_link_uri->canonical());
+    my $fragment = $canon_uri->fragment(undef);
+    if (!defined($Opts{Exclude}) || $canon_uri !~ $Opts{Exclude}) {
+      foreach my $line_num (keys(%$lines)) {
+        if (!defined($fragment) || !length($fragment)) {
+          # Document without fragment
+          $links{$canon_uri}{location}{$line_num} = 1;
+        } else {
+          # Resource with a fragment
+          $links{$canon_uri}{fragments}{$fragment}{$line_num} = 1;
+        }
       }
     }
   }
 
   # Build the list of broken URI's
   my %broken;
-  foreach my $u (keys %links) {
+  while (my ($u, $ulinks) = each(%links)) {
 
     # Don't check mailto: URI's
     # TODO: bug 29
@@ -954,14 +958,14 @@ EOF
       $broken{$u}{location} = 1 if ($results{$u}{location}{display} >= 400);
 
       # List the broken fragments
-      foreach my $fragment (keys %{$links{$u}{fragments}}) {
+      while (my ($fragment, $lines) = each(%{$ulinks->{fragments}})) {
         if ($Opts{Verbose}) {
-          my @frags = sort {$a<=>$b} keys %{$links{$u}{fragments}{$fragment}};
+          my @line_nums = sort { $a <=> $b } keys(%$lines);
           &hprintf("\t\t%s %s - Line%s: %s\n",
                    $fragment,
                    ($results{$u}{fragments}{$fragment}) ? 'OK' : 'Not found',
-                   (scalar(@frags) > 1) ? 's' : '',
-                   join(', ', @frags)
+                   (scalar(@line_nums) > 1) ? 's' : '',
+                   join(', ', @line_nums)
                   );
         }
         # A broken fragment?
@@ -973,7 +977,7 @@ EOF
       # Couldn't find the document
       $broken{$u}{location} = 1;
       # All the fragments associated are hence broken
-      foreach my $fragment (keys %{$links{$u}{fragments}}) {
+      foreach my $fragment (keys %{$ulinks->{fragments}}) {
         $broken{$u}{fragments}{$fragment}++;
       }
     }
@@ -1023,6 +1027,7 @@ EOF
           }
         }
       }
+
       if ($depth < 0) {
         &check_uri($query, $u, 0, -1, undef, $uri);
       } else {
@@ -1505,7 +1510,7 @@ sub start
     #       --> it does in LWP >= 5.810
     if ($tag eq 'base') {
       # Treat <base> (without href) or <base href=""> as if it didn't exist.
-      if (defined($attr->{href}) && $attr->{href} ne '') {
+      if (defined($attr->{href}) && length($attr->{href})) {
         $self->{base} = $attr->{href};
       }
       # Note: base/@href intentionally not treated as a dereferenceable link:
@@ -1853,7 +1858,7 @@ EOF
       $format = "\t%s\tLine$s: %s\n";
     }
     printf($format,
-           &encode($anchor eq '' ? 'Empty anchor' : $anchor),
+           &encode(length($anchor) ? $anchor : 'Empty anchor'),
            join(', ', @unique));
   }
 
@@ -1877,14 +1882,10 @@ sub show_link_report (\%\%\%\%\@;$\%)
     my $redirected = &is_redirected($u, %$redirects);
     # List of lines
     my @total_lines;
-    foreach my $l (keys %{$links->{$u}{location}}) {
-      push (@total_lines, $l);
-    }
+    push(@total_lines, keys(%{$links->{$u}{location}}));
     foreach my $f (@fragments) {
-      next if ($f eq $u && defined($links->{$u}{$u}{LINE_UNKNOWN()}));
-      foreach my $l (keys %{$links->{$u}{fragments}{$f}}) {
-        push (@total_lines, $l);
-      }
+      push(@total_lines, keys(%{$links->{$u}{fragments}{$f}}))
+        unless ($f eq $u && defined($links->{$u}{$u}{LINE_UNKNOWN()}));
     }
 
     my ($redirect_loop, @redirects_urls) = get_redirects($u, %$redirects);
