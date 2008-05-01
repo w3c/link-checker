@@ -5,7 +5,7 @@
 # (c) 1999-2008 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.104 2008-05-01 08:03:01 ville Exp $
+# $Id: checklink,v 4.105 2008-05-01 11:07:18 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -242,7 +242,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.3';
   $REVISION    = sprintf('version %s (c) 1999-2008 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.104 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.105 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver, LWP::RobotUA->_agent());
 
@@ -2027,21 +2027,14 @@ Response message: %s%s%s</dd>
     }
     # Fragments
     foreach my $f (@fragments) {
+      my @unique_lines = &sort_unique(keys %{$links->{$u}{fragments}{$f}});
+      my $plural = (scalar(@unique_lines) > 1) ? 's' : '';
+      my $unique_lines = join(', ', @unique_lines);
       if ($Opts{HTML}) {
-        printf("<li>$u<em>#%s</em> (Linked on line(s) %s)</li>\n",
-               # Broken fragment
-               $f,
-               # List of lines
-               join(', ', &sort_unique(keys %{$links->{$u}{fragments}{$f}})));
+        printf("<li>%s<em>#%s</em> (line%s %s)</li>\n",
+               &encode($u), &encode($f), $plural, $unique_lines);
       } else {
-        my @unq = &sort_unique(keys %{$links->{$u}{fragments}{$f}});
-        printf("\t%-30s\tLine%s: %s\n",
-               # Fragment
-               $f,
-               # Multiple?
-               (scalar(@unq) > 1) ? 's' : '',
-               # List of lines
-               join(', ', @unq));
+        printf("\t%-30s\tLine%s: %s\n", $f, $plural, $unique_lines);
       }
     }
 
