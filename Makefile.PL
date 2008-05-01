@@ -14,7 +14,7 @@ WriteMakefile(
                      Net::IP         => 0, # Optional, see the docs.
                      Term::ReadKey   => 2.00,
                      Time::HiRes     => 0,
-                     URI             => 0,
+                     URI             => 1.31,
                      # For the test suite:
                      Test::More      => 0,
                      File::Spec      => 0,
