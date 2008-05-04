@@ -5,7 +5,7 @@
 # (c) 1999-2008 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.108 2008-05-04 16:57:33 ville Exp $
+# $Id: checklink,v 4.109 2008-05-04 16:59:22 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -242,7 +242,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.3';
   $REVISION    = sprintf('version %s (c) 1999-2008 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.108 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.109 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver, LWP::RobotUA->_agent());
 
@@ -955,7 +955,7 @@ EOF
       print ' ' if ($Opts{HTML} && !$Opts{Command_Line});
     } else {
       printf('<script type="text/javascript">show_progress("Checking link %s", "status_progress%s");</script>' , &encode($u), $result_anchor)
-        if ($Opts{HTML} && !$Opts{Summary_Only});
+        if (!$Opts{Command_Line} && $Opts{HTML} && !$Opts{Summary_Only});
       &hprintf("Checking link %s\n", $u);
     }
 
