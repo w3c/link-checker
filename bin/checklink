@@ -5,7 +5,7 @@
 # (c) 1999-2008 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.107 2008-05-04 16:55:27 ville Exp $
+# $Id: checklink,v 4.108 2008-05-04 16:57:33 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -242,7 +242,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.3';
   $REVISION    = sprintf('version %s (c) 1999-2008 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.107 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.108 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver, LWP::RobotUA->_agent());
 
@@ -416,7 +416,19 @@ if ($Opts{Command_Line}) {
     $Opts{Progress} = 0;
   }
 
-  my $is_first = 1;
+  # Populate data for print_form()
+  my %params = (
+                summary            => $Opts{Summary_Only},
+                hide_redirects     => !$Opts{Redirects},
+                hide_type          => $Opts{Dir_Redirects} ? 'dir' : 'all',
+                no_accept_language => !(defined($Opts{Accept_Language}) &&
+                                        $Opts{Accept_Language} eq 'auto'),
+                no_referer         => $Opts{No_Referer},
+                recursive          => ($Opts{Depth} != 0),
+                depth              => $Opts{Depth},
+               );
+
+  my $check_num = 1;
   my @bases = @{$Opts{Base_Locations}};
   foreach my $uri (@ARGV) {
     # Reset base locations so that previous URI's given on the command line
@@ -424,10 +436,11 @@ if ($Opts{Command_Line}) {
     @{$Opts{Base_Locations}} = @bases;
     # Transform the parameter into a URI
     $uri = &urize($uri);
-    &check_uri(undef, $uri, $is_first, $Opts{Depth}, undef, undef, 1);
-    $is_first &&= 0;
+    $params{uri} = $uri;
+    &check_uri(\%params, $uri, $check_num, $Opts{Depth}, undef, undef, 1);
+    $check_num++;
   }
-  undef $is_first;
+  undef $check_num;
 
   if ($Opts{HTML}) {
     &html_footer();
@@ -440,6 +453,8 @@ if ($Opts{Command_Line}) {
   require CGI;
   require CGI::Carp;
   CGI::Carp->import(qw(fatalsToBrowser));
+  require CGI::Cookie;
+
   my $query = new CGI;
   # Set a few parameters in CGI mode
   $Opts{Verbose}   = 0;
@@ -457,7 +472,8 @@ if ($Opts{Command_Line}) {
 
   if (! $uri) {
     &html_header('', 1); # Set cookie only from results page.
-    &print_form($query);
+    my %cookies = CGI::Cookie->fetch();
+    &print_form(scalar($query->Vars()), $cookies{$PROGRAM}, 1);
     &html_footer();
     exit;
   }
@@ -490,29 +506,27 @@ if ($Opts{Command_Line}) {
   }
 
   # Save, clear or leave cookie as is.
-  my $cookie = '';
+  my $cookie = undef;
   if (my $action = $query->param('cookie')) {
-    my %cookie = (-name => $PROGRAM);
     if ($action eq 'clear') {
       # Clear the cookie.
-      $cookie{-value}   = '';
-      $cookie{-expires} = '-1M';
-    } else {
-      # Always refresh the expiration time.
-      $cookie{-expires} = '+1M';
-      if ($action eq 'set') {
-        # Set the options.
-        my %options = $query->Vars();
-        delete($options{$_}) for qw(url uri check cookie); # Non-persistent.
-        $cookie{-value}   = \%options;
-      } else {
-        # Use the old values.
-        $cookie{-value} = { $query->cookie($PROGRAM) };
-      }
+      $cookie = CGI::Cookie->new(-name => $PROGRAM);
+      $cookie->value({ clear => 1 });
+      $cookie->expires('-1M');
+    } elsif ($action eq 'set') {
+      # Set the options.
+      $cookie = CGI::Cookie->new(-name => $PROGRAM);
+      my %options = $query->Vars();
+      delete($options{$_}) for qw(url uri check cookie); # Non-persistent.
+      $cookie->value(\%options);
     }
-    $cookie = $query->cookie(%cookie);
   }
-
+  if (!$cookie) {
+    my %cookies = CGI::Cookie->fetch();
+    $cookie = $cookies{$PROGRAM};
+  }
+  # Always refresh cookie expiration time.
+  $cookie->expires('+1M') if ($cookie && !$cookie->expires());
 
   # All Apache configurations don't set HTTP_AUTHORIZATION for CGI scripts.
   # If we're under mod_perl, there is a way around it...
@@ -535,7 +549,7 @@ if ($Opts{Command_Line}) {
     }
   }
 
-  &check_uri($query, $uri, 1, $Opts{Depth}, $cookie);
+  &check_uri(scalar($query->Vars()), $uri, 1, $Opts{Depth}, $cookie);
   undef $query; # Not needed any more.
   &html_footer();
 }
@@ -762,14 +776,14 @@ sub urize ($)
 # Check for broken links in a resource #
 ########################################
 
-sub check_uri ($$$$;$$$)
+sub check_uri (\%$$$$;$$)
 {
-  my ($query, $uri, $is_first, $depth, $cookie, $referer, $is_start) = @_;
-  $is_start ||= $is_first;
+  my ($params, $uri, $check_num, $depth, $cookie, $referer, $is_start) = @_;
+  $is_start ||= ($check_num == 1);
 
   if ($Opts{HTML}) {
-    &html_header($uri, 0, $cookie) if $is_first;
-    &print_form($query) if $is_start;
+    &html_header($uri, 0, $cookie) if ($check_num == 1);
+    &print_form($params, $cookie, $check_num) if $is_start;
   }
 
   my $start = $Opts{Summary_Only} ? 0 : &get_timestamp();
@@ -802,7 +816,7 @@ sub check_uri ($$$$;$$$)
 
   my $result_anchor = 'results'.$doc_count;
 
-  if ($is_first && !$Opts{HTML} && !$Opts{Summary_Only}) {
+  if ($check_num == 1 && !$Opts{HTML} && !$Opts{Summary_Only}) {
     my $s = $Opts{Sleep_Time} == 1 ? '' : 's';
     my $acclang = $Opts{Accept_Language} || '(not sent)';
     my $send_referer = $Opts{No_Referer} ? 'not sent' : 'sending';
@@ -1029,9 +1043,9 @@ EOF
       }
 
       if ($depth < 0) {
-        &check_uri($query, $u, 0, -1, undef, $uri);
+        &check_uri($params, $u, 0, -1, $cookie, $uri);
       } else {
-        &check_uri($query, $u, 0, $depth-1, undef, $uri);
+        &check_uri($params, $u, 0, $depth-1, $cookie, $uri);
       }
     }
   }
@@ -2231,14 +2245,14 @@ sub html_header ($;$$)
   my $title = defined($uri) ? $uri : '';
   $title = ': ' . $title if ($title =~ /\S/);
 
-  # mod_perl 1.99_05 doesn't seem to like if the "\n\n" isn't in the same
-  # print() statement as the last header...
-
   my $headers = '';
   if (! $Opts{Command_Line}) {
     $headers .= "Cache-Control: no-cache\nPragma: no-cache\n" if $doform;
     $headers .= "Content-Type: text/html; charset=utf-8\n";
     $headers .= "Set-Cookie: $cookie\n" if $cookie;
+
+    # mod_perl 1.99_05 doesn't seem to like it if the "\n\n" isn't in the same
+    # print() statement as the last header
     $headers .= "Content-Language: en\n\n";
   }
 
@@ -2246,23 +2260,26 @@ sub html_header ($;$$)
   if ($doform) {
     $script = <<'EOF';
 <script type="text/javascript">
-function uriOk()
+function uriOk(num)
 {
-  var u = document.forms[0].uri;
-  var ok = false;
-  if (u.value.length > 0) {
-    if (u.value.search) {
-      ok = (u.value.search(/\S/) != -1);
-    } else {
-      ok = true;
+  if (document.getElementById) {
+    var u = document.getElementById('uri_' + num);
+    var ok = false;
+    if (u.value.length > 0) {
+      if (u.value.search) {
+        ok = (u.value.search(/\S/) != -1);
+      } else {
+        ok = true;
+      }
     }
+    if (! ok) u.focus();
+    return ok;
   }
-  if (! ok) u.focus();
-  return ok;
+  return true;
 }
 </script>
 EOF
-   $onload = ' onload="document.forms[0].uri.focus()"';
+   $onload = ' onload="if(document.getElementById){document.getElementById(\'uri_1\').focus()}"';
   }
 
   print $headers, $DocType, "
@@ -2390,63 +2407,74 @@ EOF
   exit;
 }
 
-sub print_form ($)
+sub print_form (\%$$)
 {
-  my ($q) = @_;
+  my ($params, $cookie, $check_num) = @_;
+
+  # Split params on \0, see CGI's docs on Vars()
+  while (my ($key, $value) = each(%$params)) {
+    if ($value) {
+      my @vals = split(/\0/, $value, 2);
+      $params->{$key} = $vals[0];
+    }
+  }
 
   # Override undefined values from the cookie, if we got one.
-  my $got_cookie = 0;
-  if (my %cookie = $q->cookie($PROGRAM)) {
-    $got_cookie = 1;
-    while (my ($key, $value) = each %cookie) {
-      $q->param($key, $value) unless defined($q->param($key));
+  my $valid_cookie = 0;
+  if ($cookie) {
+    my %cookie_values = $cookie->value();
+    if (!$cookie_values{clear}) { # XXX no easy way to check if cookie expired?
+      $valid_cookie = 1;
+      while (my ($key, $value) = each(%cookie_values)) {
+        $params->{$key} = $value unless defined($params->{$key});
+      }
     }
   }
 
   my $chk = ' checked="checked"';
-  $q->param('hide_type', 'all') unless $q->param('hide_type');
+  $params->{hide_type} = 'all' unless $params->{hide_type};
 
-  my $requested_uri = &encode($q->param('uri') || '');
-  my $sum = $q->param('summary')              ? $chk : '';
-  my $red = $q->param('hide_redirects')       ? $chk : '';
-  my $all = ($q->param('hide_type') ne 'dir') ? $chk : '';
+  my $requested_uri = &encode($params->{uri}        || '');
+  my $sum = $params->{summary}                ? $chk : '';
+  my $red = $params->{hide_redirects}         ? $chk : '';
+  my $all = ($params->{hide_type} ne 'dir')   ? $chk : '';
   my $dir = $all                              ? ''   : $chk;
-  my $acc = $q->param('no_accept_language')   ? $chk : '';
-  my $ref = $q->param('no_referer')           ? $chk : '';
-  my $rec = $q->param('recursive')            ? $chk : '';
-  my $dep = &encode($q->param('depth')              || '');
+  my $acc = $params->{no_accept_language}     ? $chk : '';
+  my $ref = $params->{no_referer}             ? $chk : '';
+  my $rec = $params->{recursive}              ? $chk : '';
+  my $dep = &encode($params->{depth}                || '');
 
   my $cookie_options = '';
-  if ($got_cookie) {
+  if ($valid_cookie) {
     $cookie_options = "
-    <label for=\"cookie1\"><input type=\"radio\" id=\"cookie1\" name=\"cookie\" value=\"nochanges\" checked=\"checked\" /> Don't modify saved options</label>
-    <label for=\"cookie2\"><input type=\"radio\" id=\"cookie2\" name=\"cookie\" value=\"set\" /> Save these options</label>
-    <label for=\"cookie3\"><input type=\"radio\" id=\"cookie3\" name=\"cookie\" value=\"clear\" /> Clear saved options</label>";
+    <label for=\"cookie1_$check_num\"><input type=\"radio\" id=\"cookie1_$check_num\" name=\"cookie\" value=\"nochanges\" checked=\"checked\" /> Don't modify saved options</label>
+    <label for=\"cookie2_$check_num\"><input type=\"radio\" id=\"cookie2_$check_num\" name=\"cookie\" value=\"set\" /> Save these options</label>
+    <label for=\"cookie3_$check_num\"><input type=\"radio\" id=\"cookie3_$check_num\" name=\"cookie\" value=\"clear\" /> Clear saved options</label>";
   } else {
     $cookie_options = "
-    <label for=\"cookie\"><input type=\"checkbox\" id=\"cookie\" name=\"cookie\" value=\"set\" /> Save options in a <a href=\"http://www.w3.org/Protocols/rfc2109/rfc2109\">cookie</a></label>";
+    <label for=\"cookie_$check_num\"><input type=\"checkbox\" id=\"cookie_$check_num\" name=\"cookie\" value=\"set\" /> Save options in a <a href=\"http://www.w3.org/Protocols/rfc2109/rfc2109\">cookie</a></label>";
   }
 
-  print "<form action=\"", $Opts{_Self_URI}, "\" method=\"get\" onsubmit=\"return uriOk()\">
-<p><label for=\"uri\">Enter the address (<a href=\"http://www.w3.org/Addressing/\">URL</a>)
+  print "<form action=\"", $Opts{_Self_URI}, "\" method=\"get\" onsubmit=\"return uriOk($check_num)\">
+<p><label for=\"uri_$check_num\">Enter the address (<a href=\"http://www.w3.org/Addressing/\">URL</a>)
 of a document that you would like to check:</label></p>
-<p><input type=\"text\" size=\"50\" id=\"uri\" name=\"uri\" value=\"",$requested_uri,"\" /></p>
-<fieldset id=\"extra_opt_uri\" class=\"moreoptions\">
+<p><input type=\"text\" size=\"50\" id=\"uri_$check_num\" name=\"uri\" value=\"",$requested_uri,"\" /></p>
+<fieldset id=\"extra_opt_uri_$check_num\" class=\"moreoptions\">
 	<legend class=\"toggletext\">More Options</legend>
 	<div class=\"options\">
   <p>
-    <label for=\"summary\"><input type=\"checkbox\" id=\"summary\" name=\"summary\" value=\"on\"", $sum, " /> Summary only</label>
+    <label for=\"summary_$check_num\"><input type=\"checkbox\" id=\"summary_$check_num\" name=\"summary\" value=\"on\"", $sum, " /> Summary only</label>
     <br />
-    <label for=\"hide_redirects\"><input type=\"checkbox\" id=\"hide_redirects\" name=\"hide_redirects\" value=\"on\"", $red, " /> Hide <a href=\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.3\">redirects</a>:</label>
-    <label for=\"hide_type_all\"><input type=\"radio\" id=\"hide_type_all\" name=\"hide_type\" value=\"all\"", $all, " /> all</label>
-    <label for=\"hide_type_dir\"><input type=\"radio\" id=\"hide_type_dir\" name=\"hide_type\" value=\"dir\"", $dir, " /> for directories only</label>
+    <label for=\"hide_redirects_$check_num\"><input type=\"checkbox\" id=\"hide_redirects_$check_num\" name=\"hide_redirects\" value=\"on\"", $red, " /> Hide <a href=\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.3\">redirects</a>:</label>
+    <label for=\"hide_type_all_$check_num\"><input type=\"radio\" id=\"hide_type_all_$check_num\" name=\"hide_type\" value=\"all\"", $all, " /> all</label>
+    <label for=\"hide_type_dir_$check_num\"><input type=\"radio\" id=\"hide_type_dir_$check_num\" name=\"hide_type\" value=\"dir\"", $dir, " /> for directories only</label>
     <br />
-    <label for=\"no_accept_language\"><input type=\"checkbox\" id=\"no_accept_language\" name=\"no_accept_language\" value=\"on\"", $acc, " /> Don't send the <tt><a href=\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.4\">Accept-Language</a></tt> header</label>
+    <label for=\"no_accept_language_$check_num\"><input type=\"checkbox\" id=\"no_accept_language_$check_num\" name=\"no_accept_language\" value=\"on\"", $acc, " /> Don't send the <tt><a href=\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.4\">Accept-Language</a></tt> header</label>
     <br />
-    <label for=\"no_referer\"><input type=\"checkbox\" id=\"no_referer\" name=\"no_referer\" value=\"on\"", $ref, " /> Don't send the <tt><a href=\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.36\">Referer</a></tt> header</label>
+    <label for=\"no_referer_$check_num\"><input type=\"checkbox\" id=\"no_referer_$check_num\" name=\"no_referer\" value=\"on\"", $ref, " /> Don't send the <tt><a href=\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.36\">Referer</a></tt> header</label>
     <br />
-    <label title=\"Check linked documents recursively (maximum: ", $Opts{Max_Documents}, " documents)\" for=\"recursive\"><input type=\"checkbox\" id=\"recursive\" name=\"recursive\" value=\"on\"", $rec, " /> Check linked documents recursively</label>,
-    <label title=\"Depth of the recursion (-1 is the default and means unlimited)\" for=\"depth\">recursion depth: <input type=\"text\" size=\"3\" maxlength=\"3\" id=\"depth\" name=\"depth\" value=\"", $dep, "\" /></label>
+    <label title=\"Check linked documents recursively (maximum: ", $Opts{Max_Documents}, " documents)\" for=\"recursive_$check_num\"><input type=\"checkbox\" id=\"recursive_$check_num\" name=\"recursive\" value=\"on\"", $rec, " /> Check linked documents recursively</label>,
+    <label title=\"Depth of the recursion (-1 is the default and means unlimited)\" for=\"depth_$check_num\">recursion depth: <input type=\"text\" size=\"3\" maxlength=\"3\" id=\"depth_$check_num\" name=\"depth\" value=\"", $dep, "\" /></label>
     <br /><br />", $cookie_options, "
   </p>
   </div>
