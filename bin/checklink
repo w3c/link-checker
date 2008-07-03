@@ -5,7 +5,7 @@
 # (c) 1999-2008 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.109 2008-05-04 16:59:22 ville Exp $
+# $Id: checklink,v 4.110 2008-07-03 19:46:35 ot Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -134,7 +134,7 @@ sub redirect_ok
 }
 
 #
-# Checks whether we're allowed to retrieve the document based on it's IP
+# Checks whether we're allowed to retrieve the document based on its IP
 # address.  Takes an URI object and returns a HTTP::Response containing the
 # appropriate status and error message if the IP was disallowed, 0
 # otherwise.  URIs without hostname or IP address are always allowed,
@@ -242,7 +242,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.3';
   $REVISION    = sprintf('version %s (c) 1999-2008 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.109 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.110 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver, LWP::RobotUA->_agent());
 
@@ -363,6 +363,7 @@ my %results;
 my %redirects;
 # Count of the number of documents checked
 my $doc_count = 0;
+
 # Time stamp
 my $timestamp = &get_timestamp();
 
@@ -910,6 +911,8 @@ EOF
   # Check links
   #############
 
+  &hprintf("Recording all the links found: %d\n", scalar (keys %{$p->{Links}}))
+    if ($Opts{Verbose});
   my %links;
   # Record all the links found
   while (my ($link, $lines) = each(%{$p->{Links}})) {
@@ -943,6 +946,8 @@ EOF
   }
 
   # Build the list of broken URI's
+  &hprintf("Checking %d links to build list of broken URI's\n", scalar (keys %links))
+    if ($Opts{Verbose});
   my %broken;
   while (my ($u, $ulinks) = each(%links)) {
 
@@ -1031,7 +1036,7 @@ EOF
       if ($Opts{HTML}) {
         if (!$Opts{Command_Line}) {
           if ($doc_count == $Opts{Max_Documents}) {
-            print("<hr />\n<p><strong>Maximum number of documents reached!</strong></p>\n");
+            print("<hr />\n<p><strong>Maximum number of documents ($Opts{Max_Documents}) reached!</strong></p>\n");
           }
           if ($doc_count >= $Opts{Max_Documents}) {
             $doc_count++;
@@ -1335,6 +1340,9 @@ sub record_results ($$$)
 sub parse_document ($$$$$)
 {
   my ($uri, $base_uri, $response, $links, $rec_needs_links) = @_;
+
+  print("parse_document($uri, $base_uri, ..., $links, $rec_needs_links)\n")
+    if $Opts{Verbose};
 
   my $p;
 
