@@ -5,7 +5,7 @@
 # (c) 1999-2008 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.110 2008-07-03 19:46:35 ot Exp $
+# $Id: checklink,v 4.111 2008-07-03 19:48:04 ot Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -242,7 +242,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.3';
   $REVISION    = sprintf('version %s (c) 1999-2008 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.110 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.111 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver, LWP::RobotUA->_agent());
 
@@ -1919,7 +1919,6 @@ sub show_link_report (\%\%\%\%\@;$\%)
     my $whattodo;
     my $redirect_too;
     if ($todo) {
-      my $currmsg = $currloc->{message} || '';
       if ($u =~ m/^javascript:/) {
         if ($Opts{HTML}) {
           $whattodo =
@@ -2024,7 +2023,6 @@ Response message: %s%s%s</dd>
              # List of lines
              $lines_list);
       if ($#fragments >= 0) {
-        my $fragment_direction = '';
         printf("<dd>Broken fragments: <ul>\n");
       }
     } else {
