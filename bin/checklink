@@ -5,7 +5,7 @@
 # (c) 1999-2008 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.111 2008-07-03 19:48:04 ot Exp $
+# $Id: checklink,v 4.112 2008-07-03 19:50:24 ot Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -242,7 +242,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.3';
   $REVISION    = sprintf('version %s (c) 1999-2008 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.111 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.112 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver, LWP::RobotUA->_agent());
 
@@ -366,6 +366,8 @@ my $doc_count = 0;
 
 # Time stamp
 my $timestamp = &get_timestamp();
+# Per-document header; undefined if already printed.  See print_doc_header().
+my $doc_header;
 
 &parse_arguments() if $Opts{Command_Line};
 
@@ -803,17 +805,41 @@ sub check_uri (\%$$$$;$$)
     # Before fetching the document, we don't know if we'll be within the
     # recursion scope or not (think redirects).
     if (!&in_recursion_scope($response->{absolute_uri})) {
+      hprintf("Not in recursion scope: %s\n")
+        if ($Opts{Verbose});
       $response->content("");
       return;
     }
+  }
 
-    print $Opts{HTML} ? '<hr />' : '-' x 40, "\n";
+  # Define the document header, and perhaps print it.
+  # (It might still be defined if the previous document had no errors;
+  # just redefine it in that case.)
+
+  if ($check_num != 1) {
+    if ($Opts{HTML}) {
+      $doc_header = "\n<hr>\n";
+    } else {
+      $doc_header = "\n" . ('-' x 40) . "\n";
+    }
+  }
+
+  my $absolute_uri = $response->{absolute_uri}->as_string();
+
+  if ($Opts{HTML}) {
+    $doc_header .= ("<h2>\nProcessing\t"
+                    . &show_url($absolute_uri)
+                    . "\n</h2>\n\n");
+  } else {
+    $doc_header .= "\nProcessing\t$absolute_uri\n\n";
+  }
+
+  if (! $Opts{Quiet}) {
+    print_doc_header();
   }
 
   # We are checking a new document
   $doc_count++;
-
-  my $absolute_uri = $response->{absolute_uri}->as_string();
 
   my $result_anchor = 'results'.$doc_count;
 
@@ -921,6 +947,7 @@ EOF
 
     if ($Opts{Masquerade}) {
       if ($abs_link_uri =~ m|^\Q$Opts{Masquerade_From}\E|) {
+        print_doc_header();
         printf("processing %s in base %s\n",
                $abs_link_uri, $Opts{Masquerade_To});
         my $nlink = $abs_link_uri;
@@ -1032,7 +1059,7 @@ EOF
       next if &already_processed($u, $uri);
 
       # Do the job
-      print "\n";
+      print "\n" unless $Opts{Quiet};
       if ($Opts{HTML}) {
         if (!$Opts{Command_Line}) {
           if ($doc_count == $Opts{Max_Documents}) {
@@ -1842,9 +1869,8 @@ sub anchors_summary (\%\%)
     } else {
       print("Anchors\n\n");
     }
-    &hprintf("Found %d anchor%s.", $n, ($n == 1) ? '' : 's');
-    print('</p>') if $Opts{HTML};
-    print("\n");
+    &hprintf("Found %d anchor%s.\n", $n, ($n == 1) ? '' : 's');
+    print('</p>\n') if $Opts{HTML};
   }
   # List of the duplicates, if any.
   my @errors = keys %{$errors};
@@ -1854,6 +1880,7 @@ sub anchors_summary (\%\%)
   }
   undef $n;
 
+  print_doc_header();
   print('<p>') if $Opts{HTML};
   print('List of duplicate and empty anchors');
   print <<EOF if $Opts{HTML};
@@ -1894,7 +1921,7 @@ sub show_link_report (\%\%\%\%\@;$\%)
   my ($links, $results, $broken, $redirects, $urls, $codes, $todo) = @_;
 
   print("\n<dl class=\"report\">") if $Opts{HTML};
-  print("\n");
+  print("\n") if (! $Opts{Quiet});
 
   # Process each URL
   my ($c, $previous_c);
@@ -2142,14 +2169,15 @@ sub links_summary (\%\%\%\%)
   # Broken links and redirects
   if ($#urls < 0) {
     if (! $Opts{Quiet}) {
+      print_doc_header();
       if ($Opts{HTML}) {
-        print "<h3>Links</h3>\n<p>Valid links!</p>";
+        print "<h3>Links</h3>\n<p>Valid links!</p>\n";
       } else {
-        print "\nValid links.";
+        print "\nValid links.\n";
       }
-      print "\n";
     }
   } else {
+    print_doc_header();
     print('<h3>') if $Opts{HTML};
     print("\nList of broken links");
     #print(' and redirects') if $Opts{Redirects};
@@ -2213,6 +2241,7 @@ EOF
 
   # Show directory redirects
   if ($Opts{Dir_Redirects} && ($#dir_redirect_urls > -1)) {
+    print_doc_header();
     print('<h3>') if $Opts{HTML};
     print("\nList of redirects");
     print("</h3>\n<p>The links below are not broken, but the document does not use the exact URL, and the links were redirected. It may be a good idea to link to the final location, for the sake of speed.</p>") if $Opts{HTML};
@@ -2498,6 +2527,7 @@ sub encode (@)
 
 sub hprintf (@)
 {
+  print_doc_header();
   if (! $Opts{HTML}) {
     printf(@_);
   } else {
@@ -2505,6 +2535,19 @@ sub hprintf (@)
   }
   return;
 }
+
+# Print the document header, if it hasn't been printed already.
+# This is invoked before most other output operations, in order
+# to enable quiet processing that doesn't clutter the output with
+# "Processing..." messages when nothing else will be reported.
+sub print_doc_header ()
+{
+  if (defined($doc_header)) {
+    print $doc_header;
+    undef($doc_header);
+  }
+}
+
 
 # Local Variables:
 # mode: perl
