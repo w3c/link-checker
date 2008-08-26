@@ -5,7 +5,7 @@
 # (c) 1999-2008 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.112 2008-07-03 19:50:24 ot Exp $
+# $Id: checklink,v 4.113 2008-08-26 18:43:55 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -242,7 +242,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.3';
   $REVISION    = sprintf('version %s (c) 1999-2008 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.112 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.113 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver, LWP::RobotUA->_agent());
 
@@ -293,6 +293,11 @@ $@
     'http://validator.w3.org/docs/checklink.html';
   $Cfg{Style_URI} ||=
     'http://validator.w3.org/docs/linkchecker.css';
+
+  # Untaint config params that are used as the format argument to (s)printf(),
+  # Perl 5.10 does not want to see that in taint mode.
+  ($Cfg{Markup_Validator_URI}) = ($Cfg{Markup_Validator_URI} =~ /^(.*)$/);
+  ($Cfg{CSS_Validator_URI})    = ($Cfg{CSS_Validator_URI}    =~ /^(.*)$/);
 
   $DocType = '  <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">';
   $Head = sprintf(<<'EOF', HTML::Entities::encode($AGENT), $Cfg{Style_URI});
