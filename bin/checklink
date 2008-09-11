@@ -5,7 +5,7 @@
 # (c) 1999-2008 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.114 2008-08-26 18:55:00 ville Exp $
+# $Id: checklink,v 4.115 2008-09-11 16:51:41 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -242,7 +242,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.3';
   $REVISION    = sprintf('version %s (c) 1999-2008 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.114 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.115 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver, LWP::RobotUA->_agent());
 
@@ -864,14 +864,6 @@ EOF
       if defined($Opts{Exclude});
     printf("- Excluding links in documents whose URIs match %s\n",
       $Opts{Exclude_Docs}) if defined($Opts{Exclude_Docs});
-  }
-
-  unless ($Opts{Quiet}) {
-    if ($Opts{HTML}) {
-      printf("<h2>Processing %s</h2>\n", &show_url($absolute_uri));
-    } else {
-      print "\nProcessing\t$absolute_uri\n\n";
-    }
   }
 
   if ($Opts{HTML}) {
