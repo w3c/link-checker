@@ -5,7 +5,7 @@
 # (c) 1999-2008 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.115 2008-09-11 16:51:41 ville Exp $
+# $Id: checklink,v 4.116 2008-09-22 19:33:31 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -33,9 +33,17 @@ $ENV{PATH} = ''; # undef would output warnings with Perl 5.6.1's Cwd.pm.
 
 package W3C::UserAgent;
 
-use LWP::RobotUA 1.19 qw();
+use LWP::RobotUA   1.19 qw();
+use LWP::UserAgent      qw();
 
-@W3C::UserAgent::ISA = qw(LWP::RobotUA);
+# if 0, ignore robots exclusion (useful for testing)
+use constant USE_ROBOT_UA => 1;
+
+if (USE_ROBOT_UA) {
+  @W3C::UserAgent::ISA = qw(LWP::RobotUA);
+} else {
+  @W3C::UserAgent::ISA = qw(LWP::UserAgent);
+}
 
 sub new
 {
@@ -50,7 +58,16 @@ sub new
   # WWW::RobotRules <= 5.78 have bugs which cause suboptimal results with
   # User-Agent substring matching against robots.txt files; "User-Agent: *"
   # should work ok with all though, and "User-Agent: W3C-checklink" for >= 5.77
-  my $self = $class->SUPER::new($name, $from, $rules);
+  my $self;
+  if (USE_ROBOT_UA) {
+    $self = $class->SUPER::new($name, $from, $rules);
+  } else {
+    my %cnf;
+    @cnf{qw(agent from)} = ($name, $from);
+    $self = LWP::UserAgent->new(%cnf);
+    $self = bless $self, $class;
+  }
+
   $self->from(undef) unless $from_ok;
 
   $self->env_proxy();
@@ -242,9 +259,12 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.3';
   $REVISION    = sprintf('version %s (c) 1999-2008 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.115 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.116 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
-                         $PROGRAM, $VERSION, $cvsver, LWP::RobotUA->_agent());
+                         $PROGRAM, $VERSION, $cvsver,
+                         (W3C::UserAgent::USE_ROBOT_UA
+                           ? LWP::RobotUA->_agent()
+                           : LWP::UserAgent->_agent()));
 
   # Pull in mod_perl modules if applicable.
   eval {
@@ -393,7 +413,9 @@ if (defined($Opts{Trusted})) {
 my $ua = W3C::UserAgent->new($AGENT); # @@@ TODO: admin address
 # @@@ make number of keep-alive connections customizable
 $ua->conn_cache({ total_capacity => 1}); # 1 keep-alive connection
-$ua->delay($Opts{Sleep_Time}/60);
+if ($ua->can('delay')) {
+  $ua->delay($Opts{Sleep_Time}/60);
+}
 $ua->timeout($Opts{Timeout});
 eval {
   $ua->allow_private_ips($Opts{Allow_Private_IPs});
