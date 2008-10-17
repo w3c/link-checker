@@ -5,7 +5,7 @@
 # (c) 1999-2008 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.117 2008-10-17 04:33:59 mernst Exp $
+# $Id: checklink,v 4.118 2008-10-17 04:36:19 mernst Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -259,7 +259,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.3';
   $REVISION    = sprintf('version %s (c) 1999-2008 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.117 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.118 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver,
                          (W3C::UserAgent::USE_ROBOT_UA
@@ -1092,6 +1092,10 @@ EOF
           }
         }
       }
+
+      # This is an inherently recursive algorithm, so Perl's warning is not
+      # helpful.  You may wish to comment this out when debugging, though.
+      no warnings 'recursion';
 
       if ($depth < 0) {
         &check_uri($params, $u, 0, -1, $cookie, $uri);
