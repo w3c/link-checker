@@ -5,7 +5,7 @@
 # (c) 1999-2008 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.116 2008-09-22 19:33:31 ville Exp $
+# $Id: checklink,v 4.117 2008-10-17 04:33:59 mernst Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -259,7 +259,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.3';
   $REVISION    = sprintf('version %s (c) 1999-2008 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.116 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.117 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver,
                          (W3C::UserAgent::USE_ROBOT_UA
@@ -1552,6 +1552,9 @@ sub add_link
 {
   my ($self, $uri, $base, $line) = @_;
   if (defined($uri)) {
+    # Remove repeated slashes after the . or .. in relative links, to avoid
+    # duplicated checking or infinite recursion.
+    $uri =~ s|^(\.\.?/)/+|$1|o;
     $uri = URI->new_abs($uri, $base) if defined($base);
     $self->{Links}{$uri}{$line}++;
   }
