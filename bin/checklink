@@ -5,7 +5,7 @@
 # (c) 1999-2008 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.121 2008-10-25 19:33:32 ville Exp $
+# $Id: checklink,v 4.122 2008-10-25 19:37:21 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -215,7 +215,8 @@ use constant MP2 =>
   (exists($ENV{MOD_PERL_API_VERSION}) && $ENV{MOD_PERL_API_VERSION} >= 2);
 
 # Tag=>attribute mapping of things we treat as links.
-# Note: base/@href gets a special treatment, see start() for details.
+# Note: base/@href and meta/@http-equiv get special treatment, see start()
+# for details.
 use constant LINK_ATTRS => {
     a          => ['href'],
     area       => ['href'],
@@ -259,7 +260,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.3';
   $REVISION    = sprintf('version %s (c) 1999-2008 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.121 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.122 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver,
                          (W3C::UserAgent::USE_ROBOT_UA
@@ -1584,6 +1585,8 @@ sub start
   # Links
   if (!$self->{only_anchors}) {
 
+    my $tag_local_base = undef;
+
     # Special case: base/@href
     # TODO: This should go away as soon as LWP::Protocol::collect() invokes
     #       HTML::HeadParser (thus taking care of it in $response->base()
@@ -1598,9 +1601,17 @@ sub start
       # Note: base/@href intentionally not treated as a dereferenceable link:
       # http://www.w3.org/mid/200802091439.27764.ville.skytta%40iki.fi
     }
-
-    my $tag_local_base = undef;
-    if ($tag eq 'applet' || $tag eq 'object') {
+    # Special case: meta[@http-equiv=Refresh]/@content
+    elsif ($tag eq 'meta') {
+      if ($attr->{'http-equiv'} && lc($attr->{'http-equiv'}) eq 'refresh') {
+        my $content = $attr->{content};
+        if ($content && $content =~ /.*?;\s*(?:url=)?(.+)/i) {
+          $self->add_link($1, undef, $line);
+        }
+      }
+    }
+    # Special case: tags that have "local base"
+    elsif ($tag eq 'applet' || $tag eq 'object') {
       if (my $codebase = $attr->{codebase}) {
         # TODO: HTML 4 spec says applet/@codebase may only point to subdirs of
         # the directory containing the current document.  Should we do
