@@ -5,7 +5,7 @@
 # (c) 1999-2008 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.120 2008-10-25 19:27:10 ville Exp $
+# $Id: checklink,v 4.121 2008-10-25 19:33:32 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -259,7 +259,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.3';
   $REVISION    = sprintf('version %s (c) 1999-2008 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.120 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.121 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver,
                          (W3C::UserAgent::USE_ROBOT_UA
@@ -2091,7 +2091,7 @@ Response message: %s%s%s</dd>
              # List of redirects
              $redirected ? join("\n-> ", @redirects_urls) . $redirmsg : $u,
              # List of lines
-             $lines_list ? "Line$s: $lines_list" : '',
+             $lines_list ? sprintf("\n%6s: %s", "Line$s", $lines_list) : '',
              # Response code chain
              join(' -> ', @http_codes),
              # HTTP message
