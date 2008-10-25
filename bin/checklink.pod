@@ -1,4 +1,4 @@
-$Id: checklink.pod,v 1.19 2008-02-10 13:17:03 ville Exp $
+$Id: checklink.pod,v 1.20 2008-10-25 19:22:46 ville Exp $
 
 =head1 NAME
 
@@ -77,7 +77,7 @@ regular expression would.
 =item B<--exclude-docs> I<regexp>
 
 In recursive mode, do not check links in documents whose full, canonical
-URIs match I<regexp>.
+URIs match I<regexp>.  This option may be specified multiple times.
 
 =item B<-L, --languages> I<accept-language>
 
