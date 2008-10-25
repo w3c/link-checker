@@ -1,4 +1,4 @@
-$Id: checklink.pod,v 1.20 2008-10-25 19:22:46 ville Exp $
+$Id: checklink.pod,v 1.21 2008-10-25 19:58:18 mernst Exp $
 
 =head1 NAME
 
@@ -140,7 +140,8 @@ Masquerade local dir as a remote URI.  For example, the following results in
   --masquerade "/my/local/dir http://some/remote/uri/"
 
 As of revision 3.6.2.19 of checklink, B<--masquerade> takes a single
-argument consisting of two URIs, separated by whitespace.  One usual way of
+argument consisting of two URIs, separated by whitespace.  The quote
+marks are not part of the argument, but one usual way of
 providing a value with embedded whitespace is to enclose it in quotes.
 
 =item B<-H, --html>
