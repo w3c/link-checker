@@ -5,7 +5,7 @@
 # (c) 1999-2008 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.118 2008-10-17 04:36:19 mernst Exp $
+# $Id: checklink,v 4.119 2008-10-25 19:22:46 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -259,7 +259,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.3';
   $REVISION    = sprintf('version %s (c) 1999-2008 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.118 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.119 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver,
                          (W3C::UserAgent::USE_ROBOT_UA
@@ -369,7 +369,7 @@ my %Opts =
     Password          => undef,
     Base_Locations    => [],
     Exclude           => undef,
-    Exclude_Docs      => undef,
+    Exclude_Docs      => [],
     Masquerade        => 0,
     Masquerade_From   => '',
     Masquerade_To     => '',
@@ -401,8 +401,8 @@ if (defined($Opts{Exclude})) {
   eval { $Opts{Exclude} = qr/$Opts{Exclude}/o; };
   &usage(1, "Error in exclude regexp: $@") if $@;
 }
-if (defined($Opts{Exclude_Docs})) {
-  eval { $Opts{Exclude_Docs} = qr/$Opts{Exclude_Docs}/o; };
+for my $i (0 .. $#{$Opts{Exclude_Docs}}) {
+  eval { $Opts{Exclude_Docs}->[$i] = qr/$Opts{Exclude_Docs}->[$i]/; };
   &usage(1, "Error in exclude-docs regexp: $@") if $@;
 }
 if (defined($Opts{Trusted})) {
@@ -615,8 +615,8 @@ sub parse_arguments ()
              'r|recursive'     => sub { $Opts{Depth} = -1
                                           if $Opts{Depth} == 0; },
              'l|location=s'    => \@locs,
-             'X|exclude=s',    => \$Opts{Exclude},
-             'exclude-docs=s', => \$Opts{Exclude_Docs},
+             'X|exclude=s'     => \$Opts{Exclude},
+             'exclude-docs=s@' => \$Opts{Exclude_Docs},
              'u|user=s'        => \$Opts{User},
              'p|password=s'    => \$Opts{Password},
              't|timeout=i'     => \$Opts{Timeout},
@@ -698,7 +698,8 @@ Options:
                             match REGEXP; also limits recursion the same way
                             as --exclude-docs with the same regexp would.
  --exclude-docs REGEXP      In recursive mode, do not check links in documents
-                            whose full, canonical URIs match REGEXP.
+                            whose full, canonical URIs match REGEXP.  This
+                            option may be specified multiple times.
  -L, --languages LANGS      Accept-Language header to send.  The special value
                             'auto' causes autodetection from the environment.
  -R, --no-referer           Do not send the Referer HTTP header.
@@ -1202,9 +1203,11 @@ sub in_recursion_scope ($)
 
   my $candidate = URI->new($uri)->canonical();
 
-  return 0
-      if ((defined($Opts{Exclude}) && $candidate =~ $Opts{Exclude}) ||
-          (defined($Opts{Exclude_Docs}) && $candidate =~ $Opts{Exclude_Docs}));
+  return 0 if (defined($Opts{Exclude}) && $candidate =~ $Opts{Exclude});
+
+  for my $excluded_doc (@{$Opts{Exclude_Docs}}) {
+    return 0 if ($candidate =~ $excluded_doc);
+  }
 
   foreach my $base (@{$Opts{Base_Locations}}) {
     my $rel = $candidate->rel($base);
