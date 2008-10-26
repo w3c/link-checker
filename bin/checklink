@@ -5,7 +5,7 @@
 # (c) 1999-2008 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.123 2008-10-25 19:57:45 mernst Exp $
+# $Id: checklink,v 4.124 2008-10-26 18:24:53 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -260,7 +260,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.3';
   $REVISION    = sprintf('version %s (c) 1999-2008 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.123 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.124 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver,
                          (W3C::UserAgent::USE_ROBOT_UA
@@ -617,7 +617,7 @@ sub parse_arguments ()
                                           if $Opts{Depth} == 0; },
              'l|location=s'    => \@locs,
              'X|exclude=s'     => \$Opts{Exclude},
-             'exclude-docs=s@' => \$Opts{Exclude_Docs},
+             'exclude-docs=s@' => \@{$Opts{Exclude_Docs}},
              'u|user=s'        => \$Opts{User},
              'p|password=s'    => \$Opts{Password},
              't|timeout=i'     => \$Opts{Timeout},
