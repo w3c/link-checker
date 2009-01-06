@@ -4,7 +4,7 @@
    Copyright 2000-2009 W3C (MIT, INRIA, Keio). All Rights Reserved.
    See http://www.w3.org/Consortium/Legal/ipr-notice.html#Copyright
 
-   $Id: linkchecker.css,v 1.26 2009-01-06 20:37:48 ot Exp $
+   $Id: linkchecker.css,v 1.27 2009-01-06 22:09:57 ot Exp $
 */
 
 html, body {
@@ -316,8 +316,16 @@ ul#menu li {
 .report {
   width: 100%;
 }
-dt.report {
-  font-weight: bold;
+
+table.report {
+    border-collapse: collapse;
+}
+table.report th {
+    padding: .5em;
+    background-color: #fcfcfc;
+}
+table.report td {
+    padding: .5em;
 }
 
 dl.report {
@@ -328,20 +336,32 @@ dl.report {
     border-left: 1px solid #EAEBEE;
     border-right: 1px solid #EAEBEE;
 }
+
 dl.report dt, dl.report dd {
   border-bottom: 0;
-  padding: 1em;
 }
 dl.report dt {border-top: 1px solid #EAEBEE;
   margin-top: .8em;
   padding-left: .5em;
+  padding-top: .5em;
+  font-weight: bold;
+}
+dl.report dt span.msg_loc, dl.report dt span.redirected_to {
+font-weight: normal;
 }
 dl.report dd {
   border-top: 0;
   margin: 0;
-  padding: 0 0 0 2em;
-  line-height: 170%;
   text-indent: 0;  
+  padding: 0;
+  margin-left: 1.5em;
+}
+dl.report dd.responsecode{ padding-top: 1em; font-size: smaller;}
+dl.report dd.message_explanation{ font-size: smaller; margin-bottom: 1.5em; }
+
+dl.report dd p{
+    padding: 0;
+    line-height: 150%;
 }
 
 div.settings {
@@ -355,18 +375,22 @@ div.settings ul {
 .unauthorized {
   background-color: aqua;
 }
+
 .redirect {
   font-weight: normal;
   font-style: italic;
 }
 .broken {
-  background-color: red;
+  color: #aa0000;
+}
+dl.report .broken {
+    font-weight: bold;    
 }
 .multiple {
-  background-color: fuchsia;
+  color: fuchsia;
 }
 .dubious {
-  background-color: #dadada;
+  background-color: #eaeaea;
 }
 
 span.err_type img {
