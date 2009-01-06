@@ -5,7 +5,7 @@
 # (c) 1999-2009 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.128 2009-01-06 20:37:48 ot Exp $
+# $Id: checklink,v 4.129 2009-01-06 21:01:39 ot Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -260,7 +260,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.3';
   $REVISION    = sprintf('version %s (c) 1999-2009 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.128 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.129 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver,
                          (W3C::UserAgent::USE_ROBOT_UA
@@ -1061,8 +1061,8 @@ EOF
   }
   print "\n" unless $Opts{Quiet};
 
-  &anchors_summary($p->{Anchors}, \%errors);
   &links_summary(\%links, \%results, \%broken, \%redirects);
+  &anchors_summary($p->{Anchors}, \%errors);
 
   # Do we want to process other documents?
   if ($depth != 0) {
