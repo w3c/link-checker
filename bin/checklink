@@ -5,7 +5,7 @@
 # (c) 1999-2009 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.126 2009-01-04 17:52:20 ville Exp $
+# $Id: checklink,v 4.127 2009-01-06 20:12:55 ot Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -260,7 +260,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.3';
   $REVISION    = sprintf('version %s (c) 1999-2009 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.126 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.127 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver,
                          (W3C::UserAgent::USE_ROBOT_UA
@@ -2060,7 +2060,7 @@ on how to solve this</a>.';
         $redirect_loop ? ' <em>redirect loop detected</em>' : '';
       printf("
 <dt%s>%s%s</dt>
-<dd>What to do: <em>%s</em>%s<br /></dd>
+<dd>What does this mean? How to Fix? : <em>%s</em>%s<br /></dd>
 <dd>Response status code: %s<br />
 Response message: %s%s%s</dd>
 <dd>Line%s: %s</dd>\n",
@@ -2154,18 +2154,18 @@ sub links_summary (\%\%\%\%)
 {
   # Advices to fix the problems
 
-  my %todo = ( 200 => 'Some of the links to this resource point to broken URI fragments, which should be removed or fixed.',
-               300 => 'It usually means that there is a typo in a link that triggers mod_speling action - this must be fixed!',
-               301 => 'This is a permanent redirect. The link should be updated.',
+  my %todo = ( 200 => 'Some of the links to this resource point to broken URI fragments (such as index.html#fragment).',
+               300 => 'This often happens when a typo in the link gets corrected automatically by the server. For the sake of performance, the link should be fixed.',
+               301 => 'This is a permanent redirect. The link should be updated to point to the more recent URI.',
                302 => 'This is a temporary redirect. Update the link if you believe it makes sense, or leave it as is.',
-               303 => 'Usually nothing.',
+               303 => 'This rare status code points to a "See Other" resource. There is generally nothing to be done.',
                307 => 'This is a temporary redirect. Update the link if you believe it makes sense, or leave it as is.',
-               400 => 'Usually the sign of a malformed URL that cannot be parsed by the server.',
-               401 => "The link is not public. You'd better specify it.",
+               400 => 'This is usually the sign of a malformed URL that cannot be parsed by the server. Check the syntax of the link.',
+               401 => "The link is not public and the actual resource is only available behind authentication. If not already done, you could specify it.",
                403 => 'The link is forbidden! This needs fixing. Usual suspects: a missing index.html or Overview.html, or a missing ACL.',
-               404 => 'The link is broken. Fix it.',
-               405 => 'The server does not allow HEAD requests. Go ask the guys who run this server why. Check the link manually.',
-               406 => "The server isn't capable of responding according to the Accept* headers sent. Check it out.",
+               404 => 'The link is broken. Double-check that you have not made any typo, or mistake in copy-pasting. If the link points to a resource that no longer exists, you may want to remove or fix the link.',
+               405 => 'The server does not allow HTTP HEAD requests, which prevents the Link Checker to check the link automatically.  Check the link manually.',
+               406 => "The server isn't capable of responding according to the Accept* headers sent. This is likely to be a server-side issue with negotiation.",
                407 => 'The link is a proxy, but requires Authentication.',
                408 => 'The request timed out.',
                410 => 'The resource is gone. You should remove this link.',
