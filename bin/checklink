@@ -5,7 +5,7 @@
 # (c) 1999-2009 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.129 2009-01-06 21:01:39 ot Exp $
+# $Id: checklink,v 4.130 2009-01-06 22:09:22 ot Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -260,7 +260,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.3';
   $REVISION    = sprintf('version %s (c) 1999-2009 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.129 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.130 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver,
                          (W3C::UserAgent::USE_ROBOT_UA
@@ -1929,7 +1929,7 @@ sub anchors_summary (\%\%)
   print('List of duplicate and empty anchors');
   print <<EOF if $Opts{HTML};
 </p>
-<table border="1" summary="List of duplicate and empty anchors.">
+<table class="report" border="1" summary="List of duplicate and empty anchors.">
 <thead>
 <tr>
 <th>Anchor</th>
@@ -2059,40 +2059,38 @@ on how to solve this</a>.';
       my $redirmsg =
         $redirect_loop ? ' <em>redirect loop detected</em>' : '';
       printf("
-<dt%s>%s%s</dt>
-<dd>What does this mean? How to Fix? : <em>%s</em>%s<br /></dd>
-<dd>Response status code: %s<br />
-Response message: %s%s%s</dd>
-<dd>Line%s: %s</dd>\n",
+<dt%s>%s <span class='msg_loc'>Line%s: %s</span> %s</dt>
+<dd class='responsecode'><strong>Status</strong>: %s %s %s</dd>
+<dd class='message_explanation'><p>%s %s</p></dd>\n",
              # Anchor for return codes
              $idref,
              # Color
              &status_icon($c),
+             $s,
+             # List of lines
+             $lines_list,
              # List of redirects
-             $redirected ?
-             join(' redirected to ', @redirects_urls) . $redirmsg :
-             &show_url($u),
+             $redirected ? join(' redirected to ', @redirects_urls) . $redirmsg : &show_url($u),
+             # Realm
+             defined($currloc->{realm})
+             ? sprintf('Realm: %s<br />', &encode($currloc->{realm})) : '',
+             # HTTP original message
+             # defined($currloc->{orig_message})
+             # ? &encode($currloc->{orig_message}).
+             # ' <span title="redirected to">-&gt;</span> '
+             # : '',
+
+             # Response code chain
+             join(' <span class="redirected_to" title="redirected to">-&gt;</span> ',
+                  map { &encode($_) } @http_codes),             
+             # HTTP final message
+             $http_message, 
              # What to do
              $whattodo,
              # Redirect too?
              $redirect_too ?
              sprintf(' <span %s>%s</span>', &bgcolor(301), $redirect_too) : '',
-             # Response code chain
-             join(' <span title="redirected to">-&gt;</span> ',
-                  map { &encode($_) } @http_codes),
-             # Realm
-             defined($currloc->{realm})
-             ? sprintf('Realm: %s<br />', &encode($currloc->{realm})) : '',
-             # HTTP original message
-             defined($currloc->{orig_message})
-             ? &encode($currloc->{orig_message}).
-             ' <span title="redirected to">-&gt;</span> '
-             : '',
-             # HTTP final message
-             $http_message,
-             $s,
-             # List of lines
-             $lines_list);
+             );
       if ($#fragments >= 0) {
         printf("<dd>Broken fragments: <ul>\n");
       }
@@ -2257,7 +2255,7 @@ sub links_summary (\%\%\%\%)
 </h3>
 <p><em>There are issues with the URLs listed below. The table summarizes the
 issues and suggested actions by HTTP response status code.</em></p>
-<table border="1" summary="List of issues and suggested actions.">
+<table class="report" border="1" summary="List of issues and suggested actions.">
 <thead>
 <tr>
 <th>Code</th>
