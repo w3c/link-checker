@@ -4,7 +4,7 @@
    Copyright 2000-2009 W3C (MIT, INRIA, Keio). All Rights Reserved.
    See http://www.w3.org/Consortium/Legal/ipr-notice.html#Copyright
 
-   $Id: linkchecker.css,v 1.27 2009-01-06 22:09:57 ot Exp $
+   $Id: linkchecker.css,v 1.28 2009-01-06 22:19:53 ot Exp $
 */
 
 html, body {
@@ -390,7 +390,7 @@ dl.report .broken {
   color: fuchsia;
 }
 .dubious {
-  background-color: #eaeaea;
+    font-style: italic;
 }
 
 span.err_type img {
