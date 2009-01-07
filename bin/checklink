@@ -5,7 +5,7 @@
 # (c) 1999-2009 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.131 2009-01-06 22:19:33 ot Exp $
+# $Id: checklink,v 4.132 2009-01-07 18:22:42 ot Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -260,7 +260,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.3';
   $REVISION    = sprintf('version %s (c) 1999-2009 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.131 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.132 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver,
                          (W3C::UserAgent::USE_ROBOT_UA
@@ -326,14 +326,19 @@ $@
 <meta name="generator" content="%s" />
 <link rel="stylesheet" type="text/css" href="%s" />
 <script type="text/javascript">
-function show_progress(progress_text, progress_head_id) {
+function show_progress(progress_text, progress_head_id, progress_pre_id) {
 var progressHead = document.getElementById(progress_head_id);
 var txt = document.createTextNode(progress_text);
 oChild=progressHead.childNodes[1];
 oNewChild=document.createElement("span");
 oNewChild.appendChild(txt);
 progressHead.replaceChild(oNewChild, oChild);
-};</script>
+scroll_bottom(progress_pre_id);
+};
+function scroll_bottom(progress_pre_id) {
+var progressPre = document.getElementById(progress_pre_id);
+progressPre.scrollTop = progressPre.scrollHeight;
+}</script>
 EOF
 
   # Trusted environment variables that need laundering in taint mode.
@@ -919,7 +924,7 @@ EOF
              &encode($Opts{_Self_URI}));
 
       printf ('<h3 class="status_progress" id="status_progress%s">Status: <span></span></h3>', $result_anchor);
-      print("<pre class=\"progress\">\n");
+      printf("<pre class=\"progress\" id=\"pre_progress%s\">\n", , $result_anchor);
 
     }
   }
@@ -1007,9 +1012,9 @@ EOF
       # Hack: avoid browser/server timeouts in summary only CGI mode, bug 896
       print ' ' if ($Opts{HTML} && !$Opts{Command_Line});
     } else {
-      printf('<script type="text/javascript">show_progress("Checking link %s", "status_progress%s");</script>' , &encode($u), $result_anchor)
+      &hprintf("\nChecking link %s\n", $u);
+      printf('<script type="text/javascript">show_progress("Checking link %s", "status_progress%s", "pre_progress%s");</script>' , &encode($u), $result_anchor, $result_anchor)
         if (!$Opts{Command_Line} && $Opts{HTML} && !$Opts{Summary_Only});
-      &hprintf("Checking link %s\n", $u);
     }
 
     # Check that a link is valid
@@ -1049,10 +1054,10 @@ EOF
       }
     }
   }
-  printf('<script type="text/javascript">show_progress("Done. Document processed in %ss.\n", "status_progress%s");</script>' , &time_diff($start, &get_timestamp()), $result_anchor)
-  if ($Opts{HTML} && !$Opts{Summary_Only});
-  &hprintf("Processed in %ss.\n", &time_diff($start, &get_timestamp()))
+  &hprintf("\nProcessed in %ss.\n", &time_diff($start, &get_timestamp()))
    unless $Opts{Summary_Only};
+   printf('<script type="text/javascript">show_progress("Done. Document processed in %ss.\n", "status_progress%s", "pre_progress%s");</script>' , &time_diff($start, &get_timestamp()), $result_anchor, $result_anchor)
+   if ($Opts{HTML} && !$Opts{Summary_Only});
 
   # Display results
   if ($Opts{HTML} && !$Opts{Summary_Only}) {
