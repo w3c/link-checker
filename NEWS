@@ -1,6 +1,11 @@
 This document contains information about high level changes between
 Link Checker releases, see ChangeLog for a detailed list of changes.
 
+Version 4.4
+- Changes in the UI to make it match other validators more closely
+- in HTML/cgi output, using javascript to show checklink status as it happens
+
+
 Version 4.3
 - Various minor improvements to result output, both in text and HTML modes.
 - Fix --quiet and checking multiple documents to match documentation.
