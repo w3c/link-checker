@@ -5,7 +5,7 @@
 # (c) 1999-2009 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.132 2009-01-07 18:22:42 ot Exp $
+# $Id: checklink,v 4.133 2009-01-08 21:44:45 ot Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -258,9 +258,9 @@ BEGIN
   # Version info
   $PACKAGE     = 'W3C Link Checker';
   $PROGRAM     = 'W3C-checklink';
-  $VERSION     = '4.3';
+  $VERSION     = '4.4';
   $REVISION    = sprintf('version %s (c) 1999-2009 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.132 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.133 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver,
                          (W3C::UserAgent::USE_ROBOT_UA
