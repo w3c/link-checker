@@ -5,7 +5,7 @@
 # (c) 1999-2009 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.134 2009-01-10 21:25:08 ville Exp $
+# $Id: checklink,v 4.135 2009-01-10 21:27:38 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -220,23 +220,30 @@ use constant MP2 =>
 use constant LINK_ATTRS => {
     a          => ['href'],
     area       => ['href'],
+    audio      => ['src'],
     blockquote => ['cite'],
     body       => ['background'],
     del        => ['cite'],
     embed      => ['href', 'pluginspage', 'pluginurl', 'src'], # proprietary
+    # form/@action not checked (side effects)
     frame      => ['longdesc', 'src'],
     iframe     => ['longdesc', 'src'],
     img        => ['longdesc', 'src'],
     ins        => ['cite'],
+    # input/@action not checked (side effects)
     input      => ['src'],
     link       => ['href'],
     object     => ['data'],
     q          => ['cite'],
     script     => ['src'],
+    source     => ['src'],
+    video      => ['src'],
 };
 
 # Tag=>attribute mapping of things we treat as space separated lists of links.
 use constant LINK_LIST_ATTRS => {
+    a          => ['ping'],
+    area       => ['ping'],
     head       => ['profile'],
 };
 
@@ -260,7 +267,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.4';
   $REVISION    = sprintf('version %s (c) 1999-2009 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.134 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.135 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver,
                          (W3C::UserAgent::USE_ROBOT_UA
