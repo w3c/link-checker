@@ -5,7 +5,7 @@
 # (c) 1999-2009 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.133 2009-01-08 21:44:45 ot Exp $
+# $Id: checklink,v 4.134 2009-01-10 21:25:08 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -260,7 +260,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.4';
   $REVISION    = sprintf('version %s (c) 1999-2009 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.133 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.134 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver,
                          (W3C::UserAgent::USE_ROBOT_UA
@@ -924,8 +924,7 @@ EOF
              &encode($Opts{_Self_URI}));
 
       printf ('<h3 class="status_progress" id="status_progress%s">Status: <span></span></h3>', $result_anchor);
-      printf("<pre class=\"progress\" id=\"pre_progress%s\">\n", , $result_anchor);
-
+      printf("<pre class=\"progress\" id=\"pre_progress%s\">\n", $result_anchor);
     }
   }
 
