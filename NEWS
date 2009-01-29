@@ -2,8 +2,13 @@ This document contains information about high level changes between
 Link Checker releases, see ChangeLog for a detailed list of changes.
 
 Version 4.4
+- checking more elements and attributes, such as BLOCKQUOTE cite="", BODY background="", EMBED, etc
 - Changes in the UI to make it match other validators more closely
 - in HTML/cgi output, using javascript to show checklink status as it happens
+- added support for HTML5 links
+- softer wording for broken link results
+- Add non-robot developer mode
+- many bug fixes and code cleanup
 
 
 Version 4.3
