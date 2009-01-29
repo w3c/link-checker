@@ -1,3 +1,394 @@
+Sat Jan 10 21:27:38 2009 UTC by ville 
+
+  Support new link things in HTML 5 (incomplete; XHTML 5 xml:base not supported).
+
+Sat Jan 10 21:25:08 2009 UTC by ville 
+
+  Remove (apparently harmless) stray comma.
+
+Thu Jan 8 21:44:45 2009 UTC by ot 
+
+  preparing 4.4
+
+Wed Jan 7 18:22:42 2009 UTC by ot 
+
+  autoscroll of results as they happen, based on prototype by Brett Bieber
+
+Tue Jan 6 22:19:33 2009 UTC by ot 
+
+  broken stuff report is not only about broken links - may as well be clearer and frustrate people less
+
+Tue Jan 6 22:09:22 2009 UTC by ot 
+
+  simplify, lighten, give air, do not yell at the user. Removed feature: sequence of status messages (status code squence kept)
+
+Tue Jan 6 21:01:39 2009 UTC by ot 
+
+  making sure broken links get seen first. They are the prime concern. Moving the fragments report lower.
+
+Tue Jan 6 20:37:48 2009 UTC by ot 
+
+  donation/sponsorship slug
+
+Tue Jan 6 20:12:55 2009 UTC by ot 
+
+  softening wording in error/info message
+
+Sun Jan 4 17:52:20 2009 UTC by ville 
+
+  Comment typo fix.
+
+Thu Jan 1 22:50:43 2009 UTC by ville 
+
+  2009
+
+Sun Oct 26 18:24:53 2008 UTC by ville 
+
+  Fix --exclude-docs for older Getopt::Long versions thanks to Michael Ernst for pointing it out.
+
+Sat Oct 25 19:57:45 2008 UTC by mernst 
+
+  Improve comment.
+
+Sat Oct 25 19:37:21 2008 UTC by ville 
+
+  Check links in meta refresh tags.
+
+Sat Oct 25 19:33:32 2008 UTC by ville 
+
+  Improve line number indicator formatting for redirect results in console mode.
+
+Sat Oct 25 19:27:10 2008 UTC by ville 
+
+  If running LWP >= 5.814, set Accept-Encoding in requests to what LWP can decode.
+
+Sat Oct 25 19:22:46 2008 UTC by ville 
+
+  Allow --exclude-docs be specified multiple times, based on patch from Michael Ernst.
+
+Fri Oct 17 04:36:19 2008 UTC by mernst 
+
+  Disable Perl's recursion warnings for recursive algorithm.
+
+Fri Oct 17 04:33:59 2008 UTC by mernst 
+
+  Prevent (some) infinite loops.
+
+Mon Sep 22 19:33:31 2008 UTC by ville 
+
+  Add non-robot developer mode, thanks to Michael Ernst.
+
+Thu Sep 11 16:51:41 2008 UTC by ville 
+
+  Drop duplicate "Processing..." header in non-summary-only HTML mode, thanks to Michael Ernst
+
+Tue Aug 26 18:55:00 2008 UTC by ville 
+
+  Remove stray as-is "\n" from HTML output.
+
+Tue Aug 26 18:43:55 2008 UTC by ville 
+
+  Untaint config params that are used as the format argument to (s)printf(), Perl 5.10 does not want to see that in taint mode.
+
+Thu Jul 3 19:50:24 2008 UTC by ot 
+
+  muting some output in quiet mode. some reorg of output code - Patch courtesy of Michael Ernst
+
+Thu Jul 3 19:48:04 2008 UTC by ot 
+
+  removed unused vars - Patch courtesy of Michael Ernst
+
+Thu Jul 3 19:46:35 2008 UTC by ot 
+
+  improve debug output in verbose mode. Patch courtesy of Michael Ernst
+
+Sun May 4 16:59:22 2008 UTC by ville 
+
+  Don't do javascript progress callbacks in command line HTML mode.
+
+Sun May 4 16:57:33 2008 UTC by ville 
+
+  Fix command line HTML output.
+
+Sun May 4 16:55:27 2008 UTC by ville 
+
+  Escape shown URI in javascript progress callback.
+
+Thu May 1 11:28:23 2008 UTC by ville 
+
+  Micro-optimizations, cleanups.
+
+Thu May 1 11:07:18 2008 UTC by ville 
+
+  Fix HTML entity encoding in broken anchor output, improve it slightly.
+
+Thu May 1 08:03:01 2008 UTC by ville 
+
+  Trivial code cleanups.
+
+Thu May 1 07:56:13 2008 UTC by ville 
+
+  Drop old URI workarounds, require >= 1.31.
+
+Mon Apr 21 08:00:30 2008 UTC by ville 
+
+  Markup fixes.
+
+Mon Apr 21 07:31:51 2008 UTC by ville 
+
+  Note XHTML $response->base() improvements in libwww-perl >= 5.810 in comments.
+
+Mon Apr 21 07:26:33 2008 UTC by ville 
+
+  Require libwww-perl >= 5.802.
+
+Mon Apr 21 07:09:53 2008 UTC by ville 
+
+  Support Content-Encodings automatically handled by libwww-perl (#5648).
+
+Tue Feb 19 22:41:12 2008 UTC by ville 
+
+  Summary wording improvements, thanks to Jukka Korpela.
+
+Thu Feb 14 23:56:42 2008 UTC by ville 
+
+  Mimic LWP by setting the "Client-Warning: Internal response" to "IP disallowed" internal responses.
+
+Thu Feb 14 23:45:38 2008 UTC by ville 
+
+  Improve info about "IP address disallowed by config" messages (#5080), avoid outputting HTML in "What to do" in non-HTML console mode.
+
+Sun Feb 10 21:48:43 2008 UTC by ville 
+
+  Take codebase into account when resolving object/@data.
+
+Sun Feb 10 21:41:57 2008 UTC by ville 
+
+  Add a TODO about our built-in handling of base/@href special case.
+
+Sun Feb 10 18:22:37 2008 UTC by ville 
+
+  Don't check <a name="..."> for XHTML Basic 1.1 or XHTML MP.
+
+Sun Feb 10 18:13:59 2008 UTC by ville 
+
+  Set XML parsing mode also based on Content-Type in addition to public ID,
+  relax public ID matching for XML mode so that it catches XHTML Mobile,
+  XHTML-Print and XHTML+RDFa.
+
+Sun Feb 10 18:10:31 2008 UTC by ville 
+
+  Accept application/vnd.wap.xhtml+xml.
+
+Sun Feb 10 13:29:33 2008 UTC by ville 
+
+  Print percentage indicator only when it changes; improves performance
+  significantly with some terminals and large documents.
+
+Sun Feb 10 13:25:21 2008 UTC by ville 
+
+  Output number of lines processed instead of total number of lines in docs.
+
+Sun Feb 10 13:20:11 2008 UTC by ville 
+
+  ->base() returns a URI, don't create another one.
+
+Sun Feb 10 13:18:01 2008 UTC by ville 
+
+  Increase resolution of shown times to 1/100th of a second.
+
+Sun Feb 10 13:17:03 2008 UTC by ville 
+
+  Improve documentation of --indicator.
+
+Sun Feb 10 12:06:32 2008 UTC by ville 
+
+  Avoid division by zero in progress indicator for docs that contain no linefeeds.
+
+Sun Feb 10 12:02:29 2008 UTC by ville 
+
+  2008.
+
+Sun Feb 10 11:59:11 2008 UTC by ville 
+
+  Improve variable naming in parse_document().
+
+Sun Feb 10 11:57:21 2008 UTC by ville 
+
+  Trim whitespace, NFC.
+
+Sat Feb 9 14:49:13 2008 UTC by ville 
+
+  Review and explicitly list things treated as links.
+
+  New cases checked:
+    * BLOCKQUOTE,DEL,INS,Q: cite
+    * BODY: background
+    * FRAME,IFRAME,IMG: longdesc
+    * HEAD: profile
+    * EMBED (proprietary): pluginspage, pluginurl.
+
+  Cases no longer checked:
+    * (any unknown element): src, href
+    * (any element whose src attribute is unknown to me): src
+    * (any element whose href attribute is unknown to me): href.
+
+  Theoretically, we could use %HTML::Tagset::linkElements, but it contains things
+  that are not necessarily dereferenceable URIs and/or require special treatment
+  so maintaining our own lists is simpler.
+
+Thu Jan 24 01:29:38 2008 UTC by ot 
+
+  converting output to XHTML 1.0 Strict (cont'd)
+
+Thu Jan 24 01:28:00 2008 UTC by ot 
+
+  converting output to XHTML 1.0 Strict (cont'd)
+
+Thu Jan 24 01:21:39 2008 UTC by ot 
+
+  I need XHTML for some post-processing so...
+  converting output to XHTML 1.0 Strict, for now
+
+Wed Oct 24 05:18:20 2007 UTC by ot 
+
+  status bar bug
+
+Tue Oct 23 07:19:04 2007 UTC by ot 
+
+  adding a "progress bar" at top of scrolling pre
+
+Tue Sep 18 16:24:13 2007 UTC by ville 
+
+  Telling caches in the middle we want fresh copies of retrieved documents (Bug 4998)
+
+Tue Sep 18 07:18:46 2007 UTC by ot 
+
+  modifying wording and display of the report for broken frags
+
+Tue Sep 18 06:43:25 2007 UTC by ot 
+
+  adding status (error, warning, info) icon
+
+Tue Sep 18 06:09:56 2007 UTC by ot 
+  
+  error message rewriting. No need to scream at the user
+
+Tue Sep 18 06:06:32 2007 UTC by ot 
+
+  putting redirects together, separated from error list
+
+Sat Sep 15 07:47:40 2007 UTC by ville 
+
+  Fix HTML footer
+
+Fri Sep 14 05:14:29 2007 UTC by ot 
+
+  * pre-filling form with the URI being checked
+  * only output footer intro blurb on home page, not results
+  * giving class to "progress" <pre> for styling
+
+Thu Sep 13 16:38:22 2007 UTC by ville 
+
+  Reassign accesskey 2 to downloads.
+
+Thu Sep 13 15:42:41 2007 UTC by ville 
+
+  Remove "Skip past navigation" link; there is no such anchor on the "front" page and there is nothing to skip at end of the doc.
+
+Thu Sep 13 07:43:56 2007 UTC by ot 
+
+  adding tagline - better wording dearly welcome
+
+Thu Sep 13 07:28:21 2007 UTC by ot 
+
+  * moving menu to the bottom of UI (giving homepage better focus on mail functionality)
+  * adding intro blurb
+
+Sun Sep 2 08:48:36 2007 UTC by ville 
+
+  Output HTTP headers before fetching the first document (related to #4985).
+
+Fri Aug 17 21:06:56 2007 UTC by ville 
+
+  Add -R/--no-referer to --help output.
+
+Fri Aug 17 21:04:41 2007 UTC by ville 
+
+  Implement sending the Referer header (#32).
+
+Sun Jul 29 18:56:18 2007 UTC by ville 
+
+  Protect regexp metacharacters in masquerade URLs.
+
+Sun Jul 29 16:51:00 2007 UTC by ville 
+
+  Signal explicit EOF to HTML::Parser in parse_document().
+
+Sun Jul 29 16:49:00 2007 UTC by ville 
+
+  Change parse_document to operate directly on response content refs, decode content encodings, and clean up response contents when done.
+
+Sun Jul 29 13:48:29 2007 UTC by ville 
+
+  Clear contents of responses as soon as we've dealt with them.
+
+Sun Jul 29 13:35:35 2007 UTC by ville 
+
+  Prefix redirect progress events with "->".
+
+Sun Jul 29 13:25:21 2007 UTC by ville 
+
+  Refactor IP address allowance and redirect progress callback code into our UserAgent class.
+
+Sat Jul 28 10:44:32 2007 UTC by ville 
+
+  Remove the deprecated (since 2004, link checker 4.1) -n/--noacclanguage and -y/--proxy command line options.
+
+Sat Jul 28 10:41:15 2007 UTC by ville 
+
+  Fix doc of ip_allowed() return value.
+
+Sat Jul 28 08:02:19 2007 UTC by ville 
+
+  Make the CGI object non-global.
+
+Mon Apr 9 22:18:21 2007 UTC by ville 
+
+  Add --exclude option for excluding links matching given regexp (#689).
+
+Fri Mar 30 20:47:54 2007 UTC by ville 
+
+  Make --exclude-docs doc more accurate, mention it in "Settings used" if used.
+
+Fri Mar 30 20:13:53 2007 UTC by ville 
+  
+  Use add_link() for recording DTD URLs for consistency.
+
+Fri Mar 30 19:47:23 2007 UTC by ville 
+
+  2007, once more
+
+Fri Mar 30 19:42:09 2007 UTC by ville 
+
+  The dupe/empty anchor table lists one anchor per table row; adjust heading accordingly.
+
+Tue Mar 20 21:16:23 2007 UTC by ville 
+
+  List line numbers of broken fragments only, not all fragment line numbers if one or more for a doc are broken.
+
+Tue Mar 20 20:29:18 2007 UTC by ville 
+
+  Fix bunch of perlcritic warnings.
+
+Tue Mar 20 19:57:06 2007 UTC by ville 
+
+  2007
+
+Tue Mar 20 19:51:01 2007 UTC by ville 
+
+  Fix anchor parsing in HTML 2.x and 3.x documents, http://lists.w3.org/Archives/Public/www-validator/2007Mar/0065
+
 2006-10-22  ville
 
 	* bin/checklink: 4.3.
