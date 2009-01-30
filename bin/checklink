@@ -5,7 +5,7 @@
 # (c) 1999-2009 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.137 2009-01-30 19:58:17 ville Exp $
+# $Id: checklink,v 4.138 2009-01-30 21:20:11 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -267,7 +267,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.4';
   $REVISION    = sprintf('version %s (c) 1999-2009 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.137 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.138 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver,
                          (W3C::UserAgent::USE_ROBOT_UA
@@ -280,8 +280,11 @@ BEGIN
     require Apache2::RequestUtil;
   } if MP2();
 
-  my @content_types =
-    qw(application/xhtml+xml text/html application/vnd.wap.xhtml+xml;q=0.6);
+  my @content_types = qw(
+    text/html
+    application/xhtml+xml;q=0.9
+    application/vnd.wap.xhtml+xml;q=0.6
+  );
   $Accept = join(', ', @content_types, '*/*;q=0.5');
   my $re = join('|', map { s/;.*// ; quotemeta } @content_types);
   $ContentTypes = qr{\b(?:$re)\b}io;
