@@ -32,7 +32,7 @@ WriteMakefile(
 
 sub MY::postamble {
   return <<'MAKE_FRAG';
-ChangeLog: bin/checklink bin/checklink.pod docs/checklink.html docs/linkchecker.css docs/qa-small.png docs/valid-xhtml10.png docs/w3c_home.png README t/00compile.t
+ChangeLog: bin/checklink bin/checklink.pod docs/checklink.html docs/linkchecker.css docs/valid-xhtml10.png README t/00compile.t
 	cvs2cl --FSF --utc --prune \
 	  --ignore ChangeLog --ignore cvsignore --ignore SIGNATURE \
 	  --ignore Makefile.PL --ignore META.yml --ignore MANIFEST \
