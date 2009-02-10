@@ -5,7 +5,7 @@
 # (c) 1999-2009 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.144 2009-02-10 19:21:01 ville Exp $
+# $Id: checklink,v 4.145 2009-02-10 19:28:52 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -265,7 +265,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.4';
   $REVISION    = sprintf('version %s (c) 1999-2009 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.144 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.145 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver,
                          (W3C::UserAgent::USE_ROBOT_UA
@@ -2006,9 +2006,8 @@ sub show_link_report (\%\%\%\%\@;$\%)
           $whattodo =
 'You must change this link: people using a browser without JavaScript support
 will <em>not</em> be able to follow this link. See the
-<a href="http://www.w3.org/TR/1999/WAI-WEBCONTENT-19990505/#tech-scripts">Web
-Content Accessibility Guidelines on the use of scripting on the Web</a> and
-the
+<a href="http://www.w3.org/TR/WAI-WEBCONTENT/#tech-scripts">Web Content
+Accessibility Guidelines on the use of scripting on the Web</a> and the
 <a href="http://www.w3.org/TR/WCAG10-HTML-TECHS/#directly-accessible-scripts">techniques
 on how to solve this</a>.';
         } else {
