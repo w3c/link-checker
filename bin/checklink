@@ -5,7 +5,7 @@
 # (c) 1999-2009 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.143 2009-02-10 18:37:27 ville Exp $
+# $Id: checklink,v 4.144 2009-02-10 19:21:01 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -55,9 +55,7 @@ sub new
   # Cheat by defining something for the constructor, and resetting it later.
   my $from_ok = $from;
   $from ||= 'www-validator@w3.org';
-  # WWW::RobotRules <= 5.78 have bugs which cause suboptimal results with
-  # User-Agent substring matching against robots.txt files; "User-Agent: *"
-  # should work ok with all though, and "User-Agent: W3C-checklink" for >= 5.77
+
   my $self;
   if (USE_ROBOT_UA) {
     $self = $class->SUPER::new($name, $from, $rules);
@@ -267,7 +265,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.4';
   $REVISION    = sprintf('version %s (c) 1999-2009 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.143 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.144 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver,
                          (W3C::UserAgent::USE_ROBOT_UA
