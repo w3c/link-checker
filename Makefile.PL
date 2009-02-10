@@ -32,11 +32,11 @@ WriteMakefile(
 
 sub MY::postamble {
   return <<'MAKE_FRAG';
-ChangeLog: bin/checklink bin/checklink.pod docs/checklink.html docs/linkchecker.css docs/valid-xhtml10.png README t/00compile.t
+ChangeLog: bin/checklink bin/checklink.pod docs/checklink.html docs/linkchecker.css README t/00compile.t
 	cvs2cl --FSF --utc --prune \
 	  --ignore ChangeLog --ignore cvsignore --ignore SIGNATURE \
 	  --ignore Makefile.PL --ignore META.yml --ignore MANIFEST \
-	  --ignore NEWS
+	  --ignore NEWS --ignore tests
 
 lib/W3C/LinkChecker.pm: Makefile.PL bin/checklink
 	$(MKPATH) lib/W3C

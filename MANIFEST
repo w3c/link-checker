@@ -11,6 +11,18 @@ bin/checklink.pod       Manual page for the link checker
 etc/checklink.conf      Optional configuration file
 docs/checklink.html     Additional documentation
 docs/linkchecker.css    Cascading style sheet for the documentation
-docs/valid-xhtml10.png
+images/double.png
+images/grad.png
+images/head-bl.png
+images/head-br.png
+images/round-br.png
+images/round-tr.png
+images/textbg.png
+images/w3c.png
+images/info_icons/README
+images/info_icons/error.png
+images/info_icons/info.png
+images/info_icons/warning.png
+images/valid_icons/valid-xhtml10-blue.png
 lib/W3C/LinkChecker.pm  Dummy *.pm for CPAN indexing purposes
 t/00compile.t
