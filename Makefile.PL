@@ -37,6 +37,7 @@ ChangeLog: bin/checklink bin/checklink.pod docs/checklink.html docs/linkchecker.
 	  --ignore ChangeLog --ignore cvsignore --ignore SIGNATURE \
 	  --ignore Makefile.PL --ignore META.yml --ignore MANIFEST \
 	  --ignore NEWS --ignore tests
+	$(RM_F) ChangeLog.bak
 
 lib/W3C/LinkChecker.pm: Makefile.PL bin/checklink
 	$(MKPATH) lib/W3C
