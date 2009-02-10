@@ -1,5 +1,18 @@
 2009-02-10  ville
 
+	* bin/checklink: Improve handling of URI schemes we don't want
+	checked.
+
+2009-02-10  ville
+
+	* bin/checklink: Tune WAI-WEBCONTENT link.
+
+2009-02-10  ville
+
+	* bin/checklink: Remove obsolete WWW::RobotRules comments.
+
+2009-02-10  ville
+
 	* docs/checklink.html, docs/valid-xhtml10.png, images/double.png,
 	images/grad.png, images/head-bl.png, images/head-br.png,
 	images/round-br.png, images/round-tr.png, images/textbg.png,
