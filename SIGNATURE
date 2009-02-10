@@ -14,26 +14,37 @@ not run its Makefile.PL or Build.PL.
 -----BEGIN PGP SIGNED MESSAGE-----
 Hash: SHA1
 
-SHA1 2c5134f49f7eb5d51acfcdc3730e45165fac3db5 ChangeLog
+SHA1 f6663dbaff87fc4696aa63b513dc3254d0da59dd ChangeLog
 SHA1 bcb07f9feaa907ee1f23e760591f8d6151acc2d8 ChangeLog.old
-SHA1 c5388018966a549ca86da9f8de0b6939d6130f30 MANIFEST
-SHA1 d86dc62e05b37e588ad4ac1774502cb9faf2fb27 META.yml
-SHA1 59b049b306e1f6f6fccc5c3781059d716ca40b20 Makefile.PL
-SHA1 e9872de4696f50b900a47b43f691ecf658aa6614 NEWS
-SHA1 3ea1bc3499ab4ac150d3f7ba3bdd36568d19ad87 README
-SHA1 6c999178efacbb21eaa2c7a5dd8b03ad811c13cc bin/checklink
-SHA1 f03a48c6e3899b3a4e4a0d803f9b0e859e531938 bin/checklink.pod
-SHA1 1937cbce7eefd686b852154ab014a6c095963894 docs/checklink.html
-SHA1 3c2c87dbb123390513c039b24bbf67ab6b475a45 docs/linkchecker.css
-SHA1 a1cc961571daf700c9290860ae9c439d1b462162 docs/qa-small.png
-SHA1 54dfdab40c6dcaddb41915cf4253fb0e7cfa6d26 docs/valid-xhtml10.png
-SHA1 4e8a17dce3368969e174359f430c23d1da2adeae docs/w3c_home.png
-SHA1 5236c48740127421fb2afd7d1ff35aadbb01f46f etc/checklink.conf
-SHA1 f024acb384e9cdf15f40aee69ebdcf313124a41e t/00compile.t
+SHA1 83106c1d150e809797f3bae563ba7252c4472e25 MANIFEST
+SHA1 8f291e7f67193a989ad47ce7ab032602b77ee339 META.yml
+SHA1 7b4ebfbadf9e804f0f57560206a366fab811a610 Makefile.PL
+SHA1 96c79b7c0c1ceeb12d566f0a7f130386c1336e7c NEWS
+SHA1 ac8a7b83aeec48d99c89584dc15c6184d76356fa README
+SHA1 93a4e7d067a1e992c6513a4b09280b1af3666daa bin/checklink
+SHA1 6dd50f280a71bf7375f9f32148a3de7af63d7ff4 bin/checklink.pod
+SHA1 157d074aa3786e90bb1bcd9a2b80694195783393 docs/checklink.html
+SHA1 41828bc78e7de14a6a76dc2048a612eeae1cf07b docs/linkchecker.css
+SHA1 2c701e3fae4e3fd7a5aebb7ed95018b01d5fb4a1 etc/checklink.conf
+SHA1 bcb7896bee3764f85a03ab14495efc233f70e215 images/double.png
+SHA1 ff9a7be7fee245dd81a7dc4124544d692a140119 images/grad.png
+SHA1 61aeb3ea5616833678f66c7baa6db373eedcd86b images/head-bl.png
+SHA1 bcb7bf006b79106309350bfa578e94af80aed82d images/head-br.png
+SHA1 11243aa6b3463dd8d6a9b2e69027e42a1d9480ab images/info_icons/README
+SHA1 a54abf3d12f207b81e19ea8ce783d37c6200cf40 images/info_icons/error.png
+SHA1 3fd2638079cd0698655614a5a5afc97a976a4af4 images/info_icons/info.png
+SHA1 552c52188188f560dc02a03200164de3045ac3f4 images/info_icons/warning.png
+SHA1 401b5fba02d0d8484775a4a77503fa0d136b96ce images/round-br.png
+SHA1 9eb1ee6188391715284a3db080e6e92d163864d9 images/round-tr.png
+SHA1 cc01bd358bc1d6d42ca350ad0a4a42778ca4440e images/textbg.png
+SHA1 16de7da2d395230fdd0b844e340c6600f4e8c5e7 images/valid_icons/valid-xhtml10-blue.png
+SHA1 53c61a893e2765ffe222266c5ee61245bedcd986 images/w3c.png
+SHA1 f36f093dc4033e1132b4d7e797b324c9ab076351 lib/W3C/LinkChecker.pm
+SHA1 962ba9fff082c4087239b55618ada2a8f1564464 t/00compile.t
 -----BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.5 (GNU/Linux)
+Version: GnuPG v1.4.9 (GNU/Linux)
 
-iD8DBQFFO6D/2YzWNbzSQcsRAqhGAJ9VcQempM3TyhoMzTz4xT4PyJdZ7ACeL8kY
-ibxnp4CbXNcBVfZBR0DlBTg=
-=DBQX
+iD8DBQFJkcwNPpyF1KCt+98RAtIKAJ9F1vJrQInxRaUXqxhI0NOgnkCQ8QCgh+ms
+qeS+P+X+ob8ZNHzjFOrPpGI=
+=izr6
 -----END PGP SIGNATURE-----

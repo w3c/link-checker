@@ -1,393 +1,612 @@
-Sat Jan 10 21:27:38 2009 UTC by ville 
+2009-02-10  ville
 
-  Support new link things in HTML 5 (incomplete; XHTML 5 xml:base not supported).
+	* docs/checklink.html, docs/valid-xhtml10.png, images/double.png,
+	images/grad.png, images/head-bl.png, images/head-br.png,
+	images/round-br.png, images/round-tr.png, images/textbg.png,
+	images/w3c.png, images/info_icons/README,
+	images/info_icons/error.png, images/info_icons/info.png,
+	images/info_icons/warning.png,
+	images/valid_icons/valid-xhtml10-blue.png: Include/reorganize
+	required images.
 
-Sat Jan 10 21:25:08 2009 UTC by ville 
+2009-02-10  ville
 
-  Remove (apparently harmless) stray comma.
+	* bin/checklink: Don't hardcode path to w3c.png, resolve it from
+	Doc_URI.
 
-Thu Jan 8 21:44:45 2009 UTC by ot 
+2009-02-10  ville
 
-  preparing 4.4
+	* bin/checklink, etc/checklink.conf: Remove Style_URI configuration
+	variable, resolve it from Doc_URI.
 
-Wed Jan 7 18:22:42 2009 UTC by ot 
+2009-02-10  ville
 
-  autoscroll of results as they happen, based on prototype by Brett Bieber
+	* bin/checklink: Don't hardcode path to info icons, use Doc_URI to
+	resolve it.
 
-Tue Jan 6 22:19:33 2009 UTC by ot 
+2009-02-10  ville
 
-  broken stuff report is not only about broken links - may as well be clearer and frustrate people less
+	* bin/checklink: XHTML well-formedness fix.
 
-Tue Jan 6 22:09:22 2009 UTC by ot 
+2009-02-10  ville
 
-  simplify, lighten, give air, do not yell at the user. Removed feature: sequence of status messages (status code squence kept)
+	* bin/checklink: Remove whitespace before doctype.
 
-Tue Jan 6 21:01:39 2009 UTC by ot 
+2009-02-10  ville
 
-  making sure broken links get seen first. They are the prime concern. Moving the fragments report lower.
+	* docs/linkchecker.css: Use relative URL to menu background png.
 
-Tue Jan 6 20:37:48 2009 UTC by ot 
+2009-02-05  ville
 
-  donation/sponsorship slug
+	* docs/qa-small.png, docs/w3c_home.png: Remove unused icons.
 
-Tue Jan 6 20:12:55 2009 UTC by ot 
+2009-02-02  ville
 
-  softening wording in error/info message
+	* docs/checklink.html: Minor typo etc edits to the "install with
+	CPAN" section.
 
-Sun Jan 4 17:52:20 2009 UTC by ville 
+2009-02-02  ot
 
-  Comment typo fix.
+	* docs/checklink.html: installation instructions
 
-Thu Jan 1 22:50:43 2009 UTC by ville 
+2009-01-30  ville
 
-  2009
+	* bin/checklink: Prefer text/html over application/xhtml+xml in
+	Accept because of our lack of xml:base support.
 
-Sun Oct 26 18:24:53 2008 UTC by ville 
+2009-01-30  ville
 
-  Fix --exclude-docs for older Getopt::Long versions thanks to Michael Ernst for pointing it out.
+	* bin/checklink: Fix "Excluding links" info message in command line
+	mode.
 
-Sat Oct 25 19:57:45 2008 UTC by mernst 
+2009-01-30  ville
 
-  Improve comment.
+	* bin/checklink: Lower q-value of application/vnd.wap.xhtml+xml in
+	Accept header to less than 1.
 
-Sat Oct 25 19:37:21 2008 UTC by ville 
+2009-01-10  ville
 
-  Check links in meta refresh tags.
+	* bin/checklink: Support new link things in HTML 5 (incomplete;
+	XHTML 5 xml:base not supported).
 
-Sat Oct 25 19:33:32 2008 UTC by ville 
+2009-01-10  ville
 
-  Improve line number indicator formatting for redirect results in console mode.
+	* bin/checklink: Remove (apparently harmless) stray comma.
 
-Sat Oct 25 19:27:10 2008 UTC by ville 
+2009-01-08  ot
 
-  If running LWP >= 5.814, set Accept-Encoding in requests to what LWP can decode.
+	* bin/checklink: preparing 4.4
 
-Sat Oct 25 19:22:46 2008 UTC by ville 
+2009-01-07  ot
 
-  Allow --exclude-docs be specified multiple times, based on patch from Michael Ernst.
+	* bin/checklink: autoscroll of results as they happen, based on
+	prototype by Brett Bieber
 
-Fri Oct 17 04:36:19 2008 UTC by mernst 
+2009-01-06  ot
 
-  Disable Perl's recursion warnings for recursive algorithm.
+	* docs/linkchecker.css: removing more of the heavy bgcolor used in
+	reports
 
-Fri Oct 17 04:33:59 2008 UTC by mernst 
+2009-01-06  ot
 
-  Prevent (some) infinite loops.
+	* bin/checklink: broken stuff report is not only about broken links
+	- may as well be clearer and frustrate people less
 
-Mon Sep 22 19:33:31 2008 UTC by ville 
+2009-01-06  ot
 
-  Add non-robot developer mode, thanks to Michael Ernst.
+	* docs/linkchecker.css: simplify, lighten, give air, do not yell at
+	the user. results table made less heavy and screaming, report list
+	more airy.
 
-Thu Sep 11 16:51:41 2008 UTC by ville 
+2009-01-06  ot
 
-  Drop duplicate "Processing..." header in non-summary-only HTML mode, thanks to Michael Ernst
+	* bin/checklink: simplify, lighten, give air, do not yell at the
+	user. Removed feature: sequence of status messages (status code
+	squence kept)
 
-Tue Aug 26 18:55:00 2008 UTC by ville 
+2009-01-06  ot
 
-  Remove stray as-is "\n" from HTML output.
+	* bin/checklink: making sure broken links get seen first. They are
+	the prime concern. Moving the fragments report lower.
 
-Tue Aug 26 18:43:55 2008 UTC by ville 
+2009-01-06  ot
 
-  Untaint config params that are used as the format argument to (s)printf(), Perl 5.10 does not want to see that in taint mode.
+	* bin/checklink, docs/linkchecker.css: donation/sponsorship slug
 
-Thu Jul 3 19:50:24 2008 UTC by ot 
+2009-01-06  ot
 
-  muting some output in quiet mode. some reorg of output code - Patch courtesy of Michael Ernst
+	* bin/checklink: softening wording in error/info message
 
-Thu Jul 3 19:48:04 2008 UTC by ot 
+2009-01-04  ville
 
-  removed unused vars - Patch courtesy of Michael Ernst
+	* bin/checklink: Comment typo fix.
 
-Thu Jul 3 19:46:35 2008 UTC by ot 
+2009-01-01  ville
 
-  improve debug output in verbose mode. Patch courtesy of Michael Ernst
+	* README, bin/checklink, docs/checklink.html, docs/linkchecker.css:
+	2009
 
-Sun May 4 16:59:22 2008 UTC by ville 
+2009-01-01  ville
 
-  Don't do javascript progress callbacks in command line HTML mode.
+	* docs/checklink.html: Link to www.perl.org/get.html for "Install
+	Perl" (David Dorward,
+	http://www.w3.org/mid/495CFBF6.1080306%40dorward.me.uk)
 
-Sun May 4 16:57:33 2008 UTC by ville 
+2008-10-26  ville
 
-  Fix command line HTML output.
+	* bin/checklink: Fix --exclude-docs for older Getopt::Long versions
+	thanks to Michael Ernst for pointing it out.
 
-Sun May 4 16:55:27 2008 UTC by ville 
+2008-10-25  mernst
 
-  Escape shown URI in javascript progress callback.
+	* bin/checklink.pod: Improve description of quoting for argument
+	containing space.
 
-Thu May 1 11:28:23 2008 UTC by ville 
+2008-10-25  mernst
 
-  Micro-optimizations, cleanups.
+	* bin/checklink: Improve comment.
 
-Thu May 1 11:07:18 2008 UTC by ville 
+2008-10-25  ville
 
-  Fix HTML entity encoding in broken anchor output, improve it slightly.
+	* bin/checklink: Check links in meta refresh tags.
 
-Thu May 1 08:03:01 2008 UTC by ville 
+2008-10-25  ville
 
-  Trivial code cleanups.
+	* bin/checklink: Improve line number indicator formatting for
+	redirect results in console mode.
 
-Thu May 1 07:56:13 2008 UTC by ville 
+2008-10-25  ville
 
-  Drop old URI workarounds, require >= 1.31.
+	* bin/checklink: If running LWP >= 5.814, set Accept-Encoding in
+	requests to what LWP can decode.
 
-Mon Apr 21 08:00:30 2008 UTC by ville 
+2008-10-25  ville
 
-  Markup fixes.
+	* bin/checklink, bin/checklink.pod: Allow --exclude-docs be
+	specified multiple times, based on patch from Michael Ernst.
 
-Mon Apr 21 07:31:51 2008 UTC by ville 
+2008-10-17  mernst
 
-  Note XHTML $response->base() improvements in libwww-perl >= 5.810 in comments.
+	* bin/checklink: Disable Perl's recursion warnings for recursive
+	algorithm.
 
-Mon Apr 21 07:26:33 2008 UTC by ville 
+2008-10-17  mernst
 
-  Require libwww-perl >= 5.802.
+	* bin/checklink: Prevent (some) infinite loops.
 
-Mon Apr 21 07:09:53 2008 UTC by ville 
+2008-09-22  ville
 
-  Support Content-Encodings automatically handled by libwww-perl (#5648).
+	* bin/checklink: Add non-robot developer mode, thanks to Michael
+	Ernst.
 
-Tue Feb 19 22:41:12 2008 UTC by ville 
+2008-09-11  ville
 
-  Summary wording improvements, thanks to Jukka Korpela.
+	* bin/checklink: Drop duplicate "Processing..." header in
+	non-summary-only HTML mode, thanks to Michael Ernst
 
-Thu Feb 14 23:56:42 2008 UTC by ville 
+2008-08-26  ville
 
-  Mimic LWP by setting the "Client-Warning: Internal response" to "IP disallowed" internal responses.
+	* bin/checklink: Remove stray as-is "\n" from HTML output.
 
-Thu Feb 14 23:45:38 2008 UTC by ville 
+2008-08-26  ville
 
-  Improve info about "IP address disallowed by config" messages (#5080), avoid outputting HTML in "What to do" in non-HTML console mode.
+	* bin/checklink: Untaint config params that are used as the format
+	argument to (s)printf(), Perl 5.10 does not want to see that in
+	taint mode.
 
-Sun Feb 10 21:48:43 2008 UTC by ville 
+2008-07-03  ot
 
-  Take codebase into account when resolving object/@data.
+	* bin/checklink: muting some output in quiet mode. some reorg of
+	output code - Patch courtesy of Michael Ernst
 
-Sun Feb 10 21:41:57 2008 UTC by ville 
+2008-07-03  ot
 
-  Add a TODO about our built-in handling of base/@href special case.
+	* bin/checklink: removed unused vars - Patch courtesy of Michael
+	Ernst
 
-Sun Feb 10 18:22:37 2008 UTC by ville 
+2008-07-03  ot
 
-  Don't check <a name="..."> for XHTML Basic 1.1 or XHTML MP.
+	* bin/checklink: improve debug output in verbose mode. Patch
+	courtesy of Michael Ernst
 
-Sun Feb 10 18:13:59 2008 UTC by ville 
+2008-05-04  ville
 
-  Set XML parsing mode also based on Content-Type in addition to public ID,
-  relax public ID matching for XML mode so that it catches XHTML Mobile,
-  XHTML-Print and XHTML+RDFa.
+	* bin/checklink: Don't do javascript progress callbacks in command
+	line HTML mode.
 
-Sun Feb 10 18:10:31 2008 UTC by ville 
+2008-05-04  ville
 
-  Accept application/vnd.wap.xhtml+xml.
+	* bin/checklink: Fix command line HTML output.
 
-Sun Feb 10 13:29:33 2008 UTC by ville 
+2008-05-04  ville
 
-  Print percentage indicator only when it changes; improves performance
-  significantly with some terminals and large documents.
+	* bin/checklink: Escape shown URI in javascript progress callback.
 
-Sun Feb 10 13:25:21 2008 UTC by ville 
+2008-05-01  ville
 
-  Output number of lines processed instead of total number of lines in docs.
+	* bin/checklink: Micro-optimizations, cleanups.
 
-Sun Feb 10 13:20:11 2008 UTC by ville 
+2008-05-01  ville
 
-  ->base() returns a URI, don't create another one.
+	* bin/checklink: Fix HTML entity encoding in broken anchor output,
+	improve it slightly.
 
-Sun Feb 10 13:18:01 2008 UTC by ville 
+2008-05-01  ville
 
-  Increase resolution of shown times to 1/100th of a second.
+	* bin/checklink: Trivial code cleanups.
 
-Sun Feb 10 13:17:03 2008 UTC by ville 
+2008-05-01  ville
 
-  Improve documentation of --indicator.
+	* bin/checklink, docs/checklink.html: Drop old URI workarounds,
+	require >= 1.31.
 
-Sun Feb 10 12:06:32 2008 UTC by ville 
+2008-04-21  ville
 
-  Avoid division by zero in progress indicator for docs that contain no linefeeds.
+	* bin/checklink: Markup fixes.
 
-Sun Feb 10 12:02:29 2008 UTC by ville 
+2008-04-21  ville
 
-  2008.
+	* bin/checklink: Note XHTML $response->base() improvements in
+	libwww-perl >= 5.810 in comments.
 
-Sun Feb 10 11:59:11 2008 UTC by ville 
+2008-04-21  ville
 
-  Improve variable naming in parse_document().
+	* bin/checklink, docs/checklink.html: Require libwww-perl >= 5.802.
 
-Sun Feb 10 11:57:21 2008 UTC by ville 
+2008-04-21  ville
 
-  Trim whitespace, NFC.
+	* bin/checklink: Support Content-Encodings automatically handled by
+	libwww-perl (#5648).
 
-Sat Feb 9 14:49:13 2008 UTC by ville 
+2008-02-19  ville
 
-  Review and explicitly list things treated as links.
+	* bin/checklink: Summary wording improvements, thanks to Jukka
+	Korpela.
 
-  New cases checked:
-    * BLOCKQUOTE,DEL,INS,Q: cite
-    * BODY: background
-    * FRAME,IFRAME,IMG: longdesc
-    * HEAD: profile
-    * EMBED (proprietary): pluginspage, pluginurl.
+2008-02-14  ville
 
-  Cases no longer checked:
-    * (any unknown element): src, href
-    * (any element whose src attribute is unknown to me): src
-    * (any element whose href attribute is unknown to me): href.
+	* bin/checklink: Mimic LWP by setting the "Client-Warning: Internal
+	response" to "IP disallowed" internal responses.
 
-  Theoretically, we could use %HTML::Tagset::linkElements, but it contains things
-  that are not necessarily dereferenceable URIs and/or require special treatment
-  so maintaining our own lists is simpler.
+2008-02-14  ville
 
-Thu Jan 24 01:29:38 2008 UTC by ot 
+	* bin/checklink: Improve info about "IP address disallowed by
+	config" messages (#5080), avoid outputting HTML in "What to do" in
+	non-HTML console mode.
 
-  converting output to XHTML 1.0 Strict (cont'd)
+2008-02-10  ville
 
-Thu Jan 24 01:28:00 2008 UTC by ot 
+	* bin/checklink: Take codebase into account when resolving
+	object/@data.
 
-  converting output to XHTML 1.0 Strict (cont'd)
+2008-02-10  ville
 
-Thu Jan 24 01:21:39 2008 UTC by ot 
+	* bin/checklink: Add a TODO about our built-in handling of
+	base/@href special case.
 
-  I need XHTML for some post-processing so...
-  converting output to XHTML 1.0 Strict, for now
+2008-02-10  ville
 
-Wed Oct 24 05:18:20 2007 UTC by ot 
+	* bin/checklink: Don't check <a name="..."> for XHTML Basic 1.1 or
+	XHTML MP.
 
-  status bar bug
+2008-02-10  ville
 
-Tue Oct 23 07:19:04 2007 UTC by ot 
+	* bin/checklink: Set XML parsing mode also based on Content-Type in
+	addition to public ID, relax public ID matching for XML mode so
+	that it catches XHTML Mobile, XHTML-Print and XHTML+RDFa.
 
-  adding a "progress bar" at top of scrolling pre
+2008-02-10  ville
 
-Tue Sep 18 16:24:13 2007 UTC by ville 
+	* bin/checklink: Accept application/vnd.wap.xhtml+xml.
 
-  Telling caches in the middle we want fresh copies of retrieved documents (Bug 4998)
+2008-02-10  ville
 
-Tue Sep 18 07:18:46 2007 UTC by ot 
+	* bin/checklink: Print percentage indicator only when it changes;
+	improves performance significantly with some terminals and large
+	documents.
 
-  modifying wording and display of the report for broken frags
+2008-02-10  ville
 
-Tue Sep 18 06:43:25 2007 UTC by ot 
+	* bin/checklink: Output number of lines processed instead of total
+	number of lines in docs.
 
-  adding status (error, warning, info) icon
+2008-02-10  ville
 
-Tue Sep 18 06:09:56 2007 UTC by ot 
-  
-  error message rewriting. No need to scream at the user
+	* bin/checklink: ->base() returns a URI, don't create another one.
 
-Tue Sep 18 06:06:32 2007 UTC by ot 
+2008-02-10  ville
 
-  putting redirects together, separated from error list
+	* bin/checklink: Increase resolution of shown times to 1/100th of a
+	second.
 
-Sat Sep 15 07:47:40 2007 UTC by ville 
+2008-02-10  ville
 
-  Fix HTML footer
+	* bin/checklink, bin/checklink.pod: Improve documentation of
+	--indicator.
 
-Fri Sep 14 05:14:29 2007 UTC by ot 
+2008-02-10  ville
 
-  * pre-filling form with the URI being checked
-  * only output footer intro blurb on home page, not results
-  * giving class to "progress" <pre> for styling
+	* bin/checklink: Avoid division by zero in progress indicator for
+	docs that contain no linefeeds.
 
-Thu Sep 13 16:38:22 2007 UTC by ville 
+2008-02-10  ville
 
-  Reassign accesskey 2 to downloads.
+	* README, bin/checklink, docs/checklink.html, docs/linkchecker.css:
+	2008.
 
-Thu Sep 13 15:42:41 2007 UTC by ville 
+2008-02-10  ville
 
-  Remove "Skip past navigation" link; there is no such anchor on the "front" page and there is nothing to skip at end of the doc.
+	* bin/checklink: Improve variable naming in parse_document().
 
-Thu Sep 13 07:43:56 2007 UTC by ot 
+2008-02-10  ville
 
-  adding tagline - better wording dearly welcome
+	* bin/checklink: Trim whitespace, NFC.
 
-Thu Sep 13 07:28:21 2007 UTC by ot 
+2008-02-09  ville
 
-  * moving menu to the bottom of UI (giving homepage better focus on mail functionality)
-  * adding intro blurb
+	* bin/checklink: Review and explicitly list things treated as
+	links.
 
-Sun Sep 2 08:48:36 2007 UTC by ville 
+	New cases checked: * BLOCKQUOTE,DEL,INS,Q: cite * BODY: background
+	* FRAME,IFRAME,IMG: longdesc * HEAD: profile * EMBED (proprietary):
+	pluginspage, pluginurl.
 
-  Output HTTP headers before fetching the first document (related to #4985).
+	Cases no longer checked: * (any unknown element): src, href * (any
+	element whose src attribute is unknown to me): src * (any element
+	whose href attribute is unknown to me): href.
 
-Fri Aug 17 21:06:56 2007 UTC by ville 
+	Theoretically, we could use %HTML::Tagset::linkElements, but it
+	contains things that are not necessarily dereferenceable URIs
+	and/or require special treatment so maintaining our own lists is
+	simpler.
 
-  Add -R/--no-referer to --help output.
+2008-01-24  ville
 
-Fri Aug 17 21:04:41 2007 UTC by ville 
+	* docs/checklink.html: Validity fix.
 
-  Implement sending the Referer header (#32).
+2008-01-24  ot
 
-Sun Jul 29 18:56:18 2007 UTC by ville 
+	* bin/checklink: converting output to XHTML 1.0 Strict (cont'd)
 
-  Protect regexp metacharacters in masquerade URLs.
+2008-01-24  ot
 
-Sun Jul 29 16:51:00 2007 UTC by ville 
+	* bin/checklink: I need XHTML for some post-processing so...
+	converting output to XHTML 1.0 Strict, for now
 
-  Signal explicit EOF to HTML::Parser in parse_document().
+2007-11-28  ot
 
-Sun Jul 29 16:49:00 2007 UTC by ville 
+	* docs/checklink.html: header
 
-  Change parse_document to operate directly on response content refs, decode content encodings, and clean up response contents when done.
+2007-11-28  ot
 
-Sun Jul 29 13:48:29 2007 UTC by ville 
+	* docs/checklink.html: the checklink documentation states: [[
+	Please send comments, suggestions and bug reports about the link
+	checker to the www-validator mailing list  (archives), with
+	'checklink' in the subject.  ]] --
+	http://validator.w3.org/docs/checklink.html#csb
 
-  Clear contents of responses as soon as we've dealt with them.
+	To some it's fairly obvious that the subject should "include"
+	checklink, but we receive so many messages titled "checklink:" that
+	a few examples of good and bad feedback wouldn't hurt...
 
-Sun Jul 29 13:35:35 2007 UTC by ville 
+2007-10-24  ot
 
-  Prefix redirect progress events with "->".
+	* bin/checklink: status bar bug
 
-Sun Jul 29 13:25:21 2007 UTC by ville 
+2007-10-23  ot
 
-  Refactor IP address allowance and redirect progress callback code into our UserAgent class.
+	* bin/checklink, docs/linkchecker.css: adding a "progress bar" at
+	top of scrolling pre
 
-Sat Jul 28 10:44:32 2007 UTC by ville 
+2007-09-18  ville
 
-  Remove the deprecated (since 2004, link checker 4.1) -n/--noacclanguage and -y/--proxy command line options.
+	* bin/checklink: Telling caches in the middle we want fresh copies
+	of retrieved documents (Bug 4998)
 
-Sat Jul 28 10:41:15 2007 UTC by ville 
+2007-09-18  ot
 
-  Fix doc of ip_allowed() return value.
+	* bin/checklink: modifying wording and display of the report for
+	broken frags
 
-Sat Jul 28 08:02:19 2007 UTC by ville 
+2007-09-18  ot
 
-  Make the CGI object non-global.
+	* docs/linkchecker.css: giving the results a bit of air
 
-Mon Apr 9 22:18:21 2007 UTC by ville 
+2007-09-18  ot
 
-  Add --exclude option for excluding links matching given regexp (#689).
+	* bin/checklink, docs/linkchecker.css: adding status (error,
+	warning, info) icon
 
-Fri Mar 30 20:47:54 2007 UTC by ville 
+2007-09-18  ot
 
-  Make --exclude-docs doc more accurate, mention it in "Settings used" if used.
+	* bin/checklink: error message rewriting. No need to scream at the
+	user
 
-Fri Mar 30 20:13:53 2007 UTC by ville 
-  
-  Use add_link() for recording DTD URLs for consistency.
+2007-09-18  ot
 
-Fri Mar 30 19:47:23 2007 UTC by ville 
+	* bin/checklink: putting redirects together, separated from error
+	list
 
-  2007, once more
+2007-09-15  ville
 
-Fri Mar 30 19:42:09 2007 UTC by ville 
+	* bin/checklink: Fix HTML footer
 
-  The dupe/empty anchor table lists one anchor per table row; adjust heading accordingly.
+2007-09-14  ot
 
-Tue Mar 20 21:16:23 2007 UTC by ville 
+	* docs/linkchecker.css: styling of the list of issues and list of
+	redirects in checklin results (rough, this is a first pass)
 
-  List line numbers of broken fragments only, not all fragment line numbers if one or more for a doc are broken.
+2007-09-14  ot
 
-Tue Mar 20 20:29:18 2007 UTC by ville 
+	* docs/linkchecker.css: styling of progress <pre> to limit its size
+	- just a test, welcoming feedback
 
-  Fix bunch of perlcritic warnings.
+2007-09-14  ot
 
-Tue Mar 20 19:57:06 2007 UTC by ville 
+	* bin/checklink: * pre-filling form with the URI being checked *
+	only output footer intro blurb on home page, not results * giving
+	class to "progress" <pre> for styling
 
-  2007
+2007-09-13  ville
 
-Tue Mar 20 19:51:01 2007 UTC by ville 
+	* bin/checklink, docs/checklink.html: Reassign accesskey 2 to
+	downloads.
 
-  Fix anchor parsing in HTML 2.x and 3.x documents, http://lists.w3.org/Archives/Public/www-validator/2007Mar/0065
+2007-09-13  ville
+
+	* docs/checklink.html: Sync navigation link placement with
+	generated pages, remove no longer needed "skip navigation" link.
+
+2007-09-13  ville
+
+	* bin/checklink: Remove "Skip past navigation" link; there is no
+	such anchor on the "front" page and there is nothing to skip at end
+	of the doc.
+
+2007-09-13  ot
+
+	* docs/linkchecker.css: styling tagline
+
+2007-09-13  ot
+
+	* bin/checklink: adding tagline - better wording dearly welcome
+
+2007-09-13  ot
+
+	* bin/checklink: * moving menu to the bottom of UI (giving homepage
+	better focus on mail functionality) * adding intro blurb
+
+2007-09-12  ot
+
+	* docs/linkchecker.css: styling of the UI form
+
+2007-09-11  ot
+
+	* docs/linkchecker.css: First (very rough) go at amending the link
+	checker's CSS to match the current style of the Markup Validator.
+
+	The trick here is that it is possible that old instances of the
+	link checker will keep refering to
+	http://validator.w3.org/docs/linkchecker.css forever, so we have to
+	make the new CSS file "work" with old markup, at least to a
+	reasonable extent.
+
+2007-09-02  ville
+
+	* bin/checklink: Output HTTP headers before fetching the first
+	document (related to #4985).
+
+2007-08-17  ville
+
+	* bin/checklink: Add -R/--no-referer to --help output.
+
+2007-08-17  ville
+
+	* bin/checklink, bin/checklink.pod: Implement sending the Referer
+	header (#32).
+
+2007-07-29  ville
+
+	* bin/checklink: Protect regexp metacharacters in masquerade URLs.
+
+2007-07-29  ville
+
+	* bin/checklink: Signal explicit EOF to HTML::Parser in
+	parse_document().
+
+2007-07-29  ville
+
+	* bin/checklink: Change parse_document to operate directly on
+	response content refs, decode content encodings, and clean up
+	response contents when done.
+
+2007-07-29  ville
+
+	* bin/checklink: Clear contents of responses as soon as we've dealt
+	with them.
+
+2007-07-29  ville
+
+	* bin/checklink: Prefix redirect progress events with "->".
+
+2007-07-29  ville
+
+	* bin/checklink: Refactor IP address allowance and redirect
+	progress callback code into our UserAgent class.
+
+2007-07-28  ville
+
+	* bin/checklink: Remove the deprecated (since 2004, link checker
+	4.1) -n/--noacclanguage and -y/--proxy command line options.
+
+2007-07-28  ville
+
+	* bin/checklink: Fix doc of ip_allowed() return value.
+
+2007-07-28  ville
+
+	* bin/checklink: Make the CGI object non-global.
+
+2007-07-24  ville
+
+	* docs/checklink.html: Add another link to more info about proxy
+	variables.
+
+2007-07-19  ville
+
+	* bin/checklink.pod: Note that -q implies -s.
+
+2007-04-19  ville
+
+	* t/00compile.t: Autogenerate a dummy *.pm for CPAN indexing
+	purposes.
+
+2007-04-09  ville
+
+	* bin/checklink, bin/checklink.pod: Add --exclude option for
+	excluding links matching given regexp (#689).
+
+2007-03-30  ville
+
+	* bin/checklink, bin/checklink.pod: Make --exclude-docs doc more
+	accurate, mention it in "Settings used" if used.
+
+2007-03-30  ville
+
+	* bin/checklink: Use add_link() for recording DTD URLs for
+	consistency.
+
+2007-03-30  ville
+
+	* bin/checklink: 2007, once more
+
+2007-03-30  ville
+
+	* bin/checklink: The dupe/empty anchor table lists one anchor per
+	table row; adjust heading accordingly.
+
+2007-03-20  ville
+
+	* bin/checklink: List line numbers of broken fragments only, not
+	all fragment line numbers if one or more for a doc are broken.
+
+2007-03-20  ville
+
+	* bin/checklink: Fix bunch of perlcritic warnings.
+
+2007-03-20  ville
+
+	* README, bin/checklink, docs/checklink.html, docs/linkchecker.css:
+	2007
+
+2007-03-20  ville
+
+	* bin/checklink: Fix anchor parsing in HTML 2.x and 3.x documents,
+	http://lists.w3.org/Archives/Public/www-validator/2007Mar/0065
+
+2006-11-25  ville
+
+	* bin/checklink: Appease B::Lint.
 
 2006-10-22  ville
 
