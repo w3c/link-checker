@@ -5,7 +5,7 @@
 # (c) 1999-2009 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.140 2009-02-10 18:27:17 ville Exp $
+# $Id: checklink,v 4.141 2009-02-10 18:34:38 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -267,7 +267,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.4';
   $REVISION    = sprintf('version %s (c) 1999-2009 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.140 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.141 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver,
                          (W3C::UserAgent::USE_ROBOT_UA
@@ -2416,8 +2416,10 @@ sub status_icon($)
   } else {
     $icon_type = 'error';
   }
-  return('<span class="err_type"><img src="http://validator.w3.org/images/info_icons/'.$icon_type.'.png" alt="'.$icon_type.'" /></span>');
-
+  return sprintf('<span class="err_type"><img src="%s" alt="%s" /></span>',
+                 URI->new_abs("../images/info_icons/$icon_type.png",
+                              $Cfg{Doc_URI}),
+                 $icon_type);
 }
 
 sub bgcolor ($)
