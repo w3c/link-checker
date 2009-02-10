@@ -1,5 +1,10 @@
 2009-02-10  ville
 
+	* bin/checklink: Make protocol disallowed info message more
+	accurate.
+
+2009-02-10  ville
+
 	* bin/checklink: Improve handling of URI schemes we don't want
 	checked.
 
