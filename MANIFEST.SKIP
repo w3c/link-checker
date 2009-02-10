@@ -8,3 +8,4 @@
 \bMakefile\.old$
 \.tar\.
 \bREADME\.cvs$
+\bdocs/tests\b
