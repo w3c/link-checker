@@ -5,7 +5,7 @@
 # (c) 1999-2009 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.145 2009-02-10 19:28:52 ville Exp $
+# $Id: checklink,v 4.146 2009-02-10 20:11:11 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -71,6 +71,9 @@ sub new
   $self->env_proxy();
 
   $self->allow_private_ips(1);
+
+  # TODO: bug 29
+  $self->protocols_forbidden([qw(mailto javascript)]);
 
   return $self;
 }
@@ -203,9 +206,10 @@ use URI::Escape          qw();
 use URI::file            qw();
 # @@@ Needs also W3C::UserAgent but can't use() it here.
 
-use constant RC_ROBOTS_TXT    => -1;
-use constant RC_DNS_ERROR     => -2;
-use constant RC_IP_DISALLOWED => -3;
+use constant RC_ROBOTS_TXT          => -1;
+use constant RC_DNS_ERROR           => -2;
+use constant RC_IP_DISALLOWED       => -3;
+use constant RC_PROTOCOL_DISALLOWED => -4;
 
 use constant LINE_UNKNOWN  => -1;
 
@@ -265,7 +269,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.4';
   $REVISION    = sprintf('version %s (c) 1999-2009 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.145 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.146 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver,
                          (W3C::UserAgent::USE_ROBOT_UA
@@ -498,6 +502,11 @@ if ($Opts{Command_Line}) {
   CGI::Carp->import(qw(fatalsToBrowser));
   require CGI::Cookie;
 
+  # file: URIs are not allowed in CGI mode
+  my $forbidden = $ua->protocols_forbidden() || [];
+  push(@$forbidden, 'file');
+  $ua->protocols_forbidden($forbidden);
+
   my $query = new CGI;
   # Set a few parameters in CGI mode
   $Opts{Verbose}   = 0;
@@ -580,11 +589,7 @@ if ($Opts{Command_Line}) {
   } if (MP2() && !$ENV{HTTP_AUTHORIZATION});
 
   $uri =~ s/^\s+//g;
-  if ($uri =~ m/^file:/) {
-    # Only the http scheme is allowed
-    # TODO: bug 29
-    &file_uri($uri);
-  } elsif ($uri !~ m/:/) {
+  if ($uri !~ m/:/) {
     if ($uri =~ m|^//|) {
       $uri = 'http:'.$uri;
     } else {
@@ -1010,10 +1015,6 @@ EOF
   my %broken;
   while (my ($u, $ulinks) = each(%links)) {
 
-    # Don't check mailto: URI's
-    # TODO: bug 29
-    next if ($u =~ m/^mailto:/);
-
     if ($Opts{Summary_Only}) {
       # Hack: avoid browser/server timeouts in summary only CGI mode, bug 896
       print ' ' if ($Opts{HTML} && !$Opts{Command_Line});
@@ -1370,6 +1371,9 @@ sub record_results ($$$)
   $results{$uri}{location}{code} = RC_DNS_ERROR()
     if ($results{$uri}{location}{code} == 500 &&
         $response->message() =~ /Bad hostname '[^\']*'/);
+  $results{$uri}{location}{code} = RC_PROTOCOL_DISALLOWED()
+    if ($results{$uri}{location}{code} == 500 &&
+        $response->message() =~ /Access to '[^\']*' URIs has been disabled/);
   $results{$uri}{location}{type} = $response->header('Content-type');
   $results{$uri}{location}{display} = $results{$uri}{location}{code};
   # Rewind, check for the original code and message.
@@ -1698,21 +1702,6 @@ sub check_validity ($$$\%\%)
   # $want_links is true if we're interested in links in the target doc
   # $links is a hash of the links in the documents checked
   # $redirects is a map of the redirects encountered
-
-  # Checking file: URI's is not allowed with a CGI
-  # TODO: bug 29
-  if ($referer ne $uri) {
-    if (!$Opts{Command_Line} && $referer !~ m/^file:/ && $uri =~ m/^file:/) {
-      my $msg = 'Error: \'file:\' URI not allowed';
-      # Can't test? Return 400 Bad request.
-      $results{$uri}{location}{code}    = 400;
-      $results{$uri}{location}{record}  = 400;
-      $results{$uri}{location}{success} = 0;
-      $results{$uri}{location}{message} = $msg;
-      &hprintf("Error: %d %s\n", 400, $msg) if $Opts{Verbose};
-      return;
-    }
-  }
 
   # Get the document with the appropriate method
   # Only use GET if there are fragments. HEAD is enough if it's not the
@@ -2187,6 +2176,7 @@ sub links_summary (\%\%\%\%)
                RC_DNS_ERROR() => 'The hostname could not be resolved. Check the link for typos.',
                RC_IP_DISALLOWED() => sprintf('The link resolved to a %snon-public IP address%s, and this link checker instance has been configured to not access such addresses. This may be a real error or just a quirk of the name resolver configuration on the server where the link checker runs. Check the link manually, in particular its hostname/IP address.',
                                              $Opts{HTML} ? ('<a href="http://www.ietf.org/rfc/rfc1918.txt">', '</a>') : ('') x 2),
+               RC_PROTOCOL_DISALLOWED() => 'The link checker does not support checking links with this URI scheme.',
              );
   my %priority = ( 410 => 1,
                    404 => 2,
@@ -2399,7 +2389,8 @@ sub status_icon($)
   my $r = HTTP::Response->new($code);
   if ($r->is_success()) {
     $icon_type = 'error'; # if is success but reported, it's because of broken frags => error
-  } elsif ($code == RC_ROBOTS_TXT() || $code == RC_IP_DISALLOWED()) {
+  } elsif ($code == RC_ROBOTS_TXT() || $code == RC_IP_DISALLOWED() ||
+           $code == RC_PROTOCOL_DISALLOWED()) {
     $icon_type = 'info';
   } elsif ($code == 300) {
     $icon_type = 'info';
@@ -2482,18 +2473,6 @@ EOF
 </html>
 EOF
   return;
-}
-
-sub file_uri ($)
-{
-  my ($uri) = @_;
-  &html_header($uri);
-  printf(<<'EOF', &encode($uri));
-<h2>Forbidden</h2>
-<p>You cannot check such a URI (<code>%s</code>).</p>
-EOF
-  &html_footer();
-  exit;
 }
 
 sub print_form (\%$$)
