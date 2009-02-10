@@ -5,7 +5,7 @@
 # (c) 1999-2009 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.146 2009-02-10 20:11:11 ville Exp $
+# $Id: checklink,v 4.147 2009-02-10 20:56:26 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -269,7 +269,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.4';
   $REVISION    = sprintf('version %s (c) 1999-2009 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.146 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.147 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver,
                          (W3C::UserAgent::USE_ROBOT_UA
@@ -2176,7 +2176,7 @@ sub links_summary (\%\%\%\%)
                RC_DNS_ERROR() => 'The hostname could not be resolved. Check the link for typos.',
                RC_IP_DISALLOWED() => sprintf('The link resolved to a %snon-public IP address%s, and this link checker instance has been configured to not access such addresses. This may be a real error or just a quirk of the name resolver configuration on the server where the link checker runs. Check the link manually, in particular its hostname/IP address.',
                                              $Opts{HTML} ? ('<a href="http://www.ietf.org/rfc/rfc1918.txt">', '</a>') : ('') x 2),
-               RC_PROTOCOL_DISALLOWED() => 'The link checker does not support checking links with this URI scheme.',
+               RC_PROTOCOL_DISALLOWED() => 'Accessing links with this URI scheme has been disabled in link checker.',
              );
   my %priority = ( 410 => 1,
                    404 => 2,
