@@ -5,7 +5,7 @@
 # (c) 1999-2009 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.141 2009-02-10 18:34:38 ville Exp $
+# $Id: checklink,v 4.142 2009-02-10 18:36:31 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -267,7 +267,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.4';
   $REVISION    = sprintf('version %s (c) 1999-2009 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.141 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.142 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver,
                          (W3C::UserAgent::USE_ROBOT_UA
@@ -322,8 +322,6 @@ $@
     'http://jigsaw.w3.org/css-validator/validator?uri=%s';
   $Cfg{Doc_URI} ||=
     'http://validator.w3.org/docs/checklink.html';
-  $Cfg{Style_URI} ||=
-    'http://validator.w3.org/docs/linkchecker.css';
 
   # Untaint config params that are used as the format argument to (s)printf(),
   # Perl 5.10 does not want to see that in taint mode.
@@ -331,7 +329,8 @@ $@
   ($Cfg{CSS_Validator_URI})    = ($Cfg{CSS_Validator_URI}    =~ /^(.*)$/);
 
   $DocType = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">';
-  $Head = sprintf(<<'EOF', HTML::Entities::encode($AGENT), $Cfg{Style_URI});
+  my $css_url = URI->new_abs('linkchecker.css', $Cfg{Doc_URI});
+  $Head = sprintf(<<'EOF', HTML::Entities::encode($AGENT), $css_url);
 <meta http-equiv="Content-Script-Type" content="text/javascript" />
 <meta name="generator" content="%s" />
 <link rel="stylesheet" type="text/css" href="%s" />
