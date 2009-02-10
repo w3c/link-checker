@@ -5,7 +5,7 @@
 # (c) 1999-2009 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.139 2009-02-10 18:26:15 ville Exp $
+# $Id: checklink,v 4.140 2009-02-10 18:27:17 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -267,7 +267,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.4';
   $REVISION    = sprintf('version %s (c) 1999-2009 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.139 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.140 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver,
                          (W3C::UserAgent::USE_ROBOT_UA
@@ -862,7 +862,7 @@ sub check_uri (\%$$$$;$$)
 
   if ($check_num != 1) {
     if ($Opts{HTML}) {
-      $doc_header = "\n<hr>\n";
+      $doc_header = "\n<hr />\n";
     } else {
       $doc_header = "\n" . ('-' x 40) . "\n";
     }
