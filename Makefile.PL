@@ -26,7 +26,7 @@ WriteMakefile(
   MAN1PODS      => { 'bin/checklink.pod' =>
                      '$(INST_MAN1DIR)/checklink.$(MAN1EXT)',
                    },
-  depend        => { distdir => 'ChangeLog' },
+  depend        => { distdir => 'ChangeLog lib/W3C/LinkChecker.pm' },
   dist          => { TARFLAGS => '--owner=0 --group=0 -cvf' },
   clean         => { FILES => 'ChangeLog.bak' },
 );
