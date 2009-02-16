@@ -4,7 +4,7 @@ use ExtUtils::MakeMaker;
 WriteMakefile(
   NAME          => 'W3C::LinkChecker',
   ABSTRACT      => 'W3C Link Checker',
-  AUTHOR        => 'The W3C Link Checker Team <www-validator@w3.org>',
+  AUTHOR        => 'W3C QA-dev Team <public-qa-dev@w3.org>',
   LICENSE       => 'open_source',
   VERSION_FROM  => 'bin/checklink',
   PREREQ_PM     => {
