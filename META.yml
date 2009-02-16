@@ -4,7 +4,7 @@ version:             4.4
 abstract:            W3C Link Checker
 license:             open_source
 author:              
-    - The W3C Link Checker Team <www-validator@w3.org>
+    - W3C QA-dev Team <public-qa-dev@w3.org>
 generated_by:        ExtUtils::MakeMaker version 6.42
 distribution_type:   module
 requires:     
