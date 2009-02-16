@@ -5,6 +5,7 @@ WriteMakefile(
   NAME          => 'W3C::LinkChecker',
   ABSTRACT      => 'W3C Link Checker',
   AUTHOR        => 'The W3C Link Checker Team <www-validator@w3.org>',
+  LICENSE       => 'open_source',
   VERSION_FROM  => 'bin/checklink',
   PREREQ_PM     => {
                      CGI             => 0,
