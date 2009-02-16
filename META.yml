@@ -2,7 +2,7 @@
 name:                W3C-LinkChecker
 version:             4.4
 abstract:            W3C Link Checker
-license:             ~
+license:             open_source
 author:              
     - The W3C Link Checker Team <www-validator@w3.org>
 generated_by:        ExtUtils::MakeMaker version 6.42
