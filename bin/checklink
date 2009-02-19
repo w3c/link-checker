@@ -5,7 +5,7 @@
 # (c) 1999-2009 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.147 2009-02-10 20:56:26 ville Exp $
+# $Id: checklink,v 4.148 2009-02-19 19:59:12 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -203,7 +203,6 @@ use HTTP::Response  1.50 qw(); # >= 1.50 for decoded_content()
 use Time::HiRes          qw();
 use URI             1.31 qw(); # >= 1.31 for sip: abs/rel
 use URI::Escape          qw();
-use URI::file            qw();
 # @@@ Needs also W3C::UserAgent but can't use() it here.
 
 use constant RC_ROBOTS_TXT          => -1;
@@ -269,7 +268,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.4';
   $REVISION    = sprintf('version %s (c) 1999-2009 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.147 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.148 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver,
                          (W3C::UserAgent::USE_ROBOT_UA
@@ -449,6 +448,8 @@ if ($Opts{Command_Line}) {
 
   require Text::Wrap;
   Text::Wrap->import('wrap');
+
+  require URI::file;
 
   &usage(1) unless scalar(@ARGV);
 
