@@ -8,17 +8,45 @@ WriteMakefile(
   LICENSE       => 'open_source',
   VERSION_FROM  => 'bin/checklink',
   PREREQ_PM     => {
-                     CGI             => 0,
-                     Config::General => 2.06,
-                     HTML::Parser    => 3.20,
-                     LWP             => 5.802,
-                     Net::IP         => 0, # Optional, see the docs.
-                     Term::ReadKey   => 2.00,
-                     Time::HiRes     => 0,
-                     URI             => 1.31,
-                     # For the test suite:
-                     Test::More      => 0,
-                     File::Spec      => 0,
+                     # Hard dependencies:
+                     HTML::Entities   => 0,
+                     HTML::Parser     => 3.20,
+                     HTTP::Request    => 0,
+                     HTTP::Response   => 1.50,
+                     LWP::RobotUA     => 1.19,
+                     LWP::UserAgent   => 0,
+                     Time::HiRes      => 0,
+                     URI              => 1.31,
+                     URI::Escape      => 0,
+
+                     # Optional, but required if using a config file:
+                     Config::General  => 2.06,
+
+                     # Optional, but required if private IPs are disallowed:
+                     Net::hostent     => 0,
+                     Net::IP          => 0,
+                     Socket           => 0,
+
+                     # Optional, but required in command line mode:
+                     Getopt::Long     => 2.17,
+                     Text::Wrap       => 0,
+                     URI::file        => 0,
+
+                     # Optional, used for password input in command line mode:
+                     Term::ReadKey    => 2.00,
+
+                     # Optional, used for guessing language in cmd line mode:
+                     Locale::Country  => 0,
+                     Locale::Language => 0,
+
+                     # Optional, but required in CGI mode:
+                     CGI              => 0,
+                     CGI::Carp        => 0,
+                     CGI::Cookie      => 0,
+
+                     # Required for the test suite:
+                     File::Spec       => 0,
+                     Test::More       => 0,
                    },
   PM            => { 'lib/W3C/LinkChecker.pm' =>
                      '$(INST_LIB)/W3C/LinkChecker.pm' },
