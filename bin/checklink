@@ -5,7 +5,7 @@
 # (c) 1999-2009 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.148 2009-02-19 19:59:12 ville Exp $
+# $Id: checklink,v 4.149 2009-02-19 20:21:11 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -28,6 +28,15 @@ use strict;
 # Get rid of potentially unsafe and unneeded environment variables.
 delete(@ENV{qw(IFS CDPATH ENV BASH_ENV)});
 $ENV{PATH} = ''; # undef would output warnings with Perl 5.6.1's Cwd.pm.
+
+# ...but we want PERL5LIB honored even in taint mode, see perlsec, perl5lib,
+# http://www.mail-archive.com/cpan-testers-discuss%40perl.org/msg01064.html
+BEGIN {
+  # undefinedness and "v-string in use/require non-portable" warnings with
+  # perl5lib 1.02 and perl 5.10.0, rt.cpan.org #43443, #43446
+  local $^W = 0;
+  require perl5lib;
+}
 
 # -----------------------------------------------------------------------------
 
@@ -268,7 +277,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.4';
   $REVISION    = sprintf('version %s (c) 1999-2009 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.148 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.149 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver,
                          (W3C::UserAgent::USE_ROBOT_UA

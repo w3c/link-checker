@@ -15,6 +15,7 @@ WriteMakefile(
                      HTTP::Response   => 1.50,
                      LWP::RobotUA     => 1.19,
                      LWP::UserAgent   => 0,
+                     perl5lib         => 0,
                      Time::HiRes      => 0,
                      URI              => 1.31,
                      URI::Escape      => 0,
