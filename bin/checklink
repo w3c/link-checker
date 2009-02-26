@@ -5,7 +5,7 @@
 # (c) 1999-2009 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.150 2009-02-19 21:05:38 ville Exp $
+# $Id: checklink,v 4.151 2009-02-26 19:16:04 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -277,7 +277,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.4';
   $REVISION    = sprintf('version %s (c) 1999-2009 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.150 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.151 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver,
                          (W3C::UserAgent::USE_ROBOT_UA
@@ -1062,7 +1062,7 @@ EOF
           $broken{$u}{fragments}{$fragment} += 2;
         }
       }
-    } else {
+    } elsif (!($Opts{Quiet} && &informational($results{$u}{location}{code}))) {
       # Couldn't find the document
       $broken{$u}{location} = 1;
       # All the fragments associated are hence broken
@@ -1911,6 +1911,14 @@ sub http_rc ($)
   return "(N/A)";
 }
 
+# returns true if the given code is informational
+sub informational ($)
+{
+  my $rc = shift;
+  return $rc == RC_ROBOTS_TXT() || $rc == RC_IP_DISALLOWED() ||
+    $rc == RC_PROTOCOL_DISALLOWED();
+}
+
 sub anchors_summary (\%\%)
 {
   my ($anchors, $errors) = @_;
@@ -2399,8 +2407,7 @@ sub status_icon($)
   my $r = HTTP::Response->new($code);
   if ($r->is_success()) {
     $icon_type = 'error'; # if is success but reported, it's because of broken frags => error
-  } elsif ($code == RC_ROBOTS_TXT() || $code == RC_IP_DISALLOWED() ||
-           $code == RC_PROTOCOL_DISALLOWED()) {
+  } elsif (&informational($code)) {
     $icon_type = 'info';
   } elsif ($code == 300) {
     $icon_type = 'info';
