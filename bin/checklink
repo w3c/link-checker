@@ -5,7 +5,7 @@
 # (c) 1999-2009 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.151 2009-02-26 19:16:04 ville Exp $
+# $Id: checklink,v 4.152 2009-03-04 17:23:58 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -277,7 +277,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.4';
   $REVISION    = sprintf('version %s (c) 1999-2009 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.151 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.152 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver,
                          (W3C::UserAgent::USE_ROBOT_UA
@@ -381,7 +381,7 @@ my %Opts =
     Verbose           => 0,
     Progress          => 0,
     HTML              => 0,
-    Timeout           => 60,
+    Timeout           => 30,
     Redirects         => 1,
     Dir_Redirects     => 1,
     Accept_Language   => $cmdline ? undef : $ENV{HTTP_ACCEPT_LANGUAGE},
@@ -740,7 +740,7 @@ Options:
                             document checked.
  -S, --sleep SECS           Sleep SECS seconds between requests to each server
                             (default and minimum: 1 second).
- -t, --timeout SECS         Timeout for requests (in seconds).
+ -t, --timeout SECS         Timeout for requests in seconds (default: 30).
  -d, --domain DOMAIN        Regular expression describing the domain to which
                             authentication information will be sent
                             (default: $trust).

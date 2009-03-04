@@ -1,4 +1,4 @@
-$Id: checklink.pod,v 1.21 2008-10-25 19:58:18 mernst Exp $
+$Id: checklink.pod,v 1.22 2009-03-04 17:23:58 ville Exp $
 
 =head1 NAME
 
@@ -123,7 +123,7 @@ Defaults to 1 second, which is also the minimum allowed.
 
 =item B<-t, --timeout> I<secs>
 
-Timeout for requests, in seconds.
+Timeout for requests, in seconds.  The default is 30.
 
 =item B<-d, --domain> I<domain>
 
