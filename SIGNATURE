@@ -37,8 +37,6 @@ SHA1 552c52188188f560dc02a03200164de3045ac3f4 images/info_icons/warning.png
 SHA1 401b5fba02d0d8484775a4a77503fa0d136b96ce images/round-br.png
 SHA1 9eb1ee6188391715284a3db080e6e92d163864d9 images/round-tr.png
 SHA1 cc01bd358bc1d6d42ca350ad0a4a42778ca4440e images/textbg.png
-SHA1 16de7da2d395230fdd0b844e340c6600f4e8c5e7 images/valid_icons/valid-xhtml10-blue.png
-SHA1 53c61a893e2765ffe222266c5ee61245bedcd986 images/w3c.png
 SHA1 f36f093dc4033e1132b4d7e797b324c9ab076351 lib/W3C/LinkChecker.pm
 SHA1 962ba9fff082c4087239b55618ada2a8f1564464 t/00compile.t
 -----BEGIN PGP SIGNATURE-----
