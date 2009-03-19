@@ -18,11 +18,9 @@ images/head-br.png
 images/round-br.png
 images/round-tr.png
 images/textbg.png
-images/w3c.png
 images/info_icons/README
 images/info_icons/error.png
 images/info_icons/info.png
 images/info_icons/warning.png
-images/valid_icons/valid-xhtml10-blue.png
 lib/W3C/LinkChecker.pm  Dummy *.pm for CPAN indexing purposes
 t/00compile.t
