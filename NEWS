@@ -1,15 +1,21 @@
 This document contains information about high level changes between
 Link Checker releases, see ChangeLog for a detailed list of changes.
 
+Version 4.5
+- Removed W3C trademarked icons from distribution tarball.
+- Avoid "false positive" failures from "make test" in certain setups.
+- Make quiet command line mode quieter.
+- Lowered default timeout to 30 seconds.
+
 Version 4.4
-- checking more elements and attributes, such as BLOCKQUOTE cite="", BODY background="", EMBED, etc
+- checking more elements and attributes, such as BLOCKQUOTE cite="", BODY
+  background="", EMBED, etc
 - Changes in the UI to make it match other validators more closely
 - in HTML/cgi output, using javascript to show checklink status as it happens
 - added support for HTML5 links
 - softer wording for broken link results
 - Add non-robot developer mode
 - many bug fixes and code cleanup
-
 
 Version 4.3
 - Various minor improvements to result output, both in text and HTML modes.

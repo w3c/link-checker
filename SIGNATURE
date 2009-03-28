@@ -14,16 +14,16 @@ not run its Makefile.PL or Build.PL.
 -----BEGIN PGP SIGNED MESSAGE-----
 Hash: SHA1
 
-SHA1 17f7fccd496d4643f7e5bde4d70c672cdedb07bf ChangeLog
+SHA1 a735290345f07fd5c24ce10cb481a9beb8614fb9 ChangeLog
 SHA1 bcb07f9feaa907ee1f23e760591f8d6151acc2d8 ChangeLog.old
-SHA1 83106c1d150e809797f3bae563ba7252c4472e25 MANIFEST
-SHA1 8f291e7f67193a989ad47ce7ab032602b77ee339 META.yml
-SHA1 c5fe77e7134dbe8fb26eca1014fbfffdaf86e288 Makefile.PL
-SHA1 96c79b7c0c1ceeb12d566f0a7f130386c1336e7c NEWS
-SHA1 ac8a7b83aeec48d99c89584dc15c6184d76356fa README
-SHA1 e6920a04e0df6b69a4400bf399b0e8eb531eb735 bin/checklink
-SHA1 6dd50f280a71bf7375f9f32148a3de7af63d7ff4 bin/checklink.pod
-SHA1 157d074aa3786e90bb1bcd9a2b80694195783393 docs/checklink.html
+SHA1 ea588846cdc3dba9f31d4e13a49f0163e3c1bd8c MANIFEST
+SHA1 a4932e8950245fc976e50f69104b6c26e51ab647 META.yml
+SHA1 2be3908f765e963327913b118c99bc6a9b51a2e5 Makefile.PL
+SHA1 56fd48306c4db4db946ae939f81929b8fbab703a NEWS
+SHA1 9dd7ab2f3b6d45276407aaa7e426f361a2a4caeb README
+SHA1 6432610452d2d690ea0f31b3a56730eebe3065f4 bin/checklink
+SHA1 6e9e9c78b3b78f3759c59c55e3c0197ff8299230 bin/checklink.pod
+SHA1 b479e59bbb73aa2fc041d384d31eeca491790631 docs/checklink.html
 SHA1 41828bc78e7de14a6a76dc2048a612eeae1cf07b docs/linkchecker.css
 SHA1 2c701e3fae4e3fd7a5aebb7ed95018b01d5fb4a1 etc/checklink.conf
 SHA1 bcb7896bee3764f85a03ab14495efc233f70e215 images/double.png
@@ -34,15 +34,16 @@ SHA1 11243aa6b3463dd8d6a9b2e69027e42a1d9480ab images/info_icons/README
 SHA1 a54abf3d12f207b81e19ea8ce783d37c6200cf40 images/info_icons/error.png
 SHA1 3fd2638079cd0698655614a5a5afc97a976a4af4 images/info_icons/info.png
 SHA1 552c52188188f560dc02a03200164de3045ac3f4 images/info_icons/warning.png
+SHA1 2e90d6266025a7103bed90689fb6c5469bf2c3b3 images/no_w3c.png
 SHA1 401b5fba02d0d8484775a4a77503fa0d136b96ce images/round-br.png
 SHA1 9eb1ee6188391715284a3db080e6e92d163864d9 images/round-tr.png
 SHA1 cc01bd358bc1d6d42ca350ad0a4a42778ca4440e images/textbg.png
-SHA1 f36f093dc4033e1132b4d7e797b324c9ab076351 lib/W3C/LinkChecker.pm
+SHA1 296dfac8301e8c46fb33f1bcef0bbf8039b797f8 lib/W3C/LinkChecker.pm
 SHA1 962ba9fff082c4087239b55618ada2a8f1564464 t/00compile.t
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.9 (GNU/Linux)
 
-iD8DBQFJkepWPpyF1KCt+98RArv2AJ9csuVXDZ3JPfgzUT2+ZU+ecdY53QCcDVn8
-x1+T8FKxiqqBfjGSv/rgsBo=
-=VZ7A
+iD8DBQFJzitcPpyF1KCt+98RAt6LAJ9+qSLjllAbqkQ1KzX4PCV9YOWz4QCfdf0R
+PpxcUoXGjyNwT8U5jaWgd5g=
+=Aixy
 -----END PGP SIGNATURE-----
