@@ -1,3 +1,49 @@
+2009-03-28  ville
+
+	* bin/checklink: 4.5.
+
+2009-03-23  ville
+
+	* bin/checklink, docs/checklink.html: Use no_w3c.png.
+
+2009-03-23  ville
+
+	* docs/checklink.html: Remove "Valid XHTML Strict" badge.
+
+2009-03-19  ot
+
+	* images/no_w3c.png: adding alternate, non-trademarked, image for
+	strict FLOSS distribution
+
+2009-03-04  ville
+
+	* bin/checklink, bin/checklink.pod: Lower default timeout to 30
+	seconds (#4985).
+
+2009-02-26  ville
+
+	* bin/checklink: Don't output informational messages in quiet mode
+	(rt.cpan.org #43372).
+
+2009-02-19  ville
+
+	* bin/checklink: Fix rt.cpan.org bug number refs in comments.
+
+2009-02-19  ville
+
+	* bin/checklink, docs/checklink.html: Use PERL5LIB from environment
+	even in taint mode, thanks to people on cpan-testers-discuss for
+	assistance.
+
+2009-02-19  ville
+
+	* bin/checklink: Require URI::file only in command line mode.
+
+2009-02-16  ville
+
+	* README: Attribute authorship to QA-dev (there's no separate link
+	checker team).
+
 2009-02-10  ville
 
 	* bin/checklink: Make protocol disallowed info message more
@@ -23,9 +69,7 @@
 	images/round-br.png, images/round-tr.png, images/textbg.png,
 	images/w3c.png, images/info_icons/README,
 	images/info_icons/error.png, images/info_icons/info.png,
-	images/info_icons/warning.png,
-	images/valid_icons/valid-xhtml10-blue.png: Include/reorganize
-	required images.
+	images/info_icons/warning.png: Include/reorganize required images.
 
 2009-02-10  ville
 
