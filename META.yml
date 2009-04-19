@@ -24,7 +24,6 @@ requires:
     LWP::UserAgent:                0
     Net::hostent:                  0
     Net::IP:                       0
-    perl5lib:                      0
     Socket:                        0
     Term::ReadKey:                 2
     Test::More:                    0

@@ -5,7 +5,7 @@
 # (c) 1999-2009 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.154 2009-03-28 13:50:42 ville Exp $
+# $Id: checklink,v 4.155 2009-04-19 09:58:25 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -29,14 +29,12 @@ use strict;
 delete(@ENV{qw(IFS CDPATH ENV BASH_ENV)});
 $ENV{PATH} = ''; # undef would output warnings with Perl 5.6.1's Cwd.pm.
 
-# ...but we want PERL5LIB honored even in taint mode, see perlsec, perl5lib,
+# ...but we want PERL5?LIB honored even in taint mode, see perlsec, perl5lib,
 # http://www.mail-archive.com/cpan-testers-discuss%40perl.org/msg01064.html
-BEGIN {
-  # undefinedness and "v-string in use/require non-portable" warnings with
-  # perl5lib 1.02 and perl 5.10.0, rt.cpan.org #43446, #43447
-  local $^W = 0;
-  require perl5lib;
-}
+use Config qw(%Config);
+use lib map { /(.*)/ }
+  defined($ENV{PERL5LIB}) ? split(/$Config{path_sep}/, $ENV{PERL5LIB}) :
+  defined($ENV{PERLLIB})  ? split(/$Config{path_sep}/, $ENV{PERLLIB})  : ();
 
 # -----------------------------------------------------------------------------
 
@@ -277,7 +275,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.5';
   $REVISION    = sprintf('version %s (c) 1999-2009 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.154 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.155 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver,
                          (W3C::UserAgent::USE_ROBOT_UA
