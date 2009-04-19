@@ -5,7 +5,7 @@
 # (c) 1999-2009 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.155 2009-04-19 09:58:25 ville Exp $
+# $Id: checklink,v 4.156 2009-04-19 10:35:43 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -275,7 +275,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.5';
   $REVISION    = sprintf('version %s (c) 1999-2009 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.155 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.156 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver,
                          (W3C::UserAgent::USE_ROBOT_UA
@@ -838,18 +838,19 @@ sub check_uri (\%$$$$;$$)
   my ($params, $uri, $check_num, $depth, $cookie, $referer, $is_start) = @_;
   $is_start ||= ($check_num == 1);
 
+  my $start = $Opts{Summary_Only} ? 0 : &get_timestamp();
+
+  # Get and parse the document
+  my $response = &get_document('GET', $uri, $doc_count, \%redirects, $referer,
+                               $cookie, $params, $check_num, $is_start);
+
+  # Can we check the resource? If not, we exit here...
+  return if defined($response->{Stop});
+
   if ($Opts{HTML}) {
     &html_header($uri, 0, $cookie) if ($check_num == 1);
     &print_form($params, $cookie, $check_num) if $is_start;
   }
-
-  my $start = $Opts{Summary_Only} ? 0 : &get_timestamp();
-
-  # Get and parse the document
-  my $response = &get_document('GET', $uri, $doc_count, \%redirects, $referer);
-
-  # Can we check the resource? If not, we exit here...
-  return if defined($response->{Stop});
 
   if ($is_start) { # Starting point of a new check, eg. from the command line
     # Use the first URI as the recursion base unless specified otherwise.
@@ -1133,15 +1134,18 @@ EOF
 # Get and parse a resource to process #
 #######################################
 
-sub get_document ($$$;\%$)
+sub get_document ($$$;\%$$$$$)
 {
-  my ($method, $uri, $in_recursion, $redirects, $referer) = @_;
+  my ($method, $uri, $in_recursion, $redirects, $referer, $cookie, $params,
+      $check_num, $is_start) = @_;
   # $method contains the HTTP method the use (GET or HEAD)
   # $uri contains the identifier of the resource
   # $in_recursion is > 0 if we are in recursion mode (i.e. it is at least
   #                        the second resource checked)
   # $redirects is a pointer to the hash containing the map of the redirects
   # $referer is the URI of the referring document
+  # $cookie, $params, $check_num, and $is_start are for printing HTTP headers
+  #                  and the form if $in_recursion == 0 and not authenticating
 
   # Get the resource
   my $response;
@@ -1157,10 +1161,14 @@ sub get_document ($$$;\%$)
     if (! $in_recursion) {
       # Is it too late to request authentication?
       if ($response->code() == 401) {
-        &authentication($response);
+        &authentication($response, $cookie, $params, $check_num, $is_start);
       } else {
+        if ($Opts{HTML}) {
+          &html_header($uri, 0, $cookie) if ($check_num == 1);
+          &print_form($params, $cookie, $check_num) if $is_start;
+          print "<p>";
+        }
         # TODO: style this message to make it stand out
-        print "<p>" if $Opts{HTML};
         &hprintf("\nError: %d %s\n",
                  $response->code(), $response->message() || '(no message)');
         print "</p>\n" if $Opts{HTML};
@@ -1200,8 +1208,12 @@ sub get_document ($$$;\%$)
   if ($failed_reason) {
     # No, there is a problem...
     if (! $in_recursion) {
+      if ($Opts{HTML}) {
+        &html_header($uri, 0, $cookie) if ($check_num == 1);
+        &print_form($params, $cookie, $check_num) if $is_start;
+        print "<p>";
+      }
       # TODO: style this message to make it stand out
-      print "<p>" if $Opts{HTML};
       &hprintf("Can't check links: %s.\n", $failed_reason);
       print "</p>\n" if $Opts{HTML};
     }
@@ -1776,9 +1788,9 @@ sub escape_match ($\%)
 # Ask for authentication #
 ##########################
 
-sub authentication ($)
+sub authentication ($;$$$$)
 {
-  my ($response) = @_;
+  my ($response, $cookie, $params, $check_num, $is_start) = @_;
 
   my $realm = '';
   if ($response->www_authenticate() =~ /Basic realm=\"([^\"]+)\"/) {
@@ -1795,7 +1807,10 @@ to specify trusted domains.
 EOF
   } else {
 
-    printf("Status: 401 Authorization Required\nWWW-Authenticate: %s\nConnection: close\nContent-Language: en\nContent-Type: text/html; charset=utf-8\n\n", $response->www_authenticate());
+    printf("Status: 401 Authorization Required\nWWW-Authenticate: %s\n%sConnection: close\nContent-Language: en\nContent-Type: text/html; charset=utf-8\n\n",
+           $response->www_authenticate(),
+           $cookie ? "Set-Cookie: $cookie\n" : "",
+          );
 
     printf("%s
 <html lang=\"en\" xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\">
@@ -1804,6 +1819,7 @@ EOF
 %s</head>
 <body>", $DocType, $Head);
     &banner(': 401 Authorization Required');
+    &print_form($params, $cookie, $check_num) if $is_start;
     printf("<p>
   You need \"%s\" access to <a href=\"%s\">%s</a> to perform link checking.<br />
 ", &encode($realm), (&encode($response->request()->url())) x 2);
