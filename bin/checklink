@@ -5,7 +5,7 @@
 # (c) 1999-2009 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.157 2009-04-19 10:50:38 ville Exp $
+# $Id: checklink,v 4.158 2009-04-19 11:13:23 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -275,7 +275,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.5';
   $REVISION    = sprintf('version %s (c) 1999-2009 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.157 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.158 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver,
                          (W3C::UserAgent::USE_ROBOT_UA
@@ -1826,10 +1826,12 @@ EOF
            &status_icon(401),
            &encode($realm), (&encode($response->request()->url())) x 2);
 
-    if ($Opts{Trusted}) {
-      printf <<EOF, &encode($Opts{Trusted});
+    my $host = $response->request()->url()->host();
+    if ($Opts{Trusted} && $host !~ $Opts{Trusted}) {
+      printf <<EOF, &encode($Opts{Trusted}), &encode($host);
   This service has been configured to send authentication only to hostnames
-  matching the regular expression <code>%s</code>
+  matching the regular expression <code>%s</code>, but the hostname
+  <code>%s</code> does not match it.
 EOF
     }
 
