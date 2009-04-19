@@ -5,7 +5,7 @@
 # (c) 1999-2009 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.156 2009-04-19 10:35:43 ville Exp $
+# $Id: checklink,v 4.157 2009-04-19 10:50:38 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -275,7 +275,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.5';
   $REVISION    = sprintf('version %s (c) 1999-2009 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.156 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.157 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver,
                          (W3C::UserAgent::USE_ROBOT_UA
@@ -1166,9 +1166,8 @@ sub get_document ($$$;\%$$$$$)
         if ($Opts{HTML}) {
           &html_header($uri, 0, $cookie) if ($check_num == 1);
           &print_form($params, $cookie, $check_num) if $is_start;
-          print "<p>";
+          print "<p>", &status_icon($response->code());
         }
-        # TODO: style this message to make it stand out
         &hprintf("\nError: %d %s\n",
                  $response->code(), $response->message() || '(no message)');
         print "</p>\n" if $Opts{HTML};
@@ -1211,9 +1210,9 @@ sub get_document ($$$;\%$$$$$)
       if ($Opts{HTML}) {
         &html_header($uri, 0, $cookie) if ($check_num == 1);
         &print_form($params, $cookie, $check_num) if $is_start;
-        print "<p>";
+        print "<p>", &status_icon(406);
+
       }
-      # TODO: style this message to make it stand out
       &hprintf("Can't check links: %s.\n", $failed_reason);
       print "</p>\n" if $Opts{HTML};
     }
@@ -1820,9 +1819,12 @@ EOF
 <body>", $DocType, $Head);
     &banner(': 401 Authorization Required');
     &print_form($params, $cookie, $check_num) if $is_start;
-    printf("<p>
-  You need \"%s\" access to <a href=\"%s\">%s</a> to perform link checking.<br />
-", &encode($realm), (&encode($response->request()->url())) x 2);
+    printf('<p>
+  %s
+  You need "%s" access to <a href="%s">%s</a> to perform link checking.<br />
+',
+           &status_icon(401),
+           &encode($realm), (&encode($response->request()->url())) x 2);
 
     if ($Opts{Trusted}) {
       printf <<EOF, &encode($Opts{Trusted});
