@@ -5,7 +5,7 @@
 # (c) 1999-2009 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.159 2009-05-03 09:34:08 ville Exp $
+# $Id: checklink,v 4.160 2009-05-03 09:34:56 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -275,7 +275,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.5';
   $REVISION    = sprintf('version %s (c) 1999-2009 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.159 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.160 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver,
                          (W3C::UserAgent::USE_ROBOT_UA
@@ -668,7 +668,7 @@ sub parse_arguments ()
     } else {
       require URI::file;
       $Opts{Masquerade_From} = $masq[0];
-      my $masq_to            = URI->new($masq[1]);
+      my $u                  = URI->new($masq[1]);
       $Opts{Masquerade_To}   = $u->scheme() ? $u : URI::file->new_abs($masq[1]);
     }
   }
