@@ -1,4 +1,4 @@
-$Id: checklink.pod,v 1.24 2009-04-28 20:33:44 ville Exp $
+$Id: checklink.pod,v 1.25 2009-05-03 09:36:24 ville Exp $
 
 =head1 NAME
 
@@ -132,14 +132,14 @@ information (if present) will be sent.  The default value can be specified
 in the configuration file.  See the C<Trusted> entry in the configuration
 file description below for more information.
 
-=item B<--masquerade> I<"surrogate-prefix real-prefix">
+=item B<--masquerade> I<"real-prefix surrogate-prefix">
 
 Perform a simple string substitution: URIs which begin with the
 string C<real-prefix> are rewritten using the C<surrogate-prefix>
 before being dereferenced.  Useful for making a local
 directory masquerade as a remote one. For example:
 
-  --masquerade "file:///my/local/dir/ http://example.com/x/y/z/"
+  --masquerade "http://example.com/x/y/z/ file:///my/local/dir/"
 
 If the document being checked contains a link to
 http://example.com/x/y/z/foo.html, then the local file system will be
