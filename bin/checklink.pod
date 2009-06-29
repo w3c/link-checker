@@ -1,4 +1,4 @@
-$Id: checklink.pod,v 1.25 2009-05-03 09:36:24 ville Exp $
+$Id: checklink.pod,v 1.26 2009-06-29 20:14:38 mernst Exp $
 
 =head1 NAME
 
@@ -78,6 +78,28 @@ regular expression would.
 
 In recursive mode, do not check links in documents whose full, canonical
 URIs match I<regexp>.  This option may be specified multiple times.
+
+=item B<--suppress-redirect> I<URI-E<gt>URI>
+
+Do not report a redirect from the first to the second URI.  The "-E<gt>" is
+literal text.  This option may be specified multiple times.
+
+=item B<--suppress-redirect-prefix I<URI-E<gt>URI>
+
+Do not report a redirect from a child of the first URI to the same child of
+the second URI.  The \"->\" is literal text.  This option may be specified
+multiple times.
+
+=item B<--suppress-broken> I<CODE:URI>
+
+Do not report a broken link with the given CODE.  CODE is the HTTP
+response, or -1 for robots exclusion.  The ":" is literal text.  This
+option may be specified multiple times.
+
+=item B<--suppress-fragment> I<URI>
+
+Do not report the given broken fragment URI.  A fragment URI contains "#".
+This option may be specified multiple times.
 
 =item B<-L, --languages> I<accept-language>
 
