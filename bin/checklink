@@ -5,7 +5,7 @@
 # (c) 1999-2009 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.160 2009-05-03 09:34:56 ville Exp $
+# $Id: checklink,v 4.161 2009-06-29 20:14:38 mernst Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -275,7 +275,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.5';
   $REVISION    = sprintf('version %s (c) 1999-2009 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.160 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.161 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver,
                          (W3C::UserAgent::USE_ROBOT_UA
@@ -392,7 +392,11 @@ my %Opts =
     Password          => undef,
     Base_Locations    => [],
     Exclude           => undef,
-    Exclude_Docs      => [],
+    Exclude_Docs      => undef,
+    Suppress_Redirect => [],
+    Suppress_Redirect_Prefix => [],
+    Suppress_Broken   => [],
+    Suppress_Fragment => [],
     Masquerade        => 0,
     Masquerade_From   => '',
     Masquerade_To     => '',
@@ -418,20 +422,6 @@ my $timestamp = &get_timestamp();
 my $doc_header;
 
 &parse_arguments() if $Opts{Command_Line};
-
-# Precompile/error-check regular expressions.
-if (defined($Opts{Exclude})) {
-  eval { $Opts{Exclude} = qr/$Opts{Exclude}/o; };
-  &usage(1, "Error in exclude regexp: $@") if $@;
-}
-for my $i (0 .. $#{$Opts{Exclude_Docs}}) {
-  eval { $Opts{Exclude_Docs}->[$i] = qr/$Opts{Exclude_Docs}->[$i]/; };
-  &usage(1, "Error in exclude-docs regexp: $@") if $@;
-}
-if (defined($Opts{Trusted})) {
-  eval { $Opts{Trusted} = qr/$Opts{Trusted}/io; };
-  &usage(1, "Error in trusted domains regexp: $@") if $@;
-}
 
 my $ua = W3C::UserAgent->new($AGENT); # @@@ TODO: admin address
 # @@@ make number of keep-alive connections customizable
@@ -643,6 +633,10 @@ sub parse_arguments ()
              'l|location=s'    => \@locs,
              'X|exclude=s'     => \$Opts{Exclude},
              'exclude-docs=s@' => \@{$Opts{Exclude_Docs}},
+             'suppress-redirect=s@' => \@{$Opts{Suppress_Redirect}},
+             'suppress-redirect-prefix=s@' => \@{$Opts{Suppress_Redirect_Prefix}},
+             'suppress-broken=s@' => \@{$Opts{Suppress_Broken}},
+             'suppress-fragment=s@' => \@{$Opts{Suppress_Fragment}},
              'u|user=s'        => \$Opts{User},
              'p|password=s'    => \$Opts{Password},
              't|timeout=i'     => \$Opts{Timeout},
@@ -686,6 +680,42 @@ sub parse_arguments ()
 
   $Opts{Depth} = -1 if ($Opts{Depth} == 0 && @locs);
 
+  # Precompile/error-check regular expressions.
+  if (defined($Opts{Exclude})) {
+    eval { $Opts{Exclude} = qr/$Opts{Exclude}/o; };
+    &usage(1, "Error in exclude regexp: $@") if $@;
+  }
+  for my $i (0 .. $#{$Opts{Exclude_Docs}}) {
+    eval { $Opts{Exclude_Docs}->[$i] = qr/$Opts{Exclude_Docs}->[$i]/; };
+    &usage(1, "Error in exclude-docs regexp: $@") if $@;
+  }
+  if (defined($Opts{Trusted})) {
+    eval { $Opts{Trusted} = qr/$Opts{Trusted}/io; };
+    &usage(1, "Error in trusted domains regexp: $@") if $@;
+  }
+
+  # Sanity-check error-suppression arguments
+  for my $sr_arg (@{$Opts{Suppress_Redirect}}) {
+    if ($sr_arg !~ /.->./) {
+      &usage(1, "Bad suppress-redirect argument, should contain \"->\": $sr_arg");
+    }
+  }
+  for my $srp_arg (@{$Opts{Suppress_Redirect_Prefix}}) {
+    if ($srp_arg !~ /.->./) {
+      &usage(1, "Bad suppress-redirect-prefix argument, should contain \"->\": $srp_arg");
+    }
+  }
+  for my $sb_arg (@{$Opts{Suppress_Broken}}) {
+    if ($sb_arg !~ /^(-1|[0-9]+):./) {
+      &usage(1, "Bad suppress-broken argument: $sb_arg");
+    }
+  }
+  for my $sf_arg (@{$Opts{Suppress_Fragment}}) {
+    if ($sf_arg !~ /.#./) {
+      &usage(1, "Bad suppress-fragment argument, should contain \"#\": $sf_arg");
+    }
+  }
+
   return;
 }
 
@@ -728,6 +758,18 @@ Options:
  --exclude-docs REGEXP      In recursive mode, do not check links in documents
                             whose full, canonical URIs match REGEXP.  This
                             option may be specified multiple times.
+ --suppress-redirect URI->URI  Do not report a redirect from the first to the
+                            second URI.  This option may be specified multiple
+                            times.
+ --suppress-redirect-prefix URI->URI  Do not report a redirect from a child of
+                            the first URI to the same child of the second URI.
+                            This option may be specified multiple times.
+ --suppress-broken CODE:URI  Do not report a broken link with the given CODE.
+                            CODE is HTTP response, or -1 for robots exclusion.
+                            This option may be specified multiple times.
+ --suppress-fragment URI    Do not report the given broken fragment URI.
+                            A fragment URI contains \"#\".  This option may be
+                            specified multiple times.
  -L, --languages LANGS      Accept-Language header to send.  The special value
                             'auto' causes autodetection from the environment.
  -R, --no-referer           Do not send the Referer HTTP header.
@@ -1403,6 +1445,19 @@ sub record_results ($$$)
     $results{$uri}{location}{orig_message} = $tmp->message() || '(no message)';
   }
   $results{$uri}{location}{success} = $response->is_success();
+
+  # If a suppressed broken link, fill the data structure like a typical success.
+  # print STDERR "success? " . $results{$uri}{location}{success} . ": $uri\n";
+  if (! $results{$uri}{location}{success}) {
+    my $code = $results{$uri}{location}{code};
+    my $match = grep { $_ eq "$code:$uri" } @{$Opts{Suppress_Broken}};
+    if ($match) {
+      $results{$uri}{location}{success} = 1;
+      $results{$uri}{location}{code} = 100;
+      $results{$uri}{location}{display} = 100;
+    }
+  }
+
   # Stores the authentication information
   if (defined($response->{Realm})) {
     $results{$uri}{location}{realm} = $response->{Realm};
@@ -1767,7 +1822,8 @@ sub check_validity ($$$\%\%)
   # Check that the fragments exist
   foreach my $fragment (keys %{$links->{$uri}{fragments}}) {
     if (defined($p->{Anchors}{$fragment})
-        || &escape_match($fragment, $p->{Anchors})) {
+        || &escape_match($fragment, $p->{Anchors})
+        || grep { $_ eq "$uri#$fragment" } @{$Opts{Suppress_Fragment}}) {
       $results{$uri}{fragments}{$fragment} = 1;
     } else {
       $results{$uri}{fragments}{$fragment} = 0;
@@ -1870,6 +1926,44 @@ sub record_redirects (\%$)
 {
   my ($redirects, $response) = @_;
   for (my $prev = $response->previous(); $prev; $prev = $prev->previous()) {
+
+    # Check for redirect match.
+    my $from = $prev->request()->url();
+    my $to = $response->request()->url(); # same on every loop iteration
+    my $from_to = $from . '->' . $to;
+    my $match = grep { $_ eq $from_to } @{$Opts{Suppress_Redirect}};
+    # print STDERR "Result $match of checking $from_to\n";
+    if ($match) { next; }
+
+    # Check for redirect_prefix match
+    my $prefix_match = 0;
+    my $from_len = length($from);
+    my $to_len = length($to);
+    for my $redir_prefix (@{$Opts{Suppresss_Redirect_Prefix}}) {
+      if ($redir_prefix !~ /^(.*)->(.*)$/) {
+        die "Bad suppress-redirect-prefix: $redir_prefix";
+      }
+      my $from_prefix = $1;
+      my $to_prefix = $2;
+      my $from_prefix_len = length($from_prefix);
+      my $to_prefix_len = length($to_prefix);
+      if (($from eq $from_prefix) && ($to eq $to_prefix)) {
+        $prefix_match = 1;
+        last;
+      } elsif (($from_prefix_len < $from_len)
+                 && ($to_prefix_len < $to_len)
+                 && ($from_prefix eq substr($from, 0, $from_prefix_len))
+                 && ($to_prefix eq substr($to, 0, $to_prefix_len))
+                 && (substr($from, $from_prefix_len) eq substr($to, $to_prefix_len))) {
+        $prefix_match = 1;
+        last;
+      }
+    }
+    if ($prefix_match) {
+      # print STDERR "A SUPPRESSED REDIRECT:\n  $from\n  $to\n";
+      next;
+    }
+
     $redirects->{$prev->request()->url()} = $response->request()->url();
   }
   return;
@@ -2119,9 +2213,9 @@ on how to solve this</a>.';
 
              # Response code chain
              join(' <span class="redirected_to" title="redirected to">-&gt;</span> ',
-                  map { &encode($_) } @http_codes),             
+                  map { &encode($_) } @http_codes),
              # HTTP final message
-             $http_message, 
+             $http_message,
              # What to do
              $whattodo,
              # Redirect too?
@@ -2586,8 +2680,8 @@ of a document that you would like to check:</label></p>
 </fieldset>
 <p class=\"submit_button\"><input type=\"submit\" name=\"check\" value=\"Check\" /></p>
 </form>
-<div class=\"intro\" id=\"don_program\"></div>  
-<script type=\"text/javascript\" src=\"http://www.w3.org/QA/Tools/don_prog.js\"></script>  
+<div class=\"intro\" id=\"don_program\"></div>
+<script type=\"text/javascript\" src=\"http://www.w3.org/QA/Tools/don_prog.js\"></script>
 ";
   return;
 }
