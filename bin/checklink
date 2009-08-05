@@ -5,7 +5,7 @@
 # (c) 1999-2009 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.163 2009-08-05 20:32:15 ville Exp $
+# $Id: checklink,v 4.164 2009-08-05 20:35:11 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -275,7 +275,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.5';
   $REVISION    = sprintf('version %s (c) 1999-2009 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.163 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.164 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver,
                          (W3C::UserAgent::USE_ROBOT_UA
@@ -343,19 +343,22 @@ $@
 <meta name="generator" content="%s" />
 <link rel="stylesheet" type="text/css" href="%s" />
 <script type="text/javascript">
-function scroll_bottom(progress_pre_id) {
-var progressPre = document.getElementById(progress_pre_id);
-progressPre.scrollTop = progressPre.scrollHeight;
+function scroll_bottom(progress_pre_id)
+{
+  var progressPre = document.getElementById(progress_pre_id);
+  progressPre.scrollTop = progressPre.scrollHeight;
 }
-function show_progress(progress_text, progress_head_id, progress_pre_id) {
-var progressHead = document.getElementById(progress_head_id);
-var txt = document.createTextNode(progress_text);
-var oChild=progressHead.childNodes[1];
-var oNewChild=document.createElement("span");
-oNewChild.appendChild(txt);
-progressHead.replaceChild(oNewChild, oChild);
-scroll_bottom(progress_pre_id);
-}</script>
+function show_progress(progress_text, progress_head_id, progress_pre_id)
+{
+  var progressHead = document.getElementById(progress_head_id);
+  var txt = document.createTextNode(progress_text);
+  var oChild = progressHead.childNodes[1];
+  var oNewChild = document.createElement("span");
+  oNewChild.appendChild(txt);
+  progressHead.replaceChild(oNewChild, oChild);
+  scroll_bottom(progress_pre_id);
+}
+</script>
 EOF
 
   # Trusted environment variables that need laundering in taint mode.
