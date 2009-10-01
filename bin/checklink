@@ -5,7 +5,7 @@
 # (c) 1999-2009 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.164 2009-08-05 20:35:11 ville Exp $
+# $Id: checklink,v 4.165 2009-10-01 16:01:29 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -275,7 +275,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.5';
   $REVISION    = sprintf('version %s (c) 1999-2009 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.164 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.165 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver,
                          (W3C::UserAgent::USE_ROBOT_UA
@@ -1120,9 +1120,9 @@ EOF
       }
     }
   }
-  &hprintf("\nProcessed in %ss.\n", &time_diff($start, &get_timestamp()))
+  &hprintf("\nProcessed in %s seconds.\n", &time_diff($start, &get_timestamp()))
    unless $Opts{Summary_Only};
-   printf('<script type="text/javascript">show_progress("Done. Document processed in %ss.\n", "status_progress%s", "pre_progress%s");</script>' , &time_diff($start, &get_timestamp()), $result_anchor, $result_anchor)
+   printf('<script type="text/javascript">show_progress("Done. Document processed in %s seconds.", "status_progress%s", "pre_progress%s");</script>' , &time_diff($start, &get_timestamp()), $result_anchor, $result_anchor)
    if ($Opts{HTML} && !$Opts{Summary_Only});
 
   # Display results
@@ -1413,7 +1413,7 @@ sub get_uri ($$;$$\%$$$$)
                     $start, $redirects, $code, $realm, $message, 1);
   }
   # @@@ subtract robot delay from the "fetched in" time?
-  &hprintf(" fetched in %ss\n",
+  &hprintf(" fetched in %s seconds\n",
            &time_diff($start, &get_timestamp())) if $verbose_progress;
 
   $response->{Realm} = $realm if defined($realm);
@@ -1544,7 +1544,7 @@ sub parse_document ($$$$$)
   if (! $Opts{Summary_Only}) {
     my $stop = &get_timestamp();
     print "\r" if $Opts{Progress};
-    &hprintf(" done (%d lines in %ss).\n",
+    &hprintf(" done (%d lines in %s seconds).\n",
              $p->{Total}, &time_diff($start, $stop));
   }
 
