@@ -6,7 +6,7 @@
     <title>W3C Link Checker Documentation</title>
     <link rev="made" href="mailto:www-validator@w3.org" />
     <style type="text/css" media="all">@import "linkchecker.css";</style>
-    <meta name="revision" content="$Id: checklink.html,v 1.54 2009-04-19 09:58:25 ville Exp $" />
+    <meta name="revision" content="$Id: checklink.html,v 1.55 2009-10-03 08:18:01 ville Exp $" />
   </head>
 
   <body>
@@ -193,6 +193,24 @@
     </p>
 
     <p>
+      In online mode, link checker's output should not be buffered to avoid
+      browser timeouts.  The link checker itself does not buffer its output,
+      but in some cases output buffering needs to be explicitly disabled for
+      it in the web server running it.  One such case is Apache's mod_deflate
+      compression module which as a side effect results in output buffering;
+      one way to disable it for the link checker (while leaving it enabled for
+      other resources if configured so elsewhere) is to add the following
+      section to an appropriate place in the Apache configuration (assuming the
+      link checker script's filename is <code>checklink</code>):
+    </p>
+
+    <blockquote><pre>
+&lt;Files checklink&gt;
+    SetEnv no-gzip
+&lt;/Files&gt;
+</pre></blockquote>
+
+    <p>
       If you want to enable the authentication capabilities with Apache,
       have a look at
       <a href="http://lists.w3.org/Archives/Public/www-validator/1999JulSep/0140.html">Steven Drake's hack</a>.
@@ -306,7 +324,7 @@ Disallow:
     <address>
       <a title="Send Feedback for the W3C Link Checker"
         href="http://validator.w3.org/feedback.html">The W3C Validator Team</a><br />
-      $Date: 2009-04-19 09:58:25 $
+      $Date: 2009-10-03 08:18:01 $
     </address>
     <p class="copyright">
       <a rel="Copyright" href="http://www.w3.org/Consortium/Legal/ipr-notice#Copyright">Copyright</a> &copy; 1994-2009
