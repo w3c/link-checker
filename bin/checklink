@@ -5,7 +5,7 @@
 # (c) 1999-2009 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.166 2009-10-01 16:06:00 ville Exp $
+# $Id: checklink,v 4.167 2009-10-05 15:07:54 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -50,6 +50,14 @@ if (USE_ROBOT_UA) {
   @W3C::UserAgent::ISA = qw(LWP::RobotUA);
 } else {
   @W3C::UserAgent::ISA = qw(LWP::UserAgent);
+}
+
+BEGIN
+{
+  # The 4k default line length in LWP <= 5.832 isn't enough for example to
+  # accommodate 4kB cookies (RFC 2985); bump it (#6678).
+  require LWP::Protocol::http;
+  push(@LWP::Protocol::http::EXTRA_SOCK_OPTS, MaxLineLength => 8*1024);
 }
 
 sub new
@@ -275,7 +283,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.5';
   $REVISION    = sprintf('version %s (c) 1999-2009 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.166 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.167 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver,
                          (W3C::UserAgent::USE_ROBOT_UA
