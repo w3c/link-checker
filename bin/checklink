@@ -5,7 +5,7 @@
 # (c) 1999-2009 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.167 2009-10-05 15:07:54 ville Exp $
+# $Id: checklink,v 4.168 2009-11-04 18:44:17 mernst Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -283,7 +283,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.5';
   $REVISION    = sprintf('version %s (c) 1999-2009 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.167 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.168 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver,
                          (W3C::UserAgent::USE_ROBOT_UA
@@ -409,6 +409,7 @@ my %Opts =
     Suppress_Redirect => [],
     Suppress_Redirect_Prefix => [],
     Suppress_Redirect_Regexp => [],
+    Suppress_Temp_Redirects => 1,
     Suppress_Broken   => [],
     Suppress_Fragment => [],
     Masquerade        => 0,
@@ -649,6 +650,7 @@ sub parse_arguments ()
              'exclude-docs=s@' => \@{$Opts{Exclude_Docs}},
              'suppress-redirect=s@' => \@{$Opts{Suppress_Redirect}},
              'suppress-redirect-prefix=s@' => \@{$Opts{Suppress_Redirect_Prefix}},
+             'suppress-temp-redirects' => \$Opts{Suppress_Temp_Redirects},
              'suppress-broken=s@' => \@{$Opts{Suppress_Broken}},
              'suppress-fragment=s@' => \@{$Opts{Suppress_Fragment}},
              'u|user=s'        => \$Opts{User},
@@ -709,21 +711,27 @@ sub parse_arguments ()
   }
 
   # Sanity-check error-suppression arguments
-  for my $sr_arg (@{$Opts{Suppress_Redirect}}) {
+  for my $i (0..$#{$Opts{Suppress_Redirect}}) {
+    ${$Opts{Suppress_Redirect}}[$i] =~ s/ /->/;
+    my $sr_arg = ${$Opts{Suppress_Redirect}}[$i];
     if ($sr_arg !~ /.->./) {
       &usage(1, "Bad suppress-redirect argument, should contain \"->\": $sr_arg");
     }
   }
-  for my $srp_arg (@{$Opts{Suppress_Redirect_Prefix}}) {
+  for my $i (0..$#{$Opts{Suppress_Redirect_Prefix}}) {
+    my $srp_arg = ${$Opts{Suppress_Redirect_Prefix}}[$i];
+    $srp_arg =~ s/ /->/;
     if ($srp_arg !~ /^(.*)->(.*)$/) {
       &usage(1, "Bad suppress-redirect-prefix argument, should contain \"->\": $srp_arg");
     }
     # Turn prefixes into a regexp.
-    push @{$Opts{Suppress_Redirect_Regexp}}, qr/^\Q$1\E(.*)->\Q$2\E\1$/ism;
+    ${$Opts{Suppress_Redirect_Prefix}}[$i] = qr/^\Q$1\E(.*)->\Q$2\E\1$/ism;
   }
-  for my $sb_arg (@{$Opts{Suppress_Broken}}) {
+  for my $i (0..$#{$Opts{Suppress_Broken}}) {
+    ${$Opts{Suppress_Broken}}[$i] =~ s/ /:/;
+    my $sb_arg = ${$Opts{Suppress_Broken}}[$i];
     if ($sb_arg !~ /^(-1|[0-9]+):./) {
-      &usage(1, "Bad suppress-broken argument: $sb_arg");
+      &usage(1, "Bad suppress-broken argument, should be prefixed by a numeric response code: $sb_arg");
     }
   }
   for my $sf_arg (@{$Opts{Suppress_Fragment}}) {
@@ -780,6 +788,7 @@ Options:
  --suppress-redirect-prefix URI->URI  Do not report a redirect from a child of
                             the first URI to the same child of the second URI.
                             This option may be specified multiple times.
+ --suppress-temp-redirects  Suppress warnings about temporary redirects.
  --suppress-broken CODE:URI  Do not report a broken link with the given CODE.
                             CODE is HTTP response, or -1 for robots exclusion.
                             This option may be specified multiple times.
@@ -1962,9 +1971,14 @@ sub record_redirects (\%$)
     # print STDERR "Result $match of redirect checking $from_to\n";
     if ($match) { next; }
 
-    $match = grep { $from_to =~ /$_/ } @{$Opts{Suppress_Redirect_Regexp}};
+    $match = grep { $from_to =~ /$_/ } @{$Opts{Suppress_Redirect_Prefix}};
     # print STDERR "Result $match of regexp checking $from_to\n";
     if ($match) { next; }
+
+    my $c = $prev->code();
+    if ($Opts{Suppress_Temp_Redirects} && (($c eq 307) || ($c eq 302))) {
+      next;
+    }
 
     $redirects->{$prev->request()->url()} = $response->request()->url();
   }
