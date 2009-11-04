@@ -1,4 +1,4 @@
-$Id: checklink.pod,v 1.26 2009-06-29 20:14:38 mernst Exp $
+$Id: checklink.pod,v 1.27 2009-11-04 18:44:17 mernst Exp $
 
 =head1 NAME
 
@@ -82,19 +82,26 @@ URIs match I<regexp>.  This option may be specified multiple times.
 =item B<--suppress-redirect> I<URI-E<gt>URI>
 
 Do not report a redirect from the first to the second URI.  The "-E<gt>" is
-literal text.  This option may be specified multiple times.
+literal text.  This option may be specified multiple times.  Whitespace may
+be used instead of "-E<gt>" to separate the URIs.
 
 =item B<--suppress-redirect-prefix I<URI-E<gt>URI>
 
 Do not report a redirect from a child of the first URI to the same child of
 the second URI.  The \"->\" is literal text.  This option may be specified
-multiple times.
+multiple times.  Whitespace may be used instead of "-E<gt>" to separate the
+URIs.
+
+=item B<--suppress-temp-redirects>
+
+Do not report warnings about temporary redirects.
 
 =item B<--suppress-broken> I<CODE:URI>
 
 Do not report a broken link with the given CODE.  CODE is the HTTP
 response, or -1 for robots exclusion.  The ":" is literal text.  This
-option may be specified multiple times.
+option may be specified multiple times.  Whitespace may be used instead of
+":" to separate the CODE and the URI.
 
 =item B<--suppress-fragment> I<URI>
 
