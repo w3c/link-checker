@@ -5,7 +5,7 @@
 # (c) 1999-2009 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.169 2009-12-03 20:30:20 ville Exp $
+# $Id: checklink,v 4.170 2009-12-03 20:36:39 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -283,7 +283,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.5';
   $REVISION    = sprintf('version %s (c) 1999-2009 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.169 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.170 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver,
                          (W3C::UserAgent::USE_ROBOT_UA
@@ -1152,7 +1152,7 @@ EOF
   }
   &hprintf("\nProcessed in %s seconds.\n", &time_diff($start, &get_timestamp()))
    unless $Opts{Summary_Only};
-   printf('<script type="text/javascript">show_progress("%s", "Done. Document processed in %s seconds.", "100%");</script>', $result_anchor, &time_diff($start, &get_timestamp()))
+   printf('<script type="text/javascript">show_progress("%s", "Done. Document processed in %s seconds.", "100%%");</script>', $result_anchor, &time_diff($start, &get_timestamp()))
    if ($Opts{HTML} && !$Opts{Summary_Only});
 
   # Display results
