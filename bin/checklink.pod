@@ -1,4 +1,4 @@
-$Id: checklink.pod,v 1.30 2009-12-03 21:33:08 ville Exp $
+$Id: checklink.pod,v 1.31 2009-12-03 21:35:02 ville Exp $
 
 =encoding utf8
 
@@ -267,8 +267,9 @@ and many other volunteers since.  Use the E<lt>www-validator@w3.orgE<gt>
 mailing list for feedback, and see
 L<http://validator.w3.org/docs/checklink.html#csb> for more information.
 
-This manual page was written by Frédéric Schütz <schutz@mathgen.ch>
-for the Debian GNU/Linux system (but may be used by others).
+This manual page was originally written by Frédéric Schütz
+E<lt>schutz@mathgen.chE<gt> for the Debian GNU/Linux system (but may
+be used by others).
 
 =head1 COPYRIGHT
 
