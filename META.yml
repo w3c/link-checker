@@ -16,6 +16,7 @@ requires:
     Getopt::Long:                  2.17
     HTML::Entities:                0
     HTML::Parser:                  3.2
+    HTTP::Cookies:                 0
     HTTP::Request:                 0
     HTTP::Response:                1.5
     Locale::Country:               0

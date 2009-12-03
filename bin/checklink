@@ -5,7 +5,7 @@
 # (c) 1999-2009 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.170 2009-12-03 20:36:39 ville Exp $
+# $Id: checklink,v 4.171 2009-12-03 21:28:09 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -283,7 +283,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.5';
   $REVISION    = sprintf('version %s (c) 1999-2009 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.170 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.171 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver,
                          (W3C::UserAgent::USE_ROBOT_UA
@@ -396,6 +396,7 @@ my %Opts =
     Redirects         => 1,
     Dir_Redirects     => 1,
     Accept_Language   => $cmdline ? undef : $ENV{HTTP_ACCEPT_LANGUAGE},
+    Cookies           => undef,
     No_Referer        => 0,
     Hide_Same_Realm   => 0,
     Depth             => 0,    # < 0 means unlimited recursion.
@@ -445,6 +446,17 @@ if ($ua->can('delay')) {
   $ua->delay($Opts{Sleep_Time}/60);
 }
 $ua->timeout($Opts{Timeout});
+# Set up cookie stash if requested
+if (defined($Opts{Cookies})) {
+  require HTTP::Cookies;
+  my $cookie_file = $Opts{Cookies};
+  if ($cookie_file eq 'tmp') {
+    $cookie_file = undef;
+  } elsif ($cookie_file =~ /^(.*)$/) {
+    $cookie_file = $1; # untaint
+  }
+  $ua->cookie_jar(HTTP::Cookies->new(file => $cookie_file, autosave => 1));
+}
 eval {
   $ua->allow_private_ips($Opts{Allow_Private_IPs});
 };
@@ -658,6 +670,7 @@ sub parse_arguments ()
              't|timeout=i'     => \$Opts{Timeout},
              'S|sleep=i'       => \$Opts{Sleep_Time},
              'L|languages=s'   => \$Opts{Accept_Language},
+             'c|cookies=s'     => \$Opts{Cookies},
              'R|no-referer'    => \$Opts{No_Referer},
              'D|depth=i'       => sub { $Opts{Depth} = $_[1]
                                           unless $_[1] == 0; },
@@ -797,6 +810,8 @@ Options:
                             specified multiple times.
  -L, --languages LANGS      Accept-Language header to send.  The special value
                             'auto' causes autodetection from the environment.
+ -c, --cookies FILE         Use cookies, load/save them in FILE.  The special
+                            value 'tmp' causes non-persistent use of cookies.
  -R, --no-referer           Do not send the Referer HTTP header.
  -q, --quiet                No output if no errors are found (implies -s).
  -v, --verbose              Verbose mode.
@@ -971,12 +986,22 @@ sub check_uri (\%$$$$;$$)
     my $s = $Opts{Sleep_Time} == 1 ? '' : 's';
     my $acclang = $Opts{Accept_Language} || '(not sent)';
     my $send_referer = $Opts{No_Referer} ? 'not sent' : 'sending';
-    printf(<<'EOF', $Accept, $acclang, $send_referer, $Opts{Sleep_Time}, $s);
+    my $cookies = 'not used';
+    if (defined($Opts{Cookies})) {
+      $cookies = 'used, ';
+      if ($Opts{Cookies} eq 'tmp') {
+        $cookies .= 'non-persistent';
+      } else {
+        $cookies .= "file $Opts{Cookies}";
+      }
+    }
+    printf(<<'EOF', $Accept, $acclang, $send_referer, $cookies, $Opts{Sleep_Time}, $s);
 
 Settings used:
 - Accept: %s
 - Accept-Language: %s
 - Referer: %s
+- Cookies: %s
 - Sleeping %d second%s between requests to each server
 EOF
     printf("- Excluding links matching %s\n", $Opts{Exclude})
