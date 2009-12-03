@@ -5,7 +5,7 @@
 # (c) 1999-2009 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.168 2009-11-04 18:44:17 mernst Exp $
+# $Id: checklink,v 4.169 2009-12-03 20:30:20 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -283,7 +283,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.5';
   $REVISION    = sprintf('version %s (c) 1999-2009 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.168 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.169 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver,
                          (W3C::UserAgent::USE_ROBOT_UA
@@ -1210,6 +1210,32 @@ EOF
   return;
 }
 
+##########################################
+# Decode Content-Encodings in a response #
+##########################################
+
+sub decode_content ($)
+{
+  my $response = shift;
+  my $error = undef;
+
+  # @@@TODO: maybe also decode charsets?
+  my $docref = $response->decoded_content(ref => 1, charset => 'none');
+  if (defined($docref)) {
+    $response->content_ref($docref);
+    # Remove Content-Encoding so it won't be decoded again later.
+    $response->remove_header('Content-Encoding')
+  } else {
+    my $ce = $response->header('Content-Encoding');
+    $ce = defined($ce) ? "'$ce'" : 'undefined';
+    my $ct = $response->header('Content-Type');
+    $ct = defined($ct) ? "'$ct'" : 'undefined';
+    my $request_uri = $response->request->url;
+    $error = "Error decoding document at <$request_uri>, Content-Type $ct, Content-Encoding $ce: '$@'";
+  }
+  return $error;
+}
+
 #######################################
 # Get and parse a resource to process #
 #######################################
@@ -1270,19 +1296,7 @@ sub get_document ($$$;\%$$$$$)
     $failed_reason = "Content-Type for <$request_uri> is " .
       (defined($ct) ? "'$ct'" : 'undefined');
   } else {
-    # Pre-decode Content-Encoding.
-    # @@@TODO: maybe also decode charsets?
-    my $docref = $response->decoded_content(ref => 1, charset => 'none');
-    if (defined($docref)) {
-      $response->content_ref($docref);
-      # Remove Content-Encoding so it won't be decoded again later.
-      $response->remove_header('Content-Encoding')
-    } else {
-      my $ce = $response->header('Content-Encoding');
-      $ce = defined($ce) ? "'$ce'" : 'undefined';
-      $ct = defined($ct) ? "'$ct'" : 'undefined';
-      $failed_reason = "Error decoding document at <$request_uri>, Content-Type $ct, Content-Encoding $ce: '$@'";
-    }
+    $failed_reason = decode_content($response);
   }
   if ($failed_reason) {
     # No, there is a problem...
@@ -1850,6 +1864,10 @@ sub check_validity ($$$\%\%)
       return;
     }
     # Do it then
+    if (my $error = decode_content($response)) {
+      &hprintf("%s\n.", $error);
+    }
+    # @@@TODO: this isn't the best thing to do if a decode error occurred
     $p = &parse_document($uri, $response->base(), $response, 0, $want_links);
   } else {
     # We already had the information
