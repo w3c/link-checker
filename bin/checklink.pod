@@ -1,4 +1,4 @@
-$Id: checklink.pod,v 1.27 2009-11-04 18:44:17 mernst Exp $
+$Id: checklink.pod,v 1.28 2009-12-03 21:28:09 ville Exp $
 
 =head1 NAME
 
@@ -115,6 +115,12 @@ this header is not sent by default.  The special value C<auto> causes
 a value to be detected from the C<LANG> environment variable, and sent
 if found.  In CGI mode, the default is to send the value received from
 the client as is.
+
+=item B<-c, --cookies> I<cookie-file>
+
+Use cookies, load/save them in I<cookie-file>.  The special value
+C<tmp> causes non-persistent use of cookies, i.e. they are used but
+only stored in memory for the duration of this link checker run.
 
 =item B<-R, --no-referer>
 

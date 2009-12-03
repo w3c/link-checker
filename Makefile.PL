@@ -44,6 +44,9 @@ WriteMakefile(
                      CGI::Carp        => 0,
                      CGI::Cookie      => 0,
 
+                     # Optional, required if using cookies:
+                     HTTP::Cookies    => 0,
+
                      # Required for the test suite:
                      File::Spec       => 0,
                      Test::More       => 0,
