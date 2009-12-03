@@ -1,4 +1,6 @@
-$Id: checklink.pod,v 1.29 2009-12-03 21:30:50 ville Exp $
+$Id: checklink.pod,v 1.30 2009-12-03 21:33:08 ville Exp $
+
+=encoding utf8
 
 =head1 NAME
 
