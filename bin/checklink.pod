@@ -1,4 +1,4 @@
-$Id: checklink.pod,v 1.28 2009-12-03 21:28:09 ville Exp $
+$Id: checklink.pod,v 1.29 2009-12-03 21:30:50 ville Exp $
 
 =head1 NAME
 
@@ -85,7 +85,7 @@ Do not report a redirect from the first to the second URI.  The "-E<gt>" is
 literal text.  This option may be specified multiple times.  Whitespace may
 be used instead of "-E<gt>" to separate the URIs.
 
-=item B<--suppress-redirect-prefix I<URI-E<gt>URI>
+=item B<--suppress-redirect-prefix> I<URI-E<gt>URI>
 
 Do not report a redirect from a child of the first URI to the same child of
 the second URI.  The \"->\" is literal text.  This option may be specified
