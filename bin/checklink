@@ -5,7 +5,7 @@
 # (c) 1999-2009 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.171 2009-12-03 21:28:09 ville Exp $
+# $Id: checklink,v 4.172 2009-12-16 18:52:21 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -283,7 +283,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.5';
   $REVISION    = sprintf('version %s (c) 1999-2009 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.171 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.172 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver,
                          (W3C::UserAgent::USE_ROBOT_UA
@@ -532,7 +532,7 @@ if ($Opts{Command_Line}) {
   push(@$forbidden, 'file');
   $ua->protocols_forbidden($forbidden);
 
-  my $query = new CGI;
+  my $query = CGI->new();
   # Set a few parameters in CGI mode
   $Opts{Verbose}   = 0;
   $Opts{Progress}  = 0;
@@ -1424,7 +1424,7 @@ sub get_uri ($$;$$\%$$$$)
 
   &hprintf("%s %s ", $method, $uri) if $verbose_progress;
 
-  my $request = new HTTP::Request($method, $uri);
+  my $request = HTTP::Request->new($method, $uri);
 
   $request->header('Accept-Language' => $Opts{Accept_Language})
     if $Opts{Accept_Language};
