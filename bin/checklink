@@ -5,7 +5,7 @@
 # (c) 1999-2009 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.172 2009-12-16 18:52:21 ville Exp $
+# $Id: checklink,v 4.173 2009-12-16 18:56:44 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -283,7 +283,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.5';
   $REVISION    = sprintf('version %s (c) 1999-2009 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.172 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.173 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver,
                          (W3C::UserAgent::USE_ROBOT_UA
@@ -2019,7 +2019,7 @@ sub record_redirects (\%$)
     if ($match) { next; }
 
     my $c = $prev->code();
-    if ($Opts{Suppress_Temp_Redirects} && (($c eq 307) || ($c eq 302))) {
+    if ($Opts{Suppress_Temp_Redirects} && ($c == 307 || $c == 302)) {
       next;
     }
 
@@ -2209,10 +2209,10 @@ on how to solve this</a>.';
       if (($u.'/') eq $redirects{$u}) {
         $whattodo = 'The link is missing a trailing slash, and caused a redirect. Adding the trailing slash would speed up browsing.';
       }
-      elsif  (($c eq 307) || ($c eq 302)) {
+      elsif ($c == 307 || $c == 302) {
         $whattodo = 'This is a temporary redirect. Update the link if you believe it makes sense, or leave it as is.';
       }
-      elsif ($c eq 301) {
+      elsif ($c == 301) {
         $whattodo = 'This is a permanent redirect. The link should be updated.';
       }
     }
