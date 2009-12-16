@@ -5,7 +5,7 @@
 # (c) 1999-2009 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.173 2009-12-16 18:56:44 ville Exp $
+# $Id: checklink,v 4.174 2009-12-16 19:02:32 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -283,7 +283,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.5';
   $REVISION    = sprintf('version %s (c) 1999-2009 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.173 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.174 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver,
                          (W3C::UserAgent::USE_ROBOT_UA
@@ -1038,7 +1038,7 @@ EOF
              &encode(sprintf($Cfg{CSS_Validator_URI}, $esc_uri)),
              &encode($Opts{_Self_URI}));
 
-      printf(<<EOF, $result_anchor);
+      printf(<<'EOF', $result_anchor);
 <div class="progress" id="progress%s">
 <h3>Status: <span></span></h3>
 <div class="progressbar"><div></div></div>
@@ -1934,7 +1934,7 @@ sub authentication ($;$$$$)
   }
 
   if ($Opts{Command_Line}) {
-    printf STDERR <<EOF, $response->request()->url(), $realm;
+    printf STDERR <<'EOF', $response->request()->url(), $realm;
 
 Authentication is required for %s.
 The realm is "%s".
@@ -1965,7 +1965,7 @@ EOF
 
     my $host = $response->request()->url()->host();
     if ($Opts{Trusted} && $host !~ $Opts{Trusted}) {
-      printf <<EOF, &encode($Opts{Trusted}), &encode($host);
+      printf <<'EOF', &encode($Opts{Trusted}), &encode($host);
   This service has been configured to send authentication only to hostnames
   matching the regular expression <code>%s</code>, but the hostname
   <code>%s</code> does not match it.
@@ -2118,7 +2118,7 @@ sub anchors_summary (\%\%)
   print_doc_header();
   print('<p>') if $Opts{HTML};
   print('List of duplicate and empty anchors');
-  print <<EOF if $Opts{HTML};
+  print <<'EOF' if $Opts{HTML};
 </p>
 <table class="report" border="1" summary="List of duplicate and empty anchors.">
 <thead>
@@ -2442,7 +2442,7 @@ sub links_summary (\%\%\%\%)
 
     if ($Opts{HTML}) {
       # Print a summary
-      print <<EOF;
+      print <<'EOF';
 </h3>
 <p><em>There are issues with the URLs listed below. The table summarizes the
 issues and suggested actions by HTTP response status code.</em></p>
