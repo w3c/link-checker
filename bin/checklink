@@ -5,7 +5,7 @@
 # (c) 1999-2009 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.175 2009-12-16 19:04:57 ville Exp $
+# $Id: checklink,v 4.176 2009-12-16 19:10:50 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -283,7 +283,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.5';
   $REVISION    = sprintf('version %s (c) 1999-2009 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.175 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.176 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver,
                          (W3C::UserAgent::USE_ROBOT_UA
@@ -1632,7 +1632,7 @@ sub parse_document ($$$$$)
 sub new
 {
   my $p = HTML::Parser::new(@_, api_version => 3);
-  eval {
+  eval { # ...because utf8_mode is only available with Perl >= 5.8.
     local $SIG{__DIE__} = undef;
     $p->utf8_mode(1);
   };
