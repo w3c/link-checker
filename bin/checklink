@@ -5,7 +5,7 @@
 # (c) 1999-2009 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.174 2009-12-16 19:02:32 ville Exp $
+# $Id: checklink,v 4.175 2009-12-16 19:04:57 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -283,7 +283,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.5';
   $REVISION    = sprintf('version %s (c) 1999-2009 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.174 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.175 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver,
                          (W3C::UserAgent::USE_ROBOT_UA
@@ -292,7 +292,7 @@ BEGIN
 
   # Pull in mod_perl modules if applicable.
   eval {
-    local $SIG{__DIE__};
+    local $SIG{__DIE__} = undef;
     require Apache2::RequestUtil;
   } if MP2();
 
@@ -608,7 +608,7 @@ if ($Opts{Command_Line}) {
   # All Apache configurations don't set HTTP_AUTHORIZATION for CGI scripts.
   # If we're under mod_perl, there is a way around it...
   eval {
-    local $SIG{__DIE__};
+    local $SIG{__DIE__} = undef;
     my $auth = Apache2::RequestUtil->request()->headers_in()->{Authorization};
     $ENV{HTTP_AUTHORIZATION} = $auth if $auth;
   } if (MP2() && !$ENV{HTTP_AUTHORIZATION});
@@ -852,7 +852,7 @@ Please send bug reports and comments to the www-validator mailing list:
 sub ask_password ()
 {
   eval {
-    local $SIG{__DIE__};
+    local $SIG{__DIE__} = undef;
     require Term::ReadKey;
     Term::ReadKey->require_version(2.00);
     Term::ReadKey->import(qw(ReadMode));
@@ -1632,7 +1632,10 @@ sub parse_document ($$$$$)
 sub new
 {
   my $p = HTML::Parser::new(@_, api_version => 3);
-  eval { local $SIG{__DIE__}; $p->utf8_mode(1); };
+  eval {
+    local $SIG{__DIE__} = undef;
+    $p->utf8_mode(1);
+  };
 
   # Start tags
   $p->handler(start => 'start', 'self, tagname, attr, text, line');
