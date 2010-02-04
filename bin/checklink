@@ -5,7 +5,7 @@
 # (c) 1999-2010 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.177 2010-01-14 16:55:18 ville Exp $
+# $Id: checklink,v 4.178 2010-02-04 19:05:22 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -283,7 +283,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.5';
   $REVISION    = sprintf('version %s (c) 1999-2010 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.177 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.178 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver,
                          (W3C::UserAgent::USE_ROBOT_UA
@@ -1244,9 +1244,9 @@ sub decode_content ($)
   my $response = shift;
   my $error = undef;
 
-  # @@@TODO: maybe also decode charsets?
-  my $docref = $response->decoded_content(ref => 1, charset => 'none');
+  my $docref = $response->decoded_content(ref => 1);
   if (defined($docref)) {
+    utf8::encode($$docref);
     $response->content_ref($docref);
     # Remove Content-Encoding so it won't be decoded again later.
     $response->remove_header('Content-Encoding')
@@ -1256,7 +1256,12 @@ sub decode_content ($)
     my $ct = $response->header('Content-Type');
     $ct = defined($ct) ? "'$ct'" : 'undefined';
     my $request_uri = $response->request->url;
-    $error = "Error decoding document at <$request_uri>, Content-Type $ct, Content-Encoding $ce: '$@'";
+    # content_charset() is available in LWP >= 5.827
+    my $cs = $response->can('content_charset') ?
+      $response->content_charset() : undef;
+    $cs = defined($cs) ? "'$cs'" : 'unknown';
+    $error = "Error decoding document at <$request_uri>, Content-Type $ct, " .
+      "Content-Encoding $ce, content charset $cs: '$@'";
   }
   return $error;
 }
