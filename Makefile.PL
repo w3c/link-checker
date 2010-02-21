@@ -28,6 +28,7 @@ WriteMakefile(
                      Socket           => 0,
 
                      # Optional, but required in command line mode:
+                     File::Spec       => 0,
                      Getopt::Long     => 2.17,
                      Text::Wrap       => 0,
                      URI::file        => 0,
