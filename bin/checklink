@@ -5,7 +5,7 @@
 # (c) 1999-2010 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.179 2010-02-04 19:15:47 ville Exp $
+# $Id: checklink,v 4.180 2010-02-21 16:57:43 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -284,7 +284,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.5';
   $REVISION    = sprintf('version %s (c) 1999-2010 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.179 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.180 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver,
                          (W3C::UserAgent::USE_ROBOT_UA
@@ -910,8 +910,25 @@ sub guess_language ()
 
 sub urize ($)
 {
-  my $u = URI->new_abs(URI::Escape::uri_unescape($_[0]), URI::file->cwd());
-  return $u->as_string();
+  my $arg = shift;
+  my $uarg = URI::Escape::uri_unescape($arg);
+  my $uri;
+  if (-d $uarg) {
+    # look for an "index" file in dir, return it if found
+    require File::Spec;
+    for my $index (map { File::Spec->catfile($uarg, $_) }
+                   qw(index.html index.xhtml index.htm index.xhtm)) {
+      if (-e $index) {
+        $uri = URI::file->new_abs($index);
+        last;
+      }
+    }
+    # return dir itself if an index file was not found
+    $uri ||= URI::file->new_abs($uarg);
+  } else {
+    $uri = URI->new_abs($arg, URI::file->cwd());
+  }
+  return $uri->as_string();
 }
 
 ########################################
