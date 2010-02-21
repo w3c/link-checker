@@ -5,7 +5,7 @@
 # (c) 1999-2010 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.180 2010-02-21 16:57:43 ville Exp $
+# $Id: checklink,v 4.181 2010-02-21 17:17:47 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -219,6 +219,7 @@ use HTTP::Response  1.50 qw(); # >= 1.50 for decoded_content()
 use Time::HiRes          qw();
 use URI             1.31 qw(); # >= 1.31 for sip: abs/rel
 use URI::Escape          qw();
+use URI::Heuristic       qw();
 # @@@ Needs also W3C::UserAgent but can't use() it here.
 
 use constant RC_ROBOTS_TXT          => -1;
@@ -284,7 +285,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.5';
   $REVISION    = sprintf('version %s (c) 1999-2010 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.180 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.181 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver,
                          (W3C::UserAgent::USE_ROBOT_UA
@@ -619,7 +620,13 @@ if ($Opts{Command_Line}) {
     if ($uri =~ m|^//|) {
       $uri = 'http:'.$uri;
     } else {
-      $uri = 'http://'.$uri;
+      local $ENV{URL_GUESS_PATTERN} = '';
+      my $guess = URI::Heuristic::uf_uri($uri);
+      if ($guess->scheme() && $ua->is_protocol_supported($guess)) {
+        $uri = $guess->as_string();
+      } else {
+        $uri = 'http://'.$uri;
+      }
     }
   }
 
@@ -904,9 +911,9 @@ sub guess_language ()
   return $res;
 }
 
-###########################################
-# Transform foo into file://localhost/foo #
-###########################################
+############################
+# Transform foo into a URI #
+############################
 
 sub urize ($)
 {
@@ -925,8 +932,17 @@ sub urize ($)
     }
     # return dir itself if an index file was not found
     $uri ||= URI::file->new_abs($uarg);
+  } elsif ($uarg =~ /^[.\/\\]/ || -e $uarg) {
+    $uri = URI::file->new_abs($uarg);
   } else {
-    $uri = URI->new_abs($arg, URI::file->cwd());
+    my $newuri = URI->new($arg);
+    if ($newuri->scheme()) {
+      $uri = $newuri;
+    } else {
+      local $ENV{URL_GUESS_PATTERN} = '';
+      $uri = URI::Heuristic::uf_uri($arg);
+      $uri = URI::file->new_abs($uri) unless $uri->scheme();
+    }
   }
   return $uri->as_string();
 }
