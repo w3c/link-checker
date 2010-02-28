@@ -5,7 +5,7 @@
 # (c) 1999-2010 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.182 2010-02-28 19:00:18 ville Exp $
+# $Id: checklink,v 4.183 2010-02-28 19:03:35 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -285,7 +285,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.5';
   $REVISION    = sprintf('version %s (c) 1999-2010 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.182 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.183 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver,
                          (W3C::UserAgent::USE_ROBOT_UA
@@ -1773,7 +1773,7 @@ sub add_link
     # duplicated checking or infinite recursion.
     $uri =~ s|^(\.\.?/)/+|$1|o;
     $uri = URI->new_abs($uri, $base) if defined($base);
-    $self->{Links}{$uri}{$line}++;
+    $self->{Links}{$uri}{defined($line) ? $line : LINE_UNKNOWN()}++;
   }
   return;
 }
@@ -1852,7 +1852,6 @@ sub start
 sub declaration
 {
   my ($self, $text, $line) = @_;
-  $line = LINE_UNKNOWN() unless defined($line);
 
   # Extract the doctype
   my @declaration = split(/\s+/, $text, 4);
