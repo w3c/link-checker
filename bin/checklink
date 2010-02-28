@@ -5,7 +5,7 @@
 # (c) 1999-2010 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.181 2010-02-21 17:17:47 ville Exp $
+# $Id: checklink,v 4.182 2010-02-28 19:00:18 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -285,7 +285,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.5';
   $REVISION    = sprintf('version %s (c) 1999-2010 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.181 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.182 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver,
                          (W3C::UserAgent::USE_ROBOT_UA
@@ -1673,20 +1673,20 @@ sub new
   my $p = HTML::Parser::new(@_, api_version => 3);
   $p->utf8_mode(1);
 
-  # Start tags
-  $p->handler(start => 'start', 'self, tagname, attr, text, line');
-  # Declarations
+  # Set up handlers
+
+  $p->handler(start => 'start', 'self, tagname, attr, line');
   $p->handler(declaration =>
               sub {
                 my $self = shift;
                 $self->declaration(substr($_[0], 2, -1));
               }, 'self, text, line');
-  # Other stuff
+  $p->handler(end_document => 'end_document', 'self, line');
   if ($Opts{Progress}) {
     $p->handler(default => 'parse_progress', 'self, line');
     $p->{last_percentage} = 0;
   }
-  $p->handler(end_document => 'end_document', 'self, line');
+
   # Check <a [..] name="...">?
   $p->{check_name} = 1;
   # Check <[..] id="..">?
@@ -1780,7 +1780,7 @@ sub add_link
 
 sub start
 {
-  my ($self, $tag, $attr, $text, $line) = @_;
+  my ($self, $tag, $attr, $line) = @_;
   $line = LINE_UNKNOWN() unless defined($line);
 
   # Anchors
