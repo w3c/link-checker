@@ -9,6 +9,7 @@ SIGNATURE
 bin/checklink           The link checker
 bin/checklink.pod       Manual page for the link checker
 etc/checklink.conf      Optional configuration file
+etc/perltidyrc          perltidy(1) profile
 docs/checklink.html     Additional documentation
 docs/linkchecker.css    Cascading style sheet for the documentation
 images/double.png

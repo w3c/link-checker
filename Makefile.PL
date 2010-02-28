@@ -80,5 +80,13 @@ lib/W3C/LinkChecker.pm: Makefile.PL bin/checklink
 	$(ECHO) "use vars qw(\$$VERSION);"                   >> $@
 	$(ECHO) "\$$VERSION = \"$(VERSION)\";"               >> $@
 	$(ECHO) "1;"                                         >> $@
+
+PERLTIDY = perltidy --profile=etc/perltidyrc --backup-and-modify-in-place
+
+perltidy:
+	@for file in Makefile.PL bin/checklink ; do \
+		echo "$(PERLTIDY) $$file" ; \
+		$(PERLTIDY) $$file ; \
+	done
 MAKE_FRAG
 }
