@@ -5,7 +5,7 @@
 # (c) 1999-2010 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.183 2010-02-28 19:03:35 ville Exp $
+# $Id: checklink,v 4.184 2010-02-28 19:23:11 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -285,7 +285,7 @@ BEGIN
   $PROGRAM     = 'W3C-checklink';
   $VERSION     = '4.5';
   $REVISION    = sprintf('version %s (c) 1999-2010 W3C', $VERSION);
-  my ($cvsver) = q$Revision: 4.183 $ =~ /(\d+[\d\.]*\.\d+)/;
+  my ($cvsver) = q$Revision: 4.184 $ =~ /(\d+[\d\.]*\.\d+)/;
   $AGENT       = sprintf('%s/%s [%s] %s',
                          $PROGRAM, $VERSION, $cvsver,
                          (W3C::UserAgent::USE_ROBOT_UA
@@ -328,10 +328,10 @@ BEGIN
       %Cfg = Config::General->new(%config_opts)->getall();
     };
     if ($@) {
-      die <<".EOF.";
+      die <<"EOF";
 Failed to read configuration from '$conffile':
 $@
-.EOF.
+EOF
     }
   }
   $Cfg{Markup_Validator_URI} ||=
@@ -463,11 +463,11 @@ eval {
   $ua->allow_private_ips($Opts{Allow_Private_IPs});
 };
 if ($@) {
-  die <<".EOF.";
+  die <<"EOF";
 Allow_Private_IPs is false; this feature requires the Net::IP, Socket, and
 Net::hostent modules:
 $@
-.EOF.
+EOF
 }
 
 if ($Opts{Command_Line}) {
