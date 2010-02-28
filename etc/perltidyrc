@@ -1,0 +1,15 @@
+# perltidy(1) profile for the W3C Link Checker
+--standard-error-output
+--warning-output
+--output-line-ending=unix
+--maximum-line-length=79
+--indent-columns=4
+--continuation-indentation=4
+--vertical-tightness=2
+--paren-tightness=2
+--brace-tightness=2
+--square-bracket-tightness=2
+--opening-sub-brace-on-new-line
+--nospace-for-semicolon
+--nooutdent-long-lines
+--break-after-all-operators
