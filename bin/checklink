@@ -5,7 +5,7 @@
 # (c) 1999-2010 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.185 2010-02-28 21:13:23 ville Exp $
+# $Id: checklink,v 4.186 2010-03-04 21:59:55 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -155,9 +155,10 @@ sub redirect_ok
 
     if (my $callback = $self->redirect_progress_callback()) {
 
-        # @@@ TODO: when an LWP internal robots.txt request gets redirected, this
-        # will a bit confusingly fire for it too.  Would need a robust way to
-        # determine whether the request is such a LWP "internal robots.txt" one.
+        # @@@ TODO: when an LWP internal robots.txt request gets redirected,
+        # this will a bit confusingly fire for it too.  Would need a robust
+        # way to determine whether the request is such a LWP "internal
+        # robots.txt" one.
         &$callback($request->method(), $request->uri());
     }
 
@@ -298,7 +299,7 @@ BEGIN {
     $PROGRAM  = 'W3C-checklink';
     $VERSION  = '4.5';
     $REVISION = sprintf('version %s (c) 1999-2010 W3C', $VERSION);
-    my ($cvsver) = q$Revision: 4.185 $ =~ /(\d+[\d\.]*\.\d+)/;
+    my ($cvsver) = q$Revision: 4.186 $ =~ /(\d+[\d\.]*\.\d+)/;
     $AGENT = sprintf(
         '%s/%s [%s] %s',
         $PROGRAM, $VERSION, $cvsver,
