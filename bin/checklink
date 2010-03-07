@@ -5,7 +5,7 @@
 # (c) 1999-2010 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.189 2010-03-07 20:50:02 ville Exp $
+# $Id: checklink,v 4.190 2010-03-07 21:07:03 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -306,7 +306,7 @@ BEGIN {
     $PROGRAM  = 'W3C-checklink';
     $VERSION  = '4.5';
     $REVISION = sprintf('version %s (c) 1999-2010 W3C', $VERSION);
-    my ($cvsver) = q$Revision: 4.189 $ =~ /(\d+[\d\.]*\.\d+)/;
+    my ($cvsver) = q$Revision: 4.190 $ =~ /(\d+[\d\.]*\.\d+)/;
     $AGENT = sprintf(
         '%s/%s [%s] %s',
         $PROGRAM, $VERSION, $cvsver,
@@ -663,21 +663,25 @@ else {
     } if (MP2() && !$ENV{HTTP_AUTHORIZATION});
 
     $uri =~ s/^\s+//g;
-    if ($uri !~ m/:/) {
+    if ($uri =~ /:/) {
+        $uri = URI->new($uri);
+    }
+    else {
         if ($uri =~ m|^//|) {
-            $uri = 'http:' . $uri;
+            $uri = URI->new("http:$uri");
         }
         else {
             local $ENV{URL_GUESS_PATTERN} = '';
             my $guess = URI::Heuristic::uf_uri($uri);
             if ($guess->scheme() && $ua->is_protocol_supported($guess)) {
-                $uri = $guess->as_string();
+                $uri = $guess;
             }
             else {
-                $uri = 'http://' . $uri;
+                $uri = URI->new("http://$uri");
             }
         }
     }
+    $uri = $uri->canonical()->as_string();
 
     &check_uri(scalar($query->Vars()), $uri, 1, $Opts{Depth}, $cookie);
     undef $query;    # Not needed any more.
@@ -1024,7 +1028,7 @@ sub urize ($)
             $uri = URI::file->new_abs($uri) unless $uri->scheme();
         }
     }
-    return $uri->as_string();
+    return $uri->canonical()->as_string();
 }
 
 ########################################
