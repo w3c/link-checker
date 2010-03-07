@@ -1,6 +1,18 @@
 This document contains information about high level changes between
 Link Checker releases, see ChangeLog for a detailed list of changes.
 
+Version 4.6
+- Support for checking links in CSS.
+- Results UI improvements, added "progress bar".
+- Support for larger variety of character and content encodings.
+- Support for HTTP responses with > 4kB header lines.
+- Additional output suppress options in command line mode.
+- Improved heuristics when passed non-absolute URLs.
+- Support for cookies (command line only for now).
+- More "false positive" failure avoidance efforts for "make test".
+- New dependencies: CSS-DOM >= 0.09.
+- Updated dependencies: Perl >= 5.8.
+
 Version 4.5
 - Removed W3C trademarked icons from distribution tarball.
 - Avoid "false positive" failures from "make test" in certain setups.
