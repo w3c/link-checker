@@ -5,7 +5,7 @@
 # (c) 1999-2010 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.186 2010-03-04 21:59:55 ville Exp $
+# $Id: checklink,v 4.187 2010-03-07 16:34:34 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -251,9 +251,11 @@ use constant LINK_ATTRS => {
     audio      => ['src'],
     blockquote => ['cite'],
     body       => ['background'],
-    del        => ['cite'],
 
-    # proprietary
+    # button/@formaction not checked (side effects)
+    del => ['cite'],
+
+    # @pluginspage, @pluginurl, @href: pre-HTML5 proprietary
     embed => ['href', 'pluginspage', 'pluginurl', 'src'],
 
     # form/@action not checked (side effects)
@@ -262,7 +264,7 @@ use constant LINK_ATTRS => {
     img    => ['longdesc', 'src'],
     ins    => ['cite'],
 
-    # input/@action not checked (side effects)
+    # input/@action, input/@formaction not checked (side effects)
     input  => ['src'],
     link   => ['href'],
     object => ['data'],
@@ -299,7 +301,7 @@ BEGIN {
     $PROGRAM  = 'W3C-checklink';
     $VERSION  = '4.5';
     $REVISION = sprintf('version %s (c) 1999-2010 W3C', $VERSION);
-    my ($cvsver) = q$Revision: 4.186 $ =~ /(\d+[\d\.]*\.\d+)/;
+    my ($cvsver) = q$Revision: 4.187 $ =~ /(\d+[\d\.]*\.\d+)/;
     $AGENT = sprintf(
         '%s/%s [%s] %s',
         $PROGRAM, $VERSION, $cvsver,
