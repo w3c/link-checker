@@ -5,7 +5,7 @@
 # (c) 1999-2010 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.187 2010-03-07 16:34:34 ville Exp $
+# $Id: checklink,v 4.188 2010-03-07 17:16:13 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -219,10 +219,15 @@ sub secure_scheme
 package W3C::LinkChecker;
 
 use vars qw($AGENT $PACKAGE $PROGRAM $VERSION $REVISION
-    $DocType $Head $Accept $ContentTypes %Cfg);
+    $DocType $Head $Accept $ContentTypes %Cfg $CssUrl);
 
+use CSS::DOM 0.09 qw();    # >= 0.09 for many bugfixes
+use CSS::DOM::Constants qw(:rule);
+use CSS::DOM::Style qw();
+use CSS::DOM::Util qw();
 use HTML::Entities qw();
-use HTML::Parser 3.20 qw();      # >= 3.20 for "line" argspec identifier
+use HTML::Parser 3.20 qw();    # >= 3.20 for "line" argspec identifier
+use HTTP::Headers::Util qw();
 use HTTP::Request qw();
 use HTTP::Response 1.50 qw();    # >= 1.50 for decoded_content()
 use Time::HiRes qw();
@@ -301,7 +306,7 @@ BEGIN {
     $PROGRAM  = 'W3C-checklink';
     $VERSION  = '4.5';
     $REVISION = sprintf('version %s (c) 1999-2010 W3C', $VERSION);
-    my ($cvsver) = q$Revision: 4.187 $ =~ /(\d+[\d\.]*\.\d+)/;
+    my ($cvsver) = q$Revision: 4.188 $ =~ /(\d+[\d\.]*\.\d+)/;
     $AGENT = sprintf(
         '%s/%s [%s] %s',
         $PROGRAM, $VERSION, $cvsver,
@@ -322,8 +327,12 @@ BEGIN {
         application/vnd.wap.xhtml+xml;q=0.6
     );
     $Accept = join(', ', @content_types, '*/*;q=0.5');
+    push(@content_types, "text/css");
     my $re = join('|', map { s/;.*//; quotemeta } @content_types);
     $ContentTypes = qr{\b(?:$re)\b}io;
+
+    # Regexp for matching URL values in CSS.
+    $CssUrl = qr/(?:\s|^)url\(\s*(['"]?)(.*?)\1\s*\)(?=\s|$)/;
 
     #
     # Read configuration.  If the W3C_CHECKLINK_CFG environment variable has
@@ -1145,13 +1154,16 @@ EOF
                 $result_anchor);
             my $esc_uri =
                 URI::Escape::uri_escape($absolute_uri, "^A-Za-z0-9.");
+            print "<p>For reliable link checking results, check ";
+
+            if (!$response->{IsCss}) {
+                printf("<a href=\"%s\">HTML validity</a> and ",
+                    &encode(sprintf($Cfg{Markup_Validator_URI}, $esc_uri)));
+            }
             printf(
-                "<p>For reliable link checking results, check
-<a href=\"%s\">HTML validity</a> first.  See also
-<a href=\"%s\">CSS validity</a>.</p>
+                "<a href=\"%s\">CSS validity</a> first.</p>
 <p>Back to the <a accesskey=\"1\" href=\"%s\">link checker</a>.</p>\n",
-                &encode(sprintf($Cfg{Markup_Validator_URI}, $esc_uri)),
-                &encode(sprintf($Cfg{CSS_Validator_URI},    $esc_uri)),
+                &encode(sprintf($Cfg{CSS_Validator_URI}, $esc_uri)),
                 &encode($Opts{_Self_URI})
             );
 
@@ -1536,6 +1548,18 @@ sub in_recursion_scope ($)
     return 0;    # We always have at least one base location, but none matched.
 }
 
+#################################
+# Check for content type match. #
+#################################
+
+sub is_content_type ($$)
+{
+    my ($candidate, $type) = @_;
+    return 0 unless ($candidate && $type);
+    my @v = HTTP::Headers::Util::split_header_words($candidate);
+    return scalar(@v) ? $type eq lc($v[0]->[0]) : 0;
+}
+
 ##################################################
 # Check whether a URI has already been processed #
 ##################################################
@@ -1666,6 +1690,8 @@ sub get_uri ($$;$$\%$$$$)
     &hprintf(" fetched in %s seconds\n", &time_diff($start, &get_timestamp()))
         if $verbose_progress;
 
+    $response->{IsCss} =
+        is_content_type($response->content_type(), "text/css");
     $response->{Realm} = $realm if defined($realm);
 
     return $response;
@@ -1767,9 +1793,13 @@ sub parse_document ($$$$$)
         return $p;
     }
 
-    my $start;
     $p = W3C::LinkChecker->new();
     $p->{base} = $base_uri;
+
+    my $stype = $response->header("Content-Style-Type");
+    $p->{style_is_css} = !$stype || is_content_type($stype, "text/css");
+
+    my $start;
     if (!$Opts{Summary_Only}) {
         $start = &get_timestamp();
         print("Parsing...\n");
@@ -1778,26 +1808,40 @@ sub parse_document ($$$$$)
     # Content-Encoding etc already decoded in get_document().
     my $docref = $response->content_ref();
 
-    # Count lines beforehand if needed for progress indicator.  In all cases,
-    # the actual final number of lines processed shown is populated by our
+    # Count lines beforehand if needed (for progress indicator, or CSS while
+    # we don't get any line context out of the parser).  In case of HTML, the
+    # actual final number of lines processed shown is populated by our
     # end_document handler.
-    $p->{Total} = ($$docref =~ tr/\n//) if $Opts{Progress};
+    $p->{Total} = ($$docref =~ tr/\n//)
+        if ($response->{IsCss} || $Opts{Progress});
 
     # We only look for anchors if we are not interested in the links
     # obviously, or if we are running a recursive checking because we
     # might need this information later
     $p->{only_anchors} = !($links || $rec_needs_links);
 
-    # Transform <?xml:stylesheet ...?> into <xml:stylesheet ...> for parsing
-    # Processing instructions are not parsed by process, but in this case
-    # it should be. It's expensive, it's horrible, but it's the easiest way
-    # for right now.
-    $$docref =~ s/\<\?(xml:stylesheet.*?)\?\>/\<$1\>/
-        unless $p->{only_anchors};
+    if ($response->{IsCss}) {
 
-    $p->xml_mode(1) if ($response->content_type() =~ /\+xml$/);
+        # Parse as CSS
 
-    $p->parse($$docref)->eof();
+        $p->parse_css($$docref, LINE_UNKNOWN());
+    }
+    else {
+
+        # Parse as HTML
+
+        # Transform <?xml:stylesheet ...?> into <xml:stylesheet ...> for parsing
+        # Processing instructions are not parsed by process, but in this case
+        # it should be. It's expensive, it's horrible, but it's the easiest way
+        # for right now.
+        $$docref =~ s/\<\?(xml:stylesheet.*?)\?\>/\<$1\>/
+            unless $p->{only_anchors};
+
+        $p->xml_mode(1) if ($response->content_type() =~ /\+xml$/);
+
+        $p->parse($$docref)->eof();
+    }
+
     $response->content("");
 
     if (!$Opts{Summary_Only}) {
@@ -1827,6 +1871,8 @@ sub new
     # Set up handlers
 
     $p->handler(start => 'start', 'self, tagname, attr, line');
+    $p->handler(end   => 'end',   'self, tagname, line');
+    $p->handler(text  => 'text',  'self, dtext, line');
     $p->handler(
         declaration => sub {
             my $self = shift;
@@ -2006,9 +2052,66 @@ sub start
                 }
             }
         }
+
+        # Inline CSS:
+        delete $self->{csstext};
+        if ($tag eq 'style') {
+            $self->{csstext} = ''
+                if ((!$attr->{type} && $self->{style_is_css}) ||
+                is_content_type($attr->{type}, "text/css"));
+        }
+        elsif ($self->{style_is_css} && (my $style = $attr->{style})) {
+            $style = CSS::DOM::Style::parse($style);
+            $self->parse_style($style, $line);
+        }
     }
 
     $self->parse_progress($line) if $Opts{Progress};
+    return;
+}
+
+sub end
+{
+    my ($self, $tagname, $line) = @_;
+
+    $self->parse_css($self->{csstext}, $line) if ($tagname eq 'style');
+    delete $self->{csstext};
+
+    $self->parse_progress($line) if $Opts{Progress};
+    return;
+}
+
+sub parse_css
+{
+    my ($self, $css, $line) = @_;
+    return unless $css;
+
+    my $sheet = CSS::DOM::parse($css);
+    for my $rule (@{$sheet->cssRules()}) {
+        if ($rule->type() == IMPORT_RULE()) {
+            $self->add_link($rule->href(), $self->{base}, $line);
+        }
+        elsif ($rule->type == STYLE_RULE()) {
+            $self->parse_style($rule->style(), $line);
+        }
+    }
+    return;
+}
+
+sub parse_style
+{
+    my ($self, $style, $line) = @_;
+    return unless $style;
+
+    for (my $i = 0, my $len = $style->length(); $i < $len; $i++) {
+        my $prop = $style->item($i);
+        my $val  = $style->getPropertyValue($prop);
+
+        while ($val =~ /$CssUrl/go) {
+            my $url = CSS::DOM::Util::unescape($2);
+            $self->add_link($url, $self->{base}, $line);
+        }
+    }
 
     return;
 }
@@ -2044,10 +2147,19 @@ sub declaration
     return;
 }
 
+sub text
+{
+    my ($self, $text, $line) = @_;
+    $self->{csstext} .= $text if defined($self->{csstext});
+    $self->parse_progress($line) if $Opts{Progress};
+    return;
+}
+
 sub end_document
 {
     my ($self, $line) = @_;
     $self->{Total} = $line;
+    delete $self->{csstext};
     return;
 }
 
@@ -2986,10 +3098,17 @@ sub html_footer ()
         if ($doc_count > 0 && !$Opts{Quiet});
     if (!$doc_count) {
         print <<'EOF';
-  <div class="intro">
-      <p>This Link Checker looks for issues in links, anchors and referenced objects in a Web page, or recursively on a whole Web site.
-      For best results, it is recommended to first ensure that the documents checked use <a href="http://validator.w3.org/">Valid (X)HTML Markup</a>. The Link Checker is part of the W3C's <a href="http://www.w3.org/QA/Tools/">validators and Quality Web tools</a>.</p>
-  </div>
+<div class="intro">
+  <p>
+    This Link Checker looks for issues in links, anchors and referenced objects
+    in a Web page, CSS style sheet, or recursively on a whole Web site. For
+    best results, it is recommended to first ensure that the documents checked
+    use Valid <a href="http://validator.w3.org/">(X)HTML Markup</a> and
+    <a href="http://jigsaw.w3.org/css-validator/">CSS</a>. The Link Checker is
+    part of the W3C's <a href="http://www.w3.org/QA/Tools/">validators and
+    Quality Web tools</a>.
+  </p>
+</div>
 EOF
     }
     printf(<<'EOF', $Cfg{Doc_URI}, $Cfg{Doc_URI}, $PACKAGE, $REVISION);

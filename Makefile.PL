@@ -10,15 +10,20 @@ WriteMakefile(
     PREREQ_PM    => {
 
         # Hard dependencies:
-        HTML::Entities => 0,
-        HTML::Parser   => 3.20,
-        HTTP::Request  => 0,
-        HTTP::Response => 1.50,
-        LWP::RobotUA   => 1.19,
-        LWP::UserAgent => 0,
-        Time::HiRes    => 0,
-        URI            => 1.31,
-        URI::Escape    => 0,
+        CSS::DOM            => 0.09,
+        CSS::DOM::Constants => 0,
+        CSS::DOM::Style     => 0,
+        CSS::DOM::Util      => 0,
+        HTML::Entities      => 0,
+        HTML::Parser        => 3.20,
+        HTTP::Headers::Util => 0,
+        HTTP::Request       => 0,
+        HTTP::Response      => 1.50,
+        LWP::RobotUA        => 1.19,
+        LWP::UserAgent      => 0,
+        Time::HiRes         => 0,
+        URI                 => 1.31,
+        URI::Escape         => 0,
 
         # Optional, but required if using a config file:
         Config::General => 2.06,
