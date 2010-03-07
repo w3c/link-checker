@@ -5,7 +5,7 @@
 # (c) 1999-2010 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.188 2010-03-07 17:16:13 ville Exp $
+# $Id: checklink,v 4.189 2010-03-07 20:50:02 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -306,7 +306,7 @@ BEGIN {
     $PROGRAM  = 'W3C-checklink';
     $VERSION  = '4.5';
     $REVISION = sprintf('version %s (c) 1999-2010 W3C', $VERSION);
-    my ($cvsver) = q$Revision: 4.188 $ =~ /(\d+[\d\.]*\.\d+)/;
+    my ($cvsver) = q$Revision: 4.189 $ =~ /(\d+[\d\.]*\.\d+)/;
     $AGENT = sprintf(
         '%s/%s [%s] %s',
         $PROGRAM, $VERSION, $cvsver,
@@ -327,7 +327,7 @@ BEGIN {
         application/vnd.wap.xhtml+xml;q=0.6
     );
     $Accept = join(', ', @content_types, '*/*;q=0.5');
-    push(@content_types, "text/css");
+    push(@content_types, 'text/css', 'text/html-sandboxed');
     my $re = join('|', map { s/;.*//; quotemeta } @content_types);
     $ContentTypes = qr{\b(?:$re)\b}io;
 
