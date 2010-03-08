@@ -74,7 +74,7 @@ WriteMakefile(
     },
     depend => {distdir  => 'ChangeLog lib/W3C/LinkChecker.pm'},
     dist   => {TARFLAGS => '--owner=0 --group=0 -cvf'},
-    clean  => {FILES    => 'ChangeLog.bak'},
+    clean  => {FILES    => 'ChangeLog.bak Makefile.PL.bak bin/checklink.bak'},
 );
 
 sub MY::postamble
