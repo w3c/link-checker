@@ -62,6 +62,16 @@ WriteMakefile(
     EXE_FILES => ['bin/checklink'],
     MAN1PODS =>
         {'bin/checklink.pod' => '$(INST_MAN1DIR)/checklink.$(MAN1EXT)',},
+    META_MERGE => {
+        resources => {
+            homepage   => 'http://validator.w3.org/checklink',
+            bugtracker => 'http://www.w3.org/Bugs/Public/',
+            repository =>
+                'http://dev.w3.org/cvsweb/perl/modules/W3C/LinkChecker/',
+            MailingList =>
+                'http://lists.w3.org/Archives/Public/www-validator/',
+        },
+    },
     depend => {distdir  => 'ChangeLog lib/W3C/LinkChecker.pm'},
     dist   => {TARFLAGS => '--owner=0 --group=0 -cvf'},
     clean  => {FILES    => 'ChangeLog.bak'},
