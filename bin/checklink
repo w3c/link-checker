@@ -5,7 +5,7 @@
 # (c) 1999-2010 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.190 2010-03-07 21:07:03 ville Exp $
+# $Id: checklink,v 4.191 2010-03-09 20:52:16 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -306,7 +306,7 @@ BEGIN {
     $PROGRAM  = 'W3C-checklink';
     $VERSION  = '4.5';
     $REVISION = sprintf('version %s (c) 1999-2010 W3C', $VERSION);
-    my ($cvsver) = q$Revision: 4.190 $ =~ /(\d+[\d\.]*\.\d+)/;
+    my ($cvsver) = q$Revision: 4.191 $ =~ /(\d+[\d\.]*\.\d+)/;
     $AGENT = sprintf(
         '%s/%s [%s] %s',
         $PROGRAM, $VERSION, $cvsver,
@@ -2032,9 +2032,9 @@ sub start
         elsif ($tag eq 'applet' || $tag eq 'object') {
             if (my $codebase = $attr->{codebase}) {
 
-                # TODO: HTML 4 spec says applet/@codebase may only point to subdirs of
-                # the directory containing the current document.  Should we do
-                # something about that?
+                # TODO: HTML 4 spec says applet/@codebase may only point to
+                # subdirs of the directory containing the current document.
+                # Should we do something about that?
                 $tag_local_base = URI->new_abs($codebase, $self->{base});
             }
         }
