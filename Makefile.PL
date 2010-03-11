@@ -15,7 +15,7 @@ WriteMakefile(
         CSS::DOM::Style     => 0,
         CSS::DOM::Util      => 0,
         HTML::Entities      => 0,
-        HTML::Parser        => "3.20",
+        HTML::Parser        => "3.40",
         HTTP::Headers::Util => 0,
         HTTP::Request       => 0,
         HTTP::Response      => "1.50",
