@@ -10,6 +10,7 @@ Version 4.6
 - Improved heuristics when passed non-absolute URLs.
 - Support for cookies (command line only for now).
 - More "false positive" failure avoidance efforts for "make test".
+- The set of forbidden protocols is now configurable.
 - New dependencies: CSS-DOM >= 0.09.
 - Updated dependencies: Perl >= 5.8.
 
