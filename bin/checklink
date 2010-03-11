@@ -5,7 +5,7 @@
 # (c) 1999-2010 World Wide Web Consortium
 # based on Renaud Bruyeron's checklink.pl
 #
-# $Id: checklink,v 4.192 2010-03-11 17:13:42 ville Exp $
+# $Id: checklink,v 4.193 2010-03-11 17:54:32 ville Exp $
 #
 # This program is licensed under the W3C(r) Software License:
 #       http://www.w3.org/Consortium/Legal/copyright-software
@@ -91,7 +91,6 @@ sub new
 
     $self->allow_private_ips(1);
 
-    # TODO: bug 29
     $self->protocols_forbidden([qw(mailto javascript)]);
 
     return $self;
@@ -306,7 +305,7 @@ BEGIN {
     $PROGRAM  = 'W3C-checklink';
     $VERSION  = '4.5';
     $REVISION = sprintf('version %s (c) 1999-2010 W3C', $VERSION);
-    my ($cvsver) = q$Revision: 4.192 $ =~ /(\d+[\d\.]*\.\d+)/;
+    my ($cvsver) = q$Revision: 4.193 $ =~ /(\d+[\d\.]*\.\d+)/;
     $AGENT = sprintf(
         '%s/%s [%s] %s',
         $PROGRAM, $VERSION, $cvsver,
@@ -502,6 +501,13 @@ $@
 EOF
 }
 
+# Add configured forbidden protocols
+if ($Cfg{Forbidden_Protocols}) {
+    my $forbidden = $ua->protocols_forbidden();
+    push(@$forbidden, split(/[,\s]+/, lc($Cfg{Forbidden_Protocols})));
+    $ua->protocols_forbidden($forbidden);
+}
+
 if ($Opts{Command_Line}) {
 
     require Text::Wrap;
@@ -568,7 +574,7 @@ else {
     require CGI::Cookie;
 
     # file: URIs are not allowed in CGI mode
-    my $forbidden = $ua->protocols_forbidden() || [];
+    my $forbidden = $ua->protocols_forbidden();
     push(@$forbidden, 'file');
     $ua->protocols_forbidden($forbidden);
 
