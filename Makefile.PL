@@ -80,11 +80,11 @@ WriteMakefile(
 sub MY::postamble
 {
     return <<'MAKE_FRAG';
-ChangeLog: bin/checklink bin/checklink.pod docs/checklink.html docs/linkchecker.css README t/00compile.t
-	cvs2cl --FSF --utc --prune \
+ChangeLog: bin/checklink bin/checklink.pod docs/checklink.html docs/linkchecker.css README t/00compile.t etc/usermap
+	cvs2cl --FSF --utc --prune --usermap etc/usermap \
 	  --ignore ChangeLog --ignore cvsignore --ignore SIGNATURE \
 	  --ignore Makefile.PL --ignore META.yml --ignore MANIFEST \
-	  --ignore NEWS --ignore tests
+	  --ignore NEWS --ignore tests --ignore etc/usermap
 	$(RM_F) ChangeLog.bak
 
 lib/W3C/LinkChecker.pm: Makefile.PL bin/checklink
