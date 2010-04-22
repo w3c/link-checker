@@ -1,4 +1,4 @@
-$Id: checklink.pod,v 1.31 2009-12-03 21:35:02 ville Exp $
+$Id: checklink.pod,v 1.32 2010-04-22 19:46:51 ville Exp $
 
 =encoding utf8
 
@@ -218,6 +218,13 @@ mode and false when run as a CGI script.  For example, to disallow checking
 non-public IP addresses, regardless of the mode, use:
 
    Allow_Private_IPs = 0
+
+C<Forbidden_Protocols> is a comma separated list of additional protocols/URI
+schemes that the link checker is not allowed to use.  The C<javascript> and
+C<mailto> schemes are always forbidden, and so is the C<file> scheme when
+running as a CGI script.
+
+   Forbidden_Protocols = javascript,mailto
 
 C<Markup_Validator_URI> and C<CSS_Validator_URI> are formatted URIs to the
 respective validators.  The C<%s> in these will be replaced with the full
