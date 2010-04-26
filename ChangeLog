@@ -1,68 +1,316 @@
-2009-03-28  ville
+2010-04-22  Ville Skyttä <ville.skytta@iki.fi>
+
+	* bin/checklink: 4.6.
+
+2010-04-22  Ville Skyttä <ville.skytta@iki.fi>
+
+	* bin/checklink.pod, etc/checklink.conf: Improve/add
+	Forbidden_Protocols docs.
+
+2010-03-11  Ville Skyttä <ville.skytta@iki.fi>
+
+	* bin/checklink, etc/checklink.conf: Make forbidden protocols
+	configurable (#29).
+
+2010-03-11  Ville Skyttä <ville.skytta@iki.fi>
+
+	* bin/checklink: Fix HTML::Parser dependency version.
+
+2010-03-09  Ville Skyttä <ville.skytta@iki.fi>
+
+	* bin/checklink: Wrap long comment lines.
+
+2010-03-07  Ville Skyttä <ville.skytta@iki.fi>
+
+	* bin/checklink: Canonicalize input URI earlier, avoids dupe output
+	sections when recursing.
+
+2010-03-07  Ville Skyttä <ville.skytta@iki.fi>
+
+	* bin/checklink: Accept text/html-sandboxed.
+
+2010-03-07  Ville Skyttä <ville.skytta@iki.fi>
+
+	* bin/checklink, docs/checklink.html: Add support for checking
+	links in CSS.
+
+	Known issue: no support for line numbers yet.
+
+2010-03-07  Ville Skyttä <ville.skytta@iki.fi>
+
+	* bin/checklink, docs/checklink.html: Comment updates.
+
+2010-03-04  Ville Skyttä <ville.skytta@iki.fi>
+
+	* bin/checklink: Wrap long lines.
+
+2010-02-28  Ville Skyttä <ville.skytta@iki.fi>
+
+	* bin/checklink: Run perltidy, update indentation settings.
+
+2010-02-28  Ville Skyttä <ville.skytta@iki.fi>
+
+	* bin/checklink: Fix perltidy warnings.
+
+2010-02-28  Ville Skyttä <ville.skytta@iki.fi>
+
+	* etc/perltidyrc: Add perltidy settings and Makefile target.
+
+2010-02-28  Ville Skyttä <ville.skytta@iki.fi>
+
+	* bin/checklink: Handle undefined lines internally in add_link().
+
+2010-02-28  Ville Skyttä <ville.skytta@iki.fi>
+
+	* bin/checklink: Do not pass unused "text" to start handler.
+
+2010-02-21  Ville Skyttä <ville.skytta@iki.fi>
+
+	* bin/checklink: Improve heuristics when passed non-absolute URIs.
+
+2010-02-21  Ville Skyttä <ville.skytta@iki.fi>
+
+	* bin/checklink: Look for an index file if passed a dir, prefer it
+	if found over dir contents.
+
+2010-02-04  Ville Skyttä <ville.skytta@iki.fi>
+
+	* bin/checklink, docs/checklink.html: Require Perl >= 5.8.
+
+	Primarily for the previous change, but also because it's very
+	likely that the code wouldn't work on earlier versions any longer
+	and I suppose there is very little demand and testing resources
+	available for earlier versions.
+
+2010-02-04  Ville Skyttä <ville.skytta@iki.fi>
+
+	* bin/checklink: Let LWP decode response charsets.
+
+	BOM based decoding works with LWP >= 5.827.
+
+2010-01-14  Ville Skyttä <ville.skytta@iki.fi>
+
+	* README, bin/checklink, docs/checklink.html, docs/linkchecker.css:
+	Update years in copyright notices.
+
+2010-01-14  Ville Skyttä <ville.skytta@iki.fi>
+
+	* docs/checklink.html: Use ercim.eu instead of .org in ERCIM links,
+	thanks to Jean-Guilhem Rouel for the heads up.
+
+2009-12-16  Ville Skyttä <ville.skytta@iki.fi>
+
+	* bin/checklink: Document why utf8_mode is in an eval block.
+
+2009-12-16  Ville Skyttä <ville.skytta@iki.fi>
+
+	* bin/checklink: Initialize "local" variables as suggested by
+	perlcritic.
+
+2009-12-16  Ville Skyttä <ville.skytta@iki.fi>
+
+	* bin/checklink: Quote heredoc terminators as suggested by
+	perlcritic.
+
+2009-12-16  Ville Skyttä <ville.skytta@iki.fi>
+
+	* bin/checklink: Fix operator mismatches flagged by perlcritic.
+
+2009-12-16  Ville Skyttä <ville.skytta@iki.fi>
+
+	* bin/checklink: Fix indirect call syntax issues flagged by
+	perlcritic.
+
+2009-12-03  Ville Skyttä <ville.skytta@iki.fi>
+
+	* bin/checklink.pod: Update authorship info.
+
+2009-12-03  Ville Skyttä <ville.skytta@iki.fi>
+
+	* bin/checklink.pod: Add =encoding.
+
+2009-12-03  Ville Skyttä <ville.skytta@iki.fi>
+
+	* bin/checklink.pod: Fix unterminated B<...>.
+
+2009-12-03  Ville Skyttä <ville.skytta@iki.fi>
+
+	* bin/checklink, bin/checklink.pod: Add support for cookies
+	(command line mode only for now).
+
+2009-12-03  Ville Skyttä <ville.skytta@iki.fi>
+
+	* bin/checklink: Fix invalid printf conversion warning.
+
+2009-12-03  Ville Skyttä <ville.skytta@iki.fi>
+
+	* bin/checklink: Decode content encodings also when parsing for
+	anchors, thanks to Mark Olson.
+
+2009-11-04  Michael Ernst <mernst@alum.mit.edu>
+
+	* bin/checklink, bin/checklink.pod: Permit spaces to delimit the
+	parts of the arguments for --suppress-redirect,
+	--suppress-redirect-prefix, and --suppress-broken.  Add
+	--suppress-temp-redirects to suppress warnings about temporary
+	redirects.
+
+2009-10-05  Ville Skyttä <ville.skytta@iki.fi>
+
+	* bin/checklink: Increase default LWP HTTP line length to 8k; the
+	4k default in LWP <= 5.832 is not enough for example to accommodate
+	4kB cookies (RFC 2985) (#6678).
+
+2009-10-03  Ville Skyttä <ville.skytta@iki.fi>
+
+	* docs/checklink.html: Add note about output buffering and
+	mod_deflate.
+
+2009-10-01  Ville Skyttä <ville.skytta@iki.fi>
+
+	* docs/linkchecker.css: Reindent, cosmetics.
+
+2009-10-01  Ville Skyttä <ville.skytta@iki.fi>
+
+	* bin/checklink, docs/linkchecker.css: Add "progress bar" for
+	estimating progress on checking links in one document.
+
+2009-10-01  Ville Skyttä <ville.skytta@iki.fi>
+
+	* bin/checklink: Don't abbreviate "seconds", just say it.
+
+2009-08-05  Ville Skyttä <ville.skytta@iki.fi>
+
+	* bin/checklink: Javascript whitespace cleanup.
+
+2009-08-05  Ville Skyttä <ville.skytta@iki.fi>
+
+	* bin/checklink: Fix some jslint javascript warnings.
+
+2009-07-04  Michael Ernst <mernst@alum.mit.edu>
+
+	* bin/checklink: User bug report (hash key was Suppress..., shourd
+	have been Suppress...) led me to rewrites, shorten, & optimize
+	redirect checking.
+
+2009-06-29  Michael Ernst <mernst@alum.mit.edu>
+
+	* bin/checklink, bin/checklink.pod: Add new options:
+	--suppress-redirect   --suppress-redirect-prefix
+	--suppress-broken   --suppress-fragment Also improve initialization
+	code for Exclude_Docs (--exclude-docs option).
+
+2009-05-03  Ville Skyttä <ville.skytta@iki.fi>
+
+	* bin/checklink.pod: Fix order of arguments to --masquerade in
+	docs, thanks to C. M. Sperberg-McQueen.
+
+2009-05-03  Ville Skyttä <ville.skytta@iki.fi>
+
+	* bin/checklink: ...
+
+2009-05-03  Ville Skyttä <ville.skytta@iki.fi>
+
+	* bin/checklink: Treat masquerade targets that lack a scheme as
+	file: URIs, absolutize relative paths.
+
+2009-04-28  Ville Skyttä <ville.skytta@iki.fi>
+
+	* bin/checklink.pod: --masquerade doc improvements, thanks to C. M.
+	Sperberg-McQueen.
+
+2009-04-28  Ville Skyttä <ville.skytta@iki.fi>
+
+	* bin/checklink.pod: Remove obsolete checklink version blurb from
+	--masquerade doc.
+
+2009-04-19  Ville Skyttä <ville.skytta@iki.fi>
+
+	* bin/checklink: Don't output trusted regex in auth failed message
+	if the hostname matches it, improve error message when it doesn't.
+
+2009-04-19  Ville Skyttä <ville.skytta@iki.fi>
+
+	* bin/checklink: Add status icons next to error messages shown if
+	the initial URI can't be checked.
+
+2009-04-19  Ville Skyttä <ville.skytta@iki.fi>
+
+	* bin/checklink: Fix asking for basic auth (need to delay writing
+	of HTTP headers), set cookie and print form also in auth required
+	response.
+
+2009-04-19  Ville Skyttä <ville.skytta@iki.fi>
+
+	* bin/checklink, docs/checklink.html: Take care of PERL5LIB in
+	taint mode ourselves instead of using perl5lib; perl5lib can itself
+	be in PERL5LIB outside default @INC.
+
+2009-03-28  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: 4.5.
 
-2009-03-23  ville
+2009-03-23  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink, docs/checklink.html: Use no_w3c.png.
 
-2009-03-23  ville
+2009-03-23  Ville Skyttä <ville.skytta@iki.fi>
 
 	* docs/checklink.html: Remove "Valid XHTML Strict" badge.
 
-2009-03-19  ot
+2009-03-19  Olivier Thereaux <ot@w3.org>
 
 	* images/no_w3c.png: adding alternate, non-trademarked, image for
 	strict FLOSS distribution
 
-2009-03-04  ville
+2009-03-04  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink, bin/checklink.pod: Lower default timeout to 30
 	seconds (#4985).
 
-2009-02-26  ville
+2009-02-26  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Don't output informational messages in quiet mode
 	(rt.cpan.org #43372).
 
-2009-02-19  ville
+2009-02-19  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Fix rt.cpan.org bug number refs in comments.
 
-2009-02-19  ville
+2009-02-19  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink, docs/checklink.html: Use PERL5LIB from environment
 	even in taint mode, thanks to people on cpan-testers-discuss for
 	assistance.
 
-2009-02-19  ville
+2009-02-19  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Require URI::file only in command line mode.
 
-2009-02-16  ville
+2009-02-16  Ville Skyttä <ville.skytta@iki.fi>
 
 	* README: Attribute authorship to QA-dev (there's no separate link
 	checker team).
 
-2009-02-10  ville
+2009-02-10  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Make protocol disallowed info message more
 	accurate.
 
-2009-02-10  ville
+2009-02-10  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Improve handling of URI schemes we don't want
 	checked.
 
-2009-02-10  ville
+2009-02-10  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Tune WAI-WEBCONTENT link.
 
-2009-02-10  ville
+2009-02-10  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Remove obsolete WWW::RobotRules comments.
 
-2009-02-10  ville
+2009-02-10  Ville Skyttä <ville.skytta@iki.fi>
 
 	* docs/checklink.html, docs/valid-xhtml10.png, images/double.png,
 	images/grad.png, images/head-bl.png, images/head-br.png,
@@ -71,340 +319,340 @@
 	images/info_icons/error.png, images/info_icons/info.png,
 	images/info_icons/warning.png: Include/reorganize required images.
 
-2009-02-10  ville
+2009-02-10  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Don't hardcode path to w3c.png, resolve it from
 	Doc_URI.
 
-2009-02-10  ville
+2009-02-10  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink, etc/checklink.conf: Remove Style_URI configuration
 	variable, resolve it from Doc_URI.
 
-2009-02-10  ville
+2009-02-10  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Don't hardcode path to info icons, use Doc_URI to
 	resolve it.
 
-2009-02-10  ville
+2009-02-10  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: XHTML well-formedness fix.
 
-2009-02-10  ville
+2009-02-10  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Remove whitespace before doctype.
 
-2009-02-10  ville
+2009-02-10  Ville Skyttä <ville.skytta@iki.fi>
 
 	* docs/linkchecker.css: Use relative URL to menu background png.
 
-2009-02-05  ville
+2009-02-05  Ville Skyttä <ville.skytta@iki.fi>
 
 	* docs/qa-small.png, docs/w3c_home.png: Remove unused icons.
 
-2009-02-02  ville
+2009-02-02  Ville Skyttä <ville.skytta@iki.fi>
 
 	* docs/checklink.html: Minor typo etc edits to the "install with
 	CPAN" section.
 
-2009-02-02  ot
+2009-02-02  Olivier Thereaux <ot@w3.org>
 
 	* docs/checklink.html: installation instructions
 
-2009-01-30  ville
+2009-01-30  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Prefer text/html over application/xhtml+xml in
 	Accept because of our lack of xml:base support.
 
-2009-01-30  ville
+2009-01-30  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Fix "Excluding links" info message in command line
 	mode.
 
-2009-01-30  ville
+2009-01-30  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Lower q-value of application/vnd.wap.xhtml+xml in
 	Accept header to less than 1.
 
-2009-01-10  ville
+2009-01-10  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Support new link things in HTML 5 (incomplete;
 	XHTML 5 xml:base not supported).
 
-2009-01-10  ville
+2009-01-10  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Remove (apparently harmless) stray comma.
 
-2009-01-08  ot
+2009-01-08  Olivier Thereaux <ot@w3.org>
 
 	* bin/checklink: preparing 4.4
 
-2009-01-07  ot
+2009-01-07  Olivier Thereaux <ot@w3.org>
 
 	* bin/checklink: autoscroll of results as they happen, based on
 	prototype by Brett Bieber
 
-2009-01-06  ot
+2009-01-06  Olivier Thereaux <ot@w3.org>
 
 	* docs/linkchecker.css: removing more of the heavy bgcolor used in
 	reports
 
-2009-01-06  ot
+2009-01-06  Olivier Thereaux <ot@w3.org>
 
 	* bin/checklink: broken stuff report is not only about broken links
 	- may as well be clearer and frustrate people less
 
-2009-01-06  ot
+2009-01-06  Olivier Thereaux <ot@w3.org>
 
 	* docs/linkchecker.css: simplify, lighten, give air, do not yell at
 	the user. results table made less heavy and screaming, report list
 	more airy.
 
-2009-01-06  ot
+2009-01-06  Olivier Thereaux <ot@w3.org>
 
 	* bin/checklink: simplify, lighten, give air, do not yell at the
 	user. Removed feature: sequence of status messages (status code
 	squence kept)
 
-2009-01-06  ot
+2009-01-06  Olivier Thereaux <ot@w3.org>
 
 	* bin/checklink: making sure broken links get seen first. They are
 	the prime concern. Moving the fragments report lower.
 
-2009-01-06  ot
+2009-01-06  Olivier Thereaux <ot@w3.org>
 
 	* bin/checklink, docs/linkchecker.css: donation/sponsorship slug
 
-2009-01-06  ot
+2009-01-06  Olivier Thereaux <ot@w3.org>
 
 	* bin/checklink: softening wording in error/info message
 
-2009-01-04  ville
+2009-01-04  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Comment typo fix.
 
-2009-01-01  ville
+2009-01-01  Ville Skyttä <ville.skytta@iki.fi>
 
 	* README, bin/checklink, docs/checklink.html, docs/linkchecker.css:
 	2009
 
-2009-01-01  ville
+2009-01-01  Ville Skyttä <ville.skytta@iki.fi>
 
 	* docs/checklink.html: Link to www.perl.org/get.html for "Install
 	Perl" (David Dorward,
 	http://www.w3.org/mid/495CFBF6.1080306%40dorward.me.uk)
 
-2008-10-26  ville
+2008-10-26  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Fix --exclude-docs for older Getopt::Long versions
 	thanks to Michael Ernst for pointing it out.
 
-2008-10-25  mernst
+2008-10-25  Michael Ernst <mernst@alum.mit.edu>
 
 	* bin/checklink.pod: Improve description of quoting for argument
 	containing space.
 
-2008-10-25  mernst
+2008-10-25  Michael Ernst <mernst@alum.mit.edu>
 
 	* bin/checklink: Improve comment.
 
-2008-10-25  ville
+2008-10-25  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Check links in meta refresh tags.
 
-2008-10-25  ville
+2008-10-25  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Improve line number indicator formatting for
 	redirect results in console mode.
 
-2008-10-25  ville
+2008-10-25  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: If running LWP >= 5.814, set Accept-Encoding in
 	requests to what LWP can decode.
 
-2008-10-25  ville
+2008-10-25  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink, bin/checklink.pod: Allow --exclude-docs be
 	specified multiple times, based on patch from Michael Ernst.
 
-2008-10-17  mernst
+2008-10-17  Michael Ernst <mernst@alum.mit.edu>
 
 	* bin/checklink: Disable Perl's recursion warnings for recursive
 	algorithm.
 
-2008-10-17  mernst
+2008-10-17  Michael Ernst <mernst@alum.mit.edu>
 
 	* bin/checklink: Prevent (some) infinite loops.
 
-2008-09-22  ville
+2008-09-22  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Add non-robot developer mode, thanks to Michael
 	Ernst.
 
-2008-09-11  ville
+2008-09-11  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Drop duplicate "Processing..." header in
 	non-summary-only HTML mode, thanks to Michael Ernst
 
-2008-08-26  ville
+2008-08-26  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Remove stray as-is "\n" from HTML output.
 
-2008-08-26  ville
+2008-08-26  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Untaint config params that are used as the format
 	argument to (s)printf(), Perl 5.10 does not want to see that in
 	taint mode.
 
-2008-07-03  ot
+2008-07-03  Olivier Thereaux <ot@w3.org>
 
 	* bin/checklink: muting some output in quiet mode. some reorg of
 	output code - Patch courtesy of Michael Ernst
 
-2008-07-03  ot
+2008-07-03  Olivier Thereaux <ot@w3.org>
 
 	* bin/checklink: removed unused vars - Patch courtesy of Michael
 	Ernst
 
-2008-07-03  ot
+2008-07-03  Olivier Thereaux <ot@w3.org>
 
 	* bin/checklink: improve debug output in verbose mode. Patch
 	courtesy of Michael Ernst
 
-2008-05-04  ville
+2008-05-04  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Don't do javascript progress callbacks in command
 	line HTML mode.
 
-2008-05-04  ville
+2008-05-04  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Fix command line HTML output.
 
-2008-05-04  ville
+2008-05-04  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Escape shown URI in javascript progress callback.
 
-2008-05-01  ville
+2008-05-01  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Micro-optimizations, cleanups.
 
-2008-05-01  ville
+2008-05-01  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Fix HTML entity encoding in broken anchor output,
 	improve it slightly.
 
-2008-05-01  ville
+2008-05-01  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Trivial code cleanups.
 
-2008-05-01  ville
+2008-05-01  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink, docs/checklink.html: Drop old URI workarounds,
 	require >= 1.31.
 
-2008-04-21  ville
+2008-04-21  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Markup fixes.
 
-2008-04-21  ville
+2008-04-21  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Note XHTML $response->base() improvements in
 	libwww-perl >= 5.810 in comments.
 
-2008-04-21  ville
+2008-04-21  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink, docs/checklink.html: Require libwww-perl >= 5.802.
 
-2008-04-21  ville
+2008-04-21  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Support Content-Encodings automatically handled by
 	libwww-perl (#5648).
 
-2008-02-19  ville
+2008-02-19  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Summary wording improvements, thanks to Jukka
 	Korpela.
 
-2008-02-14  ville
+2008-02-14  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Mimic LWP by setting the "Client-Warning: Internal
 	response" to "IP disallowed" internal responses.
 
-2008-02-14  ville
+2008-02-14  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Improve info about "IP address disallowed by
 	config" messages (#5080), avoid outputting HTML in "What to do" in
 	non-HTML console mode.
 
-2008-02-10  ville
+2008-02-10  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Take codebase into account when resolving
 	object/@data.
 
-2008-02-10  ville
+2008-02-10  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Add a TODO about our built-in handling of
 	base/@href special case.
 
-2008-02-10  ville
+2008-02-10  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Don't check <a name="..."> for XHTML Basic 1.1 or
 	XHTML MP.
 
-2008-02-10  ville
+2008-02-10  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Set XML parsing mode also based on Content-Type in
 	addition to public ID, relax public ID matching for XML mode so
 	that it catches XHTML Mobile, XHTML-Print and XHTML+RDFa.
 
-2008-02-10  ville
+2008-02-10  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Accept application/vnd.wap.xhtml+xml.
 
-2008-02-10  ville
+2008-02-10  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Print percentage indicator only when it changes;
 	improves performance significantly with some terminals and large
 	documents.
 
-2008-02-10  ville
+2008-02-10  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Output number of lines processed instead of total
 	number of lines in docs.
 
-2008-02-10  ville
+2008-02-10  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: ->base() returns a URI, don't create another one.
 
-2008-02-10  ville
+2008-02-10  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Increase resolution of shown times to 1/100th of a
 	second.
 
-2008-02-10  ville
+2008-02-10  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink, bin/checklink.pod: Improve documentation of
 	--indicator.
 
-2008-02-10  ville
+2008-02-10  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Avoid division by zero in progress indicator for
 	docs that contain no linefeeds.
 
-2008-02-10  ville
+2008-02-10  Ville Skyttä <ville.skytta@iki.fi>
 
 	* README, bin/checklink, docs/checklink.html, docs/linkchecker.css:
 	2008.
 
-2008-02-10  ville
+2008-02-10  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Improve variable naming in parse_document().
 
-2008-02-10  ville
+2008-02-10  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Trim whitespace, NFC.
 
-2008-02-09  ville
+2008-02-09  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Review and explicitly list things treated as
 	links.
@@ -422,24 +670,24 @@
 	and/or require special treatment so maintaining our own lists is
 	simpler.
 
-2008-01-24  ville
+2008-01-24  Ville Skyttä <ville.skytta@iki.fi>
 
 	* docs/checklink.html: Validity fix.
 
-2008-01-24  ot
+2008-01-24  Olivier Thereaux <ot@w3.org>
 
 	* bin/checklink: converting output to XHTML 1.0 Strict (cont'd)
 
-2008-01-24  ot
+2008-01-24  Olivier Thereaux <ot@w3.org>
 
 	* bin/checklink: I need XHTML for some post-processing so...
 	converting output to XHTML 1.0 Strict, for now
 
-2007-11-28  ot
+2007-11-28  Olivier Thereaux <ot@w3.org>
 
 	* docs/checklink.html: header
 
-2007-11-28  ot
+2007-11-28  Olivier Thereaux <ot@w3.org>
 
 	* docs/checklink.html: the checklink documentation states: [[
 	Please send comments, suggestions and bug reports about the link
@@ -451,98 +699,98 @@
 	checklink, but we receive so many messages titled "checklink:" that
 	a few examples of good and bad feedback wouldn't hurt...
 
-2007-10-24  ot
+2007-10-24  Olivier Thereaux <ot@w3.org>
 
 	* bin/checklink: status bar bug
 
-2007-10-23  ot
+2007-10-23  Olivier Thereaux <ot@w3.org>
 
 	* bin/checklink, docs/linkchecker.css: adding a "progress bar" at
 	top of scrolling pre
 
-2007-09-18  ville
+2007-09-18  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Telling caches in the middle we want fresh copies
 	of retrieved documents (Bug 4998)
 
-2007-09-18  ot
+2007-09-18  Olivier Thereaux <ot@w3.org>
 
 	* bin/checklink: modifying wording and display of the report for
 	broken frags
 
-2007-09-18  ot
+2007-09-18  Olivier Thereaux <ot@w3.org>
 
 	* docs/linkchecker.css: giving the results a bit of air
 
-2007-09-18  ot
+2007-09-18  Olivier Thereaux <ot@w3.org>
 
 	* bin/checklink, docs/linkchecker.css: adding status (error,
 	warning, info) icon
 
-2007-09-18  ot
+2007-09-18  Olivier Thereaux <ot@w3.org>
 
 	* bin/checklink: error message rewriting. No need to scream at the
 	user
 
-2007-09-18  ot
+2007-09-18  Olivier Thereaux <ot@w3.org>
 
 	* bin/checklink: putting redirects together, separated from error
 	list
 
-2007-09-15  ville
+2007-09-15  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Fix HTML footer
 
-2007-09-14  ot
+2007-09-14  Olivier Thereaux <ot@w3.org>
 
 	* docs/linkchecker.css: styling of the list of issues and list of
 	redirects in checklin results (rough, this is a first pass)
 
-2007-09-14  ot
+2007-09-14  Olivier Thereaux <ot@w3.org>
 
 	* docs/linkchecker.css: styling of progress <pre> to limit its size
 	- just a test, welcoming feedback
 
-2007-09-14  ot
+2007-09-14  Olivier Thereaux <ot@w3.org>
 
 	* bin/checklink: * pre-filling form with the URI being checked *
 	only output footer intro blurb on home page, not results * giving
 	class to "progress" <pre> for styling
 
-2007-09-13  ville
+2007-09-13  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink, docs/checklink.html: Reassign accesskey 2 to
 	downloads.
 
-2007-09-13  ville
+2007-09-13  Ville Skyttä <ville.skytta@iki.fi>
 
 	* docs/checklink.html: Sync navigation link placement with
 	generated pages, remove no longer needed "skip navigation" link.
 
-2007-09-13  ville
+2007-09-13  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Remove "Skip past navigation" link; there is no
 	such anchor on the "front" page and there is nothing to skip at end
 	of the doc.
 
-2007-09-13  ot
+2007-09-13  Olivier Thereaux <ot@w3.org>
 
 	* docs/linkchecker.css: styling tagline
 
-2007-09-13  ot
+2007-09-13  Olivier Thereaux <ot@w3.org>
 
 	* bin/checklink: adding tagline - better wording dearly welcome
 
-2007-09-13  ot
+2007-09-13  Olivier Thereaux <ot@w3.org>
 
 	* bin/checklink: * moving menu to the bottom of UI (giving homepage
 	better focus on mail functionality) * adding intro blurb
 
-2007-09-12  ot
+2007-09-12  Olivier Thereaux <ot@w3.org>
 
 	* docs/linkchecker.css: styling of the UI form
 
-2007-09-11  ot
+2007-09-11  Olivier Thereaux <ot@w3.org>
 
 	* docs/linkchecker.css: First (very rough) go at amending the link
 	checker's CSS to match the current style of the Markup Validator.
@@ -553,213 +801,213 @@
 	make the new CSS file "work" with old markup, at least to a
 	reasonable extent.
 
-2007-09-02  ville
+2007-09-02  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Output HTTP headers before fetching the first
 	document (related to #4985).
 
-2007-08-17  ville
+2007-08-17  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Add -R/--no-referer to --help output.
 
-2007-08-17  ville
+2007-08-17  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink, bin/checklink.pod: Implement sending the Referer
 	header (#32).
 
-2007-07-29  ville
+2007-07-29  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Protect regexp metacharacters in masquerade URLs.
 
-2007-07-29  ville
+2007-07-29  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Signal explicit EOF to HTML::Parser in
 	parse_document().
 
-2007-07-29  ville
+2007-07-29  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Change parse_document to operate directly on
 	response content refs, decode content encodings, and clean up
 	response contents when done.
 
-2007-07-29  ville
+2007-07-29  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Clear contents of responses as soon as we've dealt
 	with them.
 
-2007-07-29  ville
+2007-07-29  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Prefix redirect progress events with "->".
 
-2007-07-29  ville
+2007-07-29  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Refactor IP address allowance and redirect
 	progress callback code into our UserAgent class.
 
-2007-07-28  ville
+2007-07-28  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Remove the deprecated (since 2004, link checker
 	4.1) -n/--noacclanguage and -y/--proxy command line options.
 
-2007-07-28  ville
+2007-07-28  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Fix doc of ip_allowed() return value.
 
-2007-07-28  ville
+2007-07-28  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Make the CGI object non-global.
 
-2007-07-24  ville
+2007-07-24  Ville Skyttä <ville.skytta@iki.fi>
 
 	* docs/checklink.html: Add another link to more info about proxy
 	variables.
 
-2007-07-19  ville
+2007-07-19  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink.pod: Note that -q implies -s.
 
-2007-04-19  ville
+2007-04-19  Ville Skyttä <ville.skytta@iki.fi>
 
 	* t/00compile.t: Autogenerate a dummy *.pm for CPAN indexing
 	purposes.
 
-2007-04-09  ville
+2007-04-09  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink, bin/checklink.pod: Add --exclude option for
 	excluding links matching given regexp (#689).
 
-2007-03-30  ville
+2007-03-30  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink, bin/checklink.pod: Make --exclude-docs doc more
 	accurate, mention it in "Settings used" if used.
 
-2007-03-30  ville
+2007-03-30  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Use add_link() for recording DTD URLs for
 	consistency.
 
-2007-03-30  ville
+2007-03-30  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: 2007, once more
 
-2007-03-30  ville
+2007-03-30  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: The dupe/empty anchor table lists one anchor per
 	table row; adjust heading accordingly.
 
-2007-03-20  ville
+2007-03-20  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: List line numbers of broken fragments only, not
 	all fragment line numbers if one or more for a doc are broken.
 
-2007-03-20  ville
+2007-03-20  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Fix bunch of perlcritic warnings.
 
-2007-03-20  ville
+2007-03-20  Ville Skyttä <ville.skytta@iki.fi>
 
 	* README, bin/checklink, docs/checklink.html, docs/linkchecker.css:
 	2007
 
-2007-03-20  ville
+2007-03-20  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Fix anchor parsing in HTML 2.x and 3.x documents,
 	http://lists.w3.org/Archives/Public/www-validator/2007Mar/0065
 
-2006-11-25  ville
+2006-11-25  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Appease B::Lint.
 
-2006-10-22  ville
+2006-10-22  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: 4.3.
 
-2006-10-19  ville
+2006-10-19  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Add some TODOs for #29.
 
-2006-10-15  ville
+2006-10-15  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink, docs/linkchecker.css: Avoid multiple "settings"
 	IDs in HTML output.
 
-2006-10-15  ville
+2006-10-15  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Don't let earlier URIs on the command line
 	implicitly limit recursion scope of subsequent ones (Debian
 	#277969).
 
-2006-10-15  ville
+2006-10-15  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Print used settings only once and at start in
 	command line output.
 
-2006-10-03  ville
+2006-10-03  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Make --quiet more quiet (Brian St. Pierre, Debian
 	#390788, rt.cpan.org #15053).
 
-2006-09-21  ville
+2006-09-21  Ville Skyttä <ville.skytta@iki.fi>
 
 	* docs/checklink.html: Add blurb about SSL/TLS support.
 
-2006-06-15  ville
+2006-06-15  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Update mod_perl HTTP_AUTHORIZATION hack for recent
 	2.x, drop support for 1.x.
 
-2006-06-15  ville
+2006-06-15  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink, bin/checklink.pod: Allow specifying --location
 	multiple times, make it imply --recursive.
 
-2006-05-25  ville
+2006-05-25  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Extract system IDs also from doctype declarations
 	that have no public part.
 
-2006-05-25  ville
+2006-05-25  Ville Skyttä <ville.skytta@iki.fi>
 
 	* README, bin/checklink, docs/checklink.html, docs/linkchecker.css:
 	2006.
 
-2006-05-25  ville
+2006-05-25  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Code cleanup: eliminate some magic numbers.
 
-2006-05-25  ville
+2006-05-25  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Try enabling UTF-8 mode in HTML::Parser (#3289).
 
-2006-05-25  ville
+2006-05-25  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Improve unknown line number handling.
 
-2006-05-06  ville
+2006-05-06  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink, docs/checklink.html: Outsource line counting to
 	HTML::Parser; version >= 3.20 is now required.
 
-2006-05-06  ville
+2006-05-06  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Clean up arguments passed to HTML::Parser
 	handlers.
 
-2006-05-05  ville
+2006-05-05  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Sort broken fragment line numbers numerically, not
 	alphabetically.
 
-2006-05-05  ville
+2006-05-05  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Suppress RobotRules warnings, rt.cpan.org #18902.
 
-2006-05-05  ville
+2006-05-05  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Revert parallel user agent code from between
 	revisions 4.21 and 4.24 per discussion on public-qa-dev.
 
-2005-10-25  ot
+2005-10-25  Olivier Thereaux <ot@w3.org>
 
 	* bin/checklink: The (hopefully temporary) workaround for responses
 	not storing the original request should not be for cases of 401's,
@@ -771,11 +1019,11 @@
 
 	http://lists.w3.org/Archives/Public/public-qa-dev/2005Sep/0018.html
 
-2005-08-31  ot
+2005-08-31  Olivier Thereaux <ot@w3.org>
 
 	* bin/checklink: fixing a few brainos in passing arguments around
 
-2005-08-29  ot
+2005-08-29  Olivier Thereaux <ot@w3.org>
 
 	* bin/checklink: WARNING: this code is rather broken...
 
@@ -794,125 +1042,125 @@
 	This is a rather poor patch but the best I can wrap my head around
 	right now, feel free to revert if it's too ugly.
 
-2005-05-15  ville
+2005-05-15  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Release 4.2.1.
 
-2005-05-15  ville
+2005-05-15  Ville Skyttä <ville.skytta@iki.fi>
 
 	* docs/checklink.html: Access key doc tweaks: spelling, whitespace,
 	consistency with rest of the docs.
 
-2005-04-28  ot
+2005-04-28  Olivier Thereaux <ot@w3.org>
 
 	* docs/checklink.html: adding access keys documentation
 
-2005-04-27  ville
+2005-04-27  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Release 4.2.
 
-2005-04-21  ville
+2005-04-21  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Use Apache2::compat instead of Apache::compat to
 	support recent mod_perl 2's.
 
-2005-04-09  ville
+2005-04-09  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink, docs/checklink.html: Fix navbar markup.
 
-2005-04-09  ville
+2005-04-09  Ville Skyttä <ville.skytta@iki.fi>
 
 	* docs/linkchecker.css: Add missing "hideme" class for "skip
 	navigation" links.
 
-2005-03-31  ot
+2005-03-31  Olivier Thereaux <ot@w3.org>
 
 	* bin/checklink, docs/checklink.html: implementing new access keys,
 	as proposed in
 	http://lists.w3.org/Archives/Public/public-qa-dev/2005Mar/0013.html
 
-2005-02-05  ville
+2005-02-05  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Check redirects for private IP addresses too.
 
-2005-01-09  ville
+2005-01-09  Ville Skyttä <ville.skytta@iki.fi>
 
 	* README, bin/checklink, docs/checklink.html, docs/linkchecker.css:
 	2005.
 
-2004-11-23  ville
+2004-11-23  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Release 4.1.
 
-2004-11-23  ville
+2004-11-23  Ville Skyttä <ville.skytta@iki.fi>
 
 	* docs/checklink.html: Add known issues section, and "summary only"
 	problems to it (#896).
 
-2004-11-11  ot
+2004-11-11  Olivier Thereaux <ot@w3.org>
 
 	* bin/checklink, docs/checklink.html: warning note about delay in
 	summary only mode
 
-2004-11-07  ville
+2004-11-07  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink, bin/checklink.pod, docs/checklink.html: Deprecate
 	the -y/--proxy option in favour of the http_proxy env variable.
 
-2004-11-07  ville
+2004-11-07  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Remove CVS revision from user visible version
 	strings to make them less scary.  Add meta generator tag to emitted
 	HTML containing the full user agent string.
 
-2004-11-07  ville
+2004-11-07  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Use the same W3C::UserAgent instance for all
 	retrievals.  Fixes
 	http://www.w3.org/Bugs/Public/show_bug.cgi?id=893
 
-2004-11-06  ville
+2004-11-06  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink, docs/checklink.html, etc/checklink.conf: Make
 	Net::IP and other modules required for restricting access to
 	private IP addresses optional.
 
-2004-11-06  ville
+2004-11-06  Ville Skyttä <ville.skytta@iki.fi>
 
 	* docs/checklink.html: Add abbr for CVS.
 
-2004-10-12  ville
+2004-10-12  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Try to avoid server/browser timeouts in summary
 	only mode when the check takes a long time.  Should fix
 	http://www.w3.org/Bugs/Public/show_bug.cgi?id=896
 
-2004-10-10  ville
+2004-10-10  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Avoid feeding the whole response (including HTTP
 	headers) to HTML::Parser.  Fixes
 	http://www.w3.org/Bugs/Public/show_bug.cgi?id=889
 
-2004-08-27  duerst
+2004-08-27  Martin J. Dürst <duerst@w3.org>
 
 	* bin/checklink: changed result pages to charset=utf-8 on
 	Content-Type:; should not have any effect currently, but will be
 	useful later.
 
-2004-07-21  ville
+2004-07-21  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Enforce libwww-perl >= 5.66 requirement.
 
-2004-07-20  ville
+2004-07-20  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Release 4.0.
 
-2004-07-11  ville
+2004-07-11  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Small comment clarifications related to the
 	previous fix.
 
-2004-07-11  ville
+2004-07-11  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Fix bug in recursion logic: when parsing a
 	document in recursive mode, we are interested in links in it if
@@ -920,97 +1168,97 @@
 	caused by an anchor in a referring document.
 	http://lists.w3.org/Archives/Public/www-validator/2004Jun/0181.html
 
-2004-07-11  ville
+2004-07-11  Ville Skyttä <ville.skytta@iki.fi>
 
 	* docs/checklink.html: Bump version numbers.
 
-2004-07-11  ville
+2004-07-11  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: $TNV will be 4.0.
 
-2004-06-12  ville
+2004-06-12  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Okay, I give up.  Use "text/javascript" as the
 	content type for JavaScript.
 
-2004-06-11  ville
+2004-06-11  Ville Skyttä <ville.skytta@iki.fi>
 
 	* docs/linkchecker.css: Fix Opera/MSIE menubar ugliness by
 	importing line-height from Markup Validator.
 
-2004-06-09  ville
+2004-06-09  Ville Skyttä <ville.skytta@iki.fi>
 
 	* docs/linkchecker.css: Restore "address img" for the valid XHTML
 	badge.
 
-2004-06-09  ville
+2004-06-09  Ville Skyttä <ville.skytta@iki.fi>
 
 	* docs/checklink.html: Add blurb about robots exclusion
 	implementation details.
 
-2004-06-08  ville
+2004-06-08  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink.pod: Document Doc_URI and Style_URI.
 
-2004-06-08  ville
+2004-06-08  Ville Skyttä <ville.skytta@iki.fi>
 
 	* docs/linkchecker.css: Remove some unused properties, and do a
 	gratuitous whitespace cleanup.
 
-2004-06-08  ville
+2004-06-08  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink, docs/linkchecker.css: Restore some lost CSS
 	properties, and selectively sync some of the new layout stuff from
 	the current markup validator.
 
-2004-06-08  ville
+2004-06-08  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Avoid warning when no realm is given in
 	WWW-Authenticate.
 
-2004-06-08  ville
+2004-06-08  Ville Skyttä <ville.skytta@iki.fi>
 
 	* docs/linkchecker.css: Use JPEG versions of header and footer
 	images.
 
-2004-06-08  ville
+2004-06-08  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink, docs/checklink.html, docs/linkchecker.css: Remove
 	the "Skip navigation" link as it is not too useful at the moment.
 
-2004-06-02  ville
+2004-06-02  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink, docs/checklink.html: Add/revise accesskeys.
 	(l=linkchecker,i=download/install,d=docs,m=markup validator,s=skip
 	navigation)
 
-2004-06-02  ville
+2004-06-02  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Switch to HTML 4.01 strict, and make related
 	adjustments and layout consistency improvements mainly to error
 	message views.
 
-2004-06-02  ville
+2004-06-02  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Work around a bug in URI::sip(s) in URI 1.22-1.30.
 
 	http://lists.w3.org/Archives/Public/www-validator/2004Jun/0003.html
 
-2004-06-01  ville
+2004-06-01  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: More markup improvements.
 
-2004-06-01  ville
+2004-06-01  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Avoid error log warning when no Content-Type is
 	received, improve markup.
 
-2004-06-01  ville
+2004-06-01  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink, bin/checklink.pod, etc/checklink.conf: Typo and
 	consistency fixes.
 
-2004-06-01  ville
+2004-06-01  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Apply parameters from cookie only when loading the
 	"front" page.  Also, only load the cookie we set (not all possibly
@@ -1018,85 +1266,85 @@
 	front page.  This should make the effect of the cookie more
 	predictable.
 
-2004-06-01  ville
+2004-06-01  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Avoid warning from invalid (non-numeric) recursion
 	depth.
 
-2004-05-31  ot
+2004-05-31  Olivier Thereaux <ot@w3.org>
 
 	* bin/checklink: fixing some silliness in my recent patches -
 	thanks Ville for the catch
 
-2004-05-31  ot
+2004-05-31  Olivier Thereaux <ot@w3.org>
 
 	* docs/linkchecker.css: adding style specific to linkchecker
 	results
 
-2004-05-31  ot
+2004-05-31  Olivier Thereaux <ot@w3.org>
 
 	* bin/checklink, docs/checklink.html, etc/checklink.conf: Changing
 	the layout of checklink (script) to math the one for the
 	documentation.	 - adding Style_URI configuration parameter   - The
 	layout now uses default links pointing to the instance on v.w.o
 
-2004-05-16  ville
+2004-05-16  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: HTML-escape given URI in the "you cannot check
 	such a URI" message.
 
-2004-05-14  ot
+2004-05-14  Olivier Thereaux <ot@w3.org>
 
 	* docs/checklink.html, docs/linkchecker.css: quick attempt at
 	styling link checker as the Markup Validator.  Fr the actial
 	service, an idea would be to keep some of its inline style + a link
 	to the stylesheet in the repository.
 
-2004-05-10  ville
+2004-05-10  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Treat non-empty URI's "ok" again with JavaScript
 	implementations without String.search().
 
-2004-05-10  ville
+2004-05-10  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Tweak fieldset padding.
 
-2004-05-10  ville
+2004-05-10  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Don't send Content-Script-Type as a real HTTP
 	header, use <meta http-equiv> instead.	Also make uriOk() focus the
 	URI field if it was not 'ok'.
 
-2004-05-07  ville
+2004-05-07  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Use relative self-referencing URL without the
 	query string for the form action.
 
-2004-05-07  ville
+2004-05-07  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Associate all labels explicitly with their
 	controls as recommended by WCAG 1.0.  Thanks to Hugo Silveira da
 	Cunha for the heads up.
 
-2004-05-03  ville
+2004-05-03  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink.pod: Always point to
 	http://www.w3.org/2000/07/checklink for docs, small POD entity
 	tweaks.
 
-2004-04-28  ville
+2004-04-28  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Set "self URI" to
 	http://validator.w3.org/checklink in command line HTML mode.
 	Thanks to James Gallagher for the report.
 
-2004-04-20  ville
+2004-04-20  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink, docs/checklink.html, docs/linkchecker.css: Add
 	instructions how to allow us in /robots.txt, and include a link to
 	it in the results.
 
-2004-04-19  ville
+2004-04-19  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Implement "better" (yet somewhat hacky) handling
 	of non-HTTP error codes, currently used for "forbidden by
@@ -1104,89 +1352,89 @@
 	display "forbidden by robots.txt" with a light gray background (CVS
 	class "dubious") instead of screaming-red-403.
 
-2004-04-17  ville
+2004-04-17  Ville Skyttä <ville.skytta@iki.fi>
 
 	* t/00compile.t: Add a _very_ basic "test suite".
 
-2004-04-12  ville
+2004-04-12  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Fix broken fragment UI (was broken in revision
 	3.30).
 
-2004-04-12  ville
+2004-04-12  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Small wording improvements.
 
-2004-04-11  ville
+2004-04-11  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Use "(no message)" if for some reason we do not
 	receive a reason phrase in the response status line.
 
-2004-04-11  ville
+2004-04-11  Ville Skyttä <ville.skytta@iki.fi>
 
 	* docs/checklink.html: Redirect loops are no longer a problem with
 	the link checker and libwww-perl 5.76 (but redirects to file: URLs
 	still are).
 
-2004-04-11  ville
+2004-04-11  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink, bin/checklink.pod, docs/checklink.html: Make sleep
 	time between requests to each server configurable in command line
 	use (-S/--sleep, defaults to 1 second), remove old "sleep 3 seconds
 	between documents" feature, and show used settings in the results.
 
-2004-04-11  ville
+2004-04-11  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Fix typo in results CSS.
 
-2004-04-11  ville
+2004-04-11  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Reimplement/replace internal redirect tracking
 	logic using the response chaining feature of libwww-perl
 	(HTTP::Response->previous()).  Should be more robust and
 	RobotUA-friendly now.
 
-2004-04-10  ville
+2004-04-10  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Code cleanups.
 
-2004-04-10  ville
+2004-04-10  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Eliminate a couple of recently introduced printf()
 	warnings.
 
-2004-04-10  ville
+2004-04-10  Ville Skyttä <ville.skytta@iki.fi>
 
 	* docs/checklink.html: RobotUA/RobotRules works for local files
 	from command line in LWP 5.66+, bump the required version.
 
-2004-04-10  ville
+2004-04-10  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Don't mask LWP's default redirect_ok()
 	functionality, remove some dead code.
 
-2004-04-09  ville
+2004-04-09  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink, etc/checklink.conf: New configuration parameter
 	(Doc_URI) to aid local doc installations.
 
-2004-04-09  ville
+2004-04-09  Ville Skyttä <ville.skytta@iki.fi>
 
 	* docs/checklink.html, docs/linkchecher.css, docs/linkchecker.css:
 	Rename the doc CSS once more (to linkchecker.css).
 
-2004-04-08  ot
+2004-04-08  Olivier Thereaux <ot@w3.org>
 
 	* docs/checklink.css, docs/linkchecher.css: changing name to avoid
 	conneg issues
 
-2004-04-08  ville
+2004-04-08  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Make sure default configuration options are set
 	also when there is no configuration file.  D'oh!  Thanks to Rafael
 	Gieschke for the report.
 
-2004-04-07  ville
+2004-04-07  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink, docs/checklink.html: Initial (partial)
 	implementation for support for robots exclusion standard.  The UI
@@ -1194,7 +1442,7 @@
 	new configuration options (admin address, minimum delay) should be
 	added.	As a side effect, we now require libwww-perl >= 5.60.
 
-2004-04-04  ville
+2004-04-04  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink, bin/checklink.pod: Do not send any Accept-Language
 	header by default in command line mode, and don't default to "*" in
@@ -1203,26 +1451,26 @@
 	from the environment, and the -n/--noacclanguage option is
 	deprecated and does nothing.
 
-2004-04-03  ville
+2004-04-03  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Usage message improvements.
 
-2004-04-03  ville
+2004-04-03  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Link to http://www.w3.org/2000/07/checklink for
 	docs again.
 
-2004-04-03  ville
+2004-04-03  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink, bin/checklink.pod: Improve the "Trusted" domain
 	documentation.
 
-2004-04-03  ville
+2004-04-03  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Compile trusted and exclude-docs regexps only
 	once.
 
-2004-04-03  ville
+2004-04-03  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink, bin/checklink.pod: New command line option
 	(--exclude-docs) for excluding checking links in documents whose
@@ -1230,121 +1478,121 @@
 	improvements to argument and configuration option checking and
 	error reporting.
 
-2004-04-02  ville
+2004-04-02  Ville Skyttä <ville.skytta@iki.fi>
 
 	* README.cvs: Fix link to the online version.
 
-2004-04-01  ot
+2004-04-01  Olivier Thereaux <ot@w3.org>
 
 	* README.cvs: adding download instructions
 
-2004-03-31  ville
+2004-03-31  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Release 3.9.2.
 
-2004-03-31  ville
+2004-03-31  Ville Skyttä <ville.skytta@iki.fi>
 
 	* docs/checklink.html: Document known issues with libwww-perl 5.76.
 
-2004-03-31  ville
+2004-03-31  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Change to the W3C::LinkChecker namespace.
 
-2004-03-30  ville
+2004-03-30  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink.pod: Various doc improvements.
 
-2004-03-27  ville
+2004-03-27  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink, bin/checklink.pod, docs/checklink.html: Improve
 	command line mode usability: -h is now an alias for --help, -H for
 	--html, and the usage message is displayed if no URIs to check are
 	given.	Also tune STDERR/STDOUT usage a bit.
 
-2004-03-27  ville
+2004-03-27  Ville Skyttä <ville.skytta@iki.fi>
 
 	* docs/checklink.html, docs/qa-small.png, docs/valid-xhtml10.png,
 	docs/w3c_home.png: Add images.
 
-2004-03-27  ville
+2004-03-27  Ville Skyttä <ville.skytta@iki.fi>
 
 	* docs/checklink.css: - Re-indent - Fix a minor syntax bug -
 	Comment out URL to banner-qa.jpg (where's that?) - Avoid changing
 	hX style with a's when hovering
 
-2004-03-27  ville
+2004-03-27  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Update full man page display instructions.
 
-2004-03-27  ville
+2004-03-27  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Update CVSweb interface URL.
 
-2004-03-27  ville
+2004-03-27  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Appease Perl 5.6.1's taint mode.
 
-2004-03-24  ville
+2004-03-24  Ville Skyttä <ville.skytta@iki.fi>
 
 	* docs/checklink.html: Recommend libwww-perl 5.70.
 
-2004-03-23  ville
+2004-03-23  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink.pod: Use UTF-8 instead of entities.
 
-2004-03-23  ville
+2004-03-23  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink.pod: Document new *_Validator_URI config
 	parameters.
 
-2004-03-23  ville
+2004-03-23  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Make self references in the results work whatever
 	the script name is.
 
-2004-03-23  ville
+2004-03-23  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Remove a stale fragment id.
 
-2004-03-23  ville
+2004-03-23  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink, etc/checklink.conf: Make markup and CSS validator
 	URIs configurable.
 
-2004-03-22  ville
+2004-03-22  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Update links.
 
-2004-03-22  ville
+2004-03-22  Ville Skyttä <ville.skytta@iki.fi>
 
 	* README, docs/checklink.html: Add some doc cross references.
 
-2004-03-22  ville
+2004-03-22  Ville Skyttä <ville.skytta@iki.fi>
 
 	* docs/checklink.html, etc/checklink.conf: Include config file.
 
-2004-03-22  ville
+2004-03-22  Ville Skyttä <ville.skytta@iki.fi>
 
 	* docs/checklink.html: More documentation updates and improvements.
 
-2004-03-22  ville
+2004-03-22  Ville Skyttä <ville.skytta@iki.fi>
 
 	* docs/checklink.html: Some doc improvements.
 
-2004-03-22  ville
+2004-03-22  Ville Skyttä <ville.skytta@iki.fi>
 
 	* docs/checklink.html: Add missing </abbr>.
 
-2004-03-21  ville
+2004-03-21  Ville Skyttä <ville.skytta@iki.fi>
 
 	* docs/checklink.css, docs/checklink.html: Add docs.
 
-2004-03-18  ville
+2004-03-18  Ville Skyttä <ville.skytta@iki.fi>
 
 	* README, bin/checklink.pod: First CPANified version, copied here
 	from the validator dir.
 
-2004-03-18  ville
+2004-03-18  Ville Skyttä <ville.skytta@iki.fi>
 
 	* bin/checklink: Copy here from the validator dir.
 
