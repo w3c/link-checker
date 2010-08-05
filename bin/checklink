@@ -13,8 +13,8 @@
 # The documentation is at:
 #       http://validator.w3.org/docs/checklink.html
 #
-# See the CVSweb interface at:
-#       http://dev.w3.org/cvsweb/perl/modules/W3C/LinkChecker/
+# See the Mercurial interface (the link-checker entry) at:
+#       http://dvcs.w3.org/hg/
 #
 # An online version is available at:
 #       http://validator.w3.org/checklink

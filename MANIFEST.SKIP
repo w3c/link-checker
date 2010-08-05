@@ -1,7 +1,8 @@
-\.cvsignore$
+\.hgignore$
+\.hgtags$
 \bblib\b
 \bpm_to_blib\b
-\bCVS\b
+\.hg\b
 ~$
 \bMANIFEST\.SKIP$
 \bMakefile$
@@ -9,5 +10,4 @@
 \.tar\.
 \bREADME\.cvs$
 \bdocs/tests\b
-\betc/usermap\b
 \bimages/w3c\.png$

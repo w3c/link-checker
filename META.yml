@@ -45,7 +45,7 @@ resources:
     bugtracker:   http://www.w3.org/Bugs/Public/
     homepage:     http://validator.w3.org/checklink
     MailingList:  http://lists.w3.org/Archives/Public/www-validator/
-    repository:   http://dev.w3.org/cvsweb/perl/modules/W3C/LinkChecker/
+    repository:   http://dvcs.w3.org/hg/
 no_index:
     directory:
         - t
