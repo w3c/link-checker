@@ -66,27 +66,19 @@ WriteMakefile(
         resources => {
             homepage   => 'http://validator.w3.org/checklink',
             bugtracker => 'http://www.w3.org/Bugs/Public/',
-            repository =>
-                'http://dev.w3.org/cvsweb/perl/modules/W3C/LinkChecker/',
+            repository => 'http://dvcs.w3.org/hg/',
             MailingList =>
                 'http://lists.w3.org/Archives/Public/www-validator/',
         },
     },
-    depend => {distdir  => 'ChangeLog lib/W3C/LinkChecker.pm'},
+    depend => {distdir  => 'lib/W3C/LinkChecker.pm'},
     dist   => {TARFLAGS => '--owner=0 --group=0 -cvf'},
-    clean  => {FILES    => 'ChangeLog.bak Makefile.PL.bak bin/checklink.bak'},
+    clean  => {FILES    => 'Makefile.PL.bak bin/checklink.bak'},
 );
 
 sub MY::postamble
 {
     return <<'MAKE_FRAG';
-ChangeLog: bin/checklink bin/checklink.pod docs/checklink.html docs/linkchecker.css README t/00compile.t etc/usermap
-	cvs2cl --FSF --utc --prune --usermap etc/usermap \
-	  --ignore ChangeLog --ignore cvsignore --ignore SIGNATURE \
-	  --ignore Makefile.PL --ignore META.yml --ignore MANIFEST \
-	  --ignore NEWS --ignore tests --ignore etc/usermap
-	$(RM_F) ChangeLog.bak
-
 lib/W3C/LinkChecker.pm: Makefile.PL bin/checklink
 	$(MKPATH) lib/W3C
 	$(ECHO) "# Dummy module for CPAN indexing purposes."  > $@

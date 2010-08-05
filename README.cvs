@@ -11,14 +11,9 @@ from
 
 <p>
 Developers are encouraged to check out the latest development code
-from this CVS repository, by following these instructions:
+from this Mercurial repository, by following these instructions:
 </p>
 
 <pre>
-    bash$ <kbd>export CVSROOT=":pserver:anonymous@dev.w3.org:/sources/public"</kbd>
-    bash$ <kbd>cvs login</kbd>
-    (Logging in to anonymous@dev.w3.org)
-    CVS password: <kbd>anonymous</kbd>
-    bash$ <kbd>cvs get perl/modules/W3C/LinkChecker</kbd>
-    ...
+    bash$ <kbd>hg clone https://dvcs.w3.org/hg/link-checker</kbd>
 </pre>
