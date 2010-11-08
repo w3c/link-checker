@@ -43,9 +43,12 @@ WriteMakefile(
         # Optional, used for password input in command line mode:
         Term::ReadKey => 2.00,
 
-        # Optional, used for guessing language in cmd line mode:
+        # Optional, used for guessing language in command line mode:
         Locale::Country  => 0,
         Locale::Language => 0,
+
+        # Optional, used when decoding arguments in command line mode:
+        I18N::Langinfo => 0,
 
         # Optional, but required in CGI mode:
         CGI         => 0,
