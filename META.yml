@@ -40,7 +40,7 @@ requires:
     Test::More:           0
     Text::Wrap:           0
     Time::HiRes:          0
-    URI:                  1.31
+    URI:                  1.53
     URI::Escape:          0
     URI::file:            0
 resources:
