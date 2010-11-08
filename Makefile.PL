@@ -23,7 +23,7 @@ WriteMakefile(
         LWP::RobotUA        => 1.19,
         LWP::UserAgent      => 0,
         Time::HiRes         => 0,
-        URI                 => 1.31,
+        URI                 => 1.53,
         URI::Escape         => 0,
 
         # Optional, but required if using a config file:

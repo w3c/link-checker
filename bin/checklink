@@ -126,7 +126,7 @@ sub simple_request
     # RFC 2616, section 15.1.3
     $_[0]->remove_header("Referer")
         if ($_[0]->referer() &&
-        (secure_scheme($_[0]->referer()) && !secure_scheme($_[0]->uri())));
+        (!$_[0]->uri()->secure() && URI->new($_[0]->referer())->secure()));
 
     $response ||= do {
         local $SIG{__WARN__} =
@@ -204,13 +204,6 @@ sub ip_disallowed
     return $resp;
 }
 
-sub secure_scheme
-{
-    my $uri = shift or return 0;
-    $uri = URI->new($uri) unless ref($uri);
-    return ($uri->scheme() =~ /^(?:file|https|ldaps|sips|snews|ssh)$/i);
-}
-
 # -----------------------------------------------------------------------------
 
 package W3C::LinkChecker;
@@ -229,7 +222,7 @@ use HTTP::Headers::Util qw();
 use HTTP::Request qw();
 use HTTP::Response 1.50 qw();    # >= 1.50 for decoded_content()
 use Time::HiRes qw();
-use URI 1.31 qw();               # >= 1.31 for sip: abs/rel
+use URI 1.53 qw();               # >= 1.53 for secure()
 use URI::Escape qw();
 use URI::Heuristic qw();
 
