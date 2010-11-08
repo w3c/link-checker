@@ -42,6 +42,7 @@ package W3C::UserAgent;
 
 use LWP::RobotUA 1.19 qw();
 use LWP::UserAgent qw();
+use Net::HTTP::Methods 5.833 qw();    # >= 5.833 for 4kB cookies (#6678)
 
 # if 0, ignore robots exclusion (useful for testing)
 use constant USE_ROBOT_UA => 1;
@@ -51,14 +52,6 @@ if (USE_ROBOT_UA) {
 }
 else {
     @W3C::UserAgent::ISA = qw(LWP::UserAgent);
-}
-
-BEGIN {
-
-    # The 4k default line length in LWP <= 5.832 isn't enough for example to
-    # accommodate 4kB cookies (RFC 2985); bump it (#6678).
-    require LWP::Protocol::http;
-    push(@LWP::Protocol::http::EXTRA_SOCK_OPTS, MaxLineLength => 8 * 1024);
 }
 
 sub new
@@ -219,7 +212,8 @@ use Encode qw();
 use HTML::Entities qw();
 use HTML::Parser 3.40 qw();    # >= 3.40 for utf8_mode()
 use HTTP::Headers::Util qw();
-use HTTP::Request qw();
+use HTTP::Message 5.827 qw();    # >= 5.827 for content_charset()
+use HTTP::Request 5.814 qw();    # >= 5.814 for accept_decodable()
 use HTTP::Response 1.50 qw();    # >= 1.50 for decoded_content()
 use Time::HiRes qw();
 use URI 1.53 qw();               # >= 1.53 for secure()
@@ -239,10 +233,11 @@ use constant MP2 =>
     (exists($ENV{MOD_PERL_API_VERSION}) && $ENV{MOD_PERL_API_VERSION} >= 2);
 
 # Tag=>attribute mapping of things we treat as links.
-# Note: base/@href and meta/@http-equiv get special treatment, see start()
-# for details.
+# Note: meta/@http-equiv gets special treatment, see start() for details.
 use constant LINK_ATTRS => {
-    a          => ['href'],
+    a => ['href'],
+
+    # base/@href intentionally not checked
     area       => ['href'],
     audio      => ['src'],
     blockquote => ['cite'],
@@ -1429,10 +1424,7 @@ sub decode_content ($)
         $ct = defined($ct) ? "'$ct'" : 'undefined';
         my $request_uri = $response->request->url;
 
-        # content_charset() is available in LWP >= 5.827
-        my $cs =
-            $response->can('content_charset') ? $response->content_charset() :
-                                                undef;
+        my $cs = $response->content_charset();
         $cs = defined($cs) ? "'$cs'" : 'unknown';
         $error =
             "Error decoding document at <$request_uri>, Content-Type $ct, " .
@@ -1638,9 +1630,7 @@ sub get_uri ($$;$$\%$$$$)
     $request->header('Accept-Language' => $Opts{Accept_Language})
         if $Opts{Accept_Language};
     $request->header('Accept', $Accept);
-
-    # accept_decodable() was added in LWP 5.814
-    $request->accept_decodable() if $request->can('accept_decodable');
+    $request->accept_decodable();
 
     # Are we providing authentication info?
     if ($auth && $request->url()->host() =~ $Opts{Trusted}) {
@@ -2006,25 +1996,8 @@ sub start
 
         my $tag_local_base = undef;
 
-        # Special case: base/@href
-        # TODO: This should go away as soon as LWP::Protocol::collect() invokes
-        #       HTML::HeadParser (thus taking care of it in $response->base()
-        #       transparently) for application/xhtml+xml and
-        #       application/vnd.wap.xhtml+xml documents
-        #       --> it does in LWP >= 5.810
-        if ($tag eq 'base') {
-
-            # Treat <base> (without href) or <base href=""> as if it didn't exist.
-            if (defined($attr->{href}) && length($attr->{href})) {
-                $self->{base} = $attr->{href};
-            }
-
-            # Note: base/@href intentionally not treated as a dereferenceable link:
-            # http://www.w3.org/mid/200802091439.27764.ville.skytta%40iki.fi
-        }
-
         # Special case: meta[@http-equiv=Refresh]/@content
-        elsif ($tag eq 'meta') {
+        if ($tag eq 'meta') {
             if ($attr->{'http-equiv'} &&
                 lc($attr->{'http-equiv'}) eq 'refresh')
             {

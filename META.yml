@@ -26,6 +26,7 @@ requires:
     HTML::Parser:         3.40
     HTTP::Cookies:        0
     HTTP::Headers::Util:  0
+    HTTP::Message:        5.827
     HTTP::Request:        0
     HTTP::Response:       1.50
     I18N::Langinfo:       0
@@ -34,6 +35,7 @@ requires:
     LWP::RobotUA:         1.19
     LWP::UserAgent:       0
     Net::hostent:         0
+    Net::HTTP::Methods:   5.833
     Net::IP:              0
     Socket:               0
     Term::ReadKey:        2
