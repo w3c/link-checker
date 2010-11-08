@@ -222,6 +222,7 @@ use CSS::DOM 0.09 qw();    # >= 0.09 for many bugfixes
 use CSS::DOM::Constants qw(:rule);
 use CSS::DOM::Style qw();
 use CSS::DOM::Util qw();
+use Encode qw();
 use HTML::Entities qw();
 use HTML::Parser 3.40 qw();    # >= 3.40 for utf8_mode()
 use HTTP::Headers::Util qw();
@@ -576,6 +577,11 @@ else {
     $ua->protocols_forbidden($forbidden);
 
     my $query = CGI->new();
+
+    for my $param ($query->param()) {
+        my @values = map { Encode::decode_utf8($_) } $query->param($param);
+        $query->param($param, @values);
+    }
 
     # Set a few parameters in CGI mode
     $Opts{Verbose}   = 0;
@@ -3188,7 +3194,7 @@ sub print_form (\%$$)
     }
 
     print "<form action=\"", $Opts{_Self_URI},
-        "\" method=\"get\" onsubmit=\"return uriOk($check_num)\">
+        "\" method=\"get\" onsubmit=\"return uriOk($check_num)\" accept-charset=\"UTF-8\">
 <p><label for=\"uri_$check_num\">Enter the address (<a href=\"http://www.w3.org/Addressing/\">URL</a>)
 of a document that you would like to check:</label></p>
 <p><input type=\"text\" size=\"50\" id=\"uri_$check_num\" name=\"uri\" value=\"",

@@ -14,6 +14,7 @@ WriteMakefile(
         CSS::DOM::Constants => 0,
         CSS::DOM::Style     => 0,
         CSS::DOM::Util      => 0,
+        Encode              => 0,
         HTML::Entities      => 0,
         HTML::Parser        => "3.40",
         HTTP::Headers::Util => 0,
