@@ -28,6 +28,7 @@ requires:
     HTTP::Headers::Util:  0
     HTTP::Request:        0
     HTTP::Response:       1.50
+    I18N::Langinfo:       0
     Locale::Country:      0
     Locale::Language:     0
     LWP::RobotUA:         1.19
