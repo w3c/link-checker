@@ -678,7 +678,8 @@ else {
             }
         }
     }
-    $uri = $uri->canonical()->as_string();
+    $uri = $uri->canonical();
+    $query->param("uri", $uri);
 
     &check_uri(scalar($query->Vars()), $uri, 1, $Opts{Depth}, $cookie);
     undef $query;    # Not needed any more.
@@ -1030,14 +1031,14 @@ sub urize ($)
             $uri = URI::file->new_abs($uri) unless $uri->scheme();
         }
     }
-    return $uri->canonical()->as_string();
+    return $uri->canonical();
 }
 
 ########################################
 # Check for broken links in a resource #
 ########################################
 
-sub check_uri (\%$$$$;$$)
+sub check_uri (\%\$$$$;\$$)
 {
     my ($params, $uri, $check_num, $depth, $cookie, $referer, $is_start) = @_;
     $is_start ||= ($check_num == 1);
@@ -1088,14 +1089,13 @@ sub check_uri (\%$$$$;$$)
         }
     }
 
-    my $absolute_uri = $response->{absolute_uri}->as_string();
-
     if ($Opts{HTML}) {
         $doc_header .=
-            ("<h2>\nProcessing\t" . &show_url($absolute_uri) . "\n</h2>\n\n");
+            ("<h2>\nProcessing\t" . &show_url($response->{absolute_uri}) .
+                "\n</h2>\n\n");
     }
     else {
-        $doc_header .= "\nProcessing\t$absolute_uri\n\n";
+        $doc_header .= "\nProcessing\t$response->{absolute_uri}\n\n";
     }
 
     if (!$Opts{Quiet}) {
@@ -1158,8 +1158,8 @@ Settings used:
 EOF
             printf("<p>Go to <a href=\"#%s\">the results</a>.</p>\n",
                 $result_anchor);
-            my $esc_uri =
-                URI::Escape::uri_escape($absolute_uri, "^A-Za-z0-9.");
+            my $esc_uri = URI::Escape::uri_escape($response->{absolute_uri},
+                "^A-Za-z0-9.");
             print "<p>For reliable link checking results, check ";
 
             if (!$response->{IsCss}) {
@@ -1191,10 +1191,11 @@ EOF
     }
 
     # Record that we have processed this resource
-    $processed{$absolute_uri} = 1;
+    $processed{$response->{absolute_uri}} = 1;
 
     # Parse the document
-    my $p = &parse_document($uri, $absolute_uri, $response, 1, ($depth != 0));
+    my $p = &parse_document($uri, $response->{absolute_uri},
+        $response, 1, ($depth != 0));
     my $base = URI->new($p->{base});
 
     # Check anchors
@@ -1271,6 +1272,7 @@ EOF
     my %broken;
     my $link_num = 0;
     while (my ($u, $ulinks) = each(%links)) {
+        $u = URI->new($u);
 
         if ($Opts{Summary_Only}) {
 
@@ -1355,7 +1357,7 @@ EOF
     # Do we want to process other documents?
     if ($depth != 0) {
 
-        foreach my $u (keys %links) {
+        foreach my $u (map { URI->new($_) } keys %links) {
 
             next unless $results{$u}{location}{success};    # Broken link?
 
@@ -1437,18 +1439,18 @@ sub decode_content ($)
 # Get and parse a resource to process #
 #######################################
 
-sub get_document ($$$;\%$$$$$)
+sub get_document ($\$$;\%\$$$$$)
 {
     my ($method, $uri,    $in_recursion, $redirects, $referer,
         $cookie, $params, $check_num,    $is_start
     ) = @_;
 
     # $method contains the HTTP method the use (GET or HEAD)
-    # $uri contains the identifier of the resource
+    # $uri object contains the identifier of the resource
     # $in_recursion is > 0 if we are in recursion mode (i.e. it is at least
     #                        the second resource checked)
     # $redirects is a pointer to the hash containing the map of the redirects
-    # $referer is the URI of the referring document
+    # $referer is the URI object of the referring document
     # $cookie, $params, $check_num, and $is_start are for printing HTTP headers
     #                  and the form if $in_recursion == 0 and not authenticating
 
@@ -1528,12 +1530,12 @@ sub get_document ($$$;\%$$$$$)
 # Check whether a URI is within the scope of recursion. #
 #########################################################
 
-sub in_recursion_scope ($)
+sub in_recursion_scope (\$)
 {
     my ($uri) = @_;
     return 0 unless $uri;
 
-    my $candidate = URI->new($uri)->canonical();
+    my $candidate = $uri->canonical();
 
     return 0 if (defined($Opts{Exclude}) && $candidate =~ $Opts{Exclude});
 
@@ -1567,7 +1569,7 @@ sub is_content_type ($$)
 # Check whether a URI has already been processed #
 ##################################################
 
-sub already_processed ($$)
+sub already_processed (\$\$)
 {
     my ($uri, $referer) = @_;
 
@@ -1595,7 +1597,7 @@ sub already_processed ($$)
 # Get the content of a URI #
 ############################
 
-sub get_uri ($$;$$\%$$$$)
+sub get_uri ($\$;\$$\%$$$$)
 {
 
     # Here we have a lot of extra parameters in order not to lose information
@@ -1605,8 +1607,8 @@ sub get_uri ($$;$$\%$$$$)
     ) = @_;
 
     # $method contains the method used
-    # $uri contains the target of the request
-    # $referer is the URI of the referring document
+    # $uri object contains the target of the request
+    # $referer is the URI object of the referring document
     # $start is a timestamp (not defined the first time the function is called)
     # $redirects is a map of redirects
     # $code is the first HTTP return code
@@ -1702,7 +1704,7 @@ sub get_uri ($$;$$\%$$$$)
 # Record the results of an HTTP request #
 #########################################
 
-sub record_results ($$$)
+sub record_results (\$$$)
 {
     my ($uri, $method, $response) = @_;
     $results{$uri}{response}       = $response;
@@ -1776,7 +1778,7 @@ sub record_results ($$$)
 # Parse a document #
 ####################
 
-sub parse_document ($$$$$)
+sub parse_document (\$\$$$$)
 {
     my ($uri, $base_uri, $response, $links, $rec_needs_links) = @_;
 
@@ -1976,6 +1978,7 @@ sub add_link
         # Remove repeated slashes after the . or .. in relative links, to avoid
         # duplicated checking or infinite recursion.
         $uri =~ s|^(\.\.?/)/+|$1|o;
+        $uri = Encode::decode_utf8($uri);
         $uri = URI->new_abs($uri, $base) if defined($base);
         $self->{Links}{$uri}{defined($line) ? $line : LINE_UNKNOWN()}++;
     }
@@ -2151,12 +2154,12 @@ sub end_document
 # Check the validity of a link #
 ################################
 
-sub check_validity ($$$\%\%)
+sub check_validity (\$\$$\%\%)
 {
     my ($referer, $uri, $want_links, $links, $redirects) = @_;
 
-    # $referer is the URI of the document checked
-    # $uri is the URI of the target that we are verifying
+    # $referer is the URI object of the document checked
+    # $uri is the URI object of the target that we are verifying
     # $want_links is true if we're interested in links in the target doc
     # $links is a hash of the links in the documents checked
     # $redirects is a map of the redirects encountered
