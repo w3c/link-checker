@@ -3063,17 +3063,10 @@ sub bgcolor ($)
     return (' class="' . $class . '"');
 }
 
-sub show_url ($;$)
+sub show_url ($)
 {
-    my ($url, $fragment) = @_;
-    if (defined($fragment)) {
-        my $u = URI->new($url);
-        $u->fragment($fragment);
-        $url = $u->as_string();
-    }
-    $url = &encode($url);
-    return sprintf('<a href="%s">%s</a>',
-        $url, defined($fragment) ? &encode($fragment) : $url);
+    my ($url) = @_;
+    return sprintf('<a href="%s">%s</a>', (&encode($url)) x 2);
 }
 
 sub html_footer ()
