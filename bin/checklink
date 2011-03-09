@@ -242,6 +242,7 @@ use constant LINK_ATTRS => {
     audio      => ['src'],
     blockquote => ['cite'],
     body       => ['background'],
+    command    => ['icon'],
 
     # button/@formaction not checked (side effects)
     del => ['cite'],
@@ -252,6 +253,7 @@ use constant LINK_ATTRS => {
     # form/@action not checked (side effects)
     frame  => ['longdesc', 'src'],
     iframe => ['longdesc', 'src'],
+    html   => ['manifest'],
     img    => ['longdesc', 'src'],
     ins    => ['cite'],
 
@@ -262,7 +264,8 @@ use constant LINK_ATTRS => {
     q      => ['cite'],
     script => ['src'],
     source => ['src'],
-    video  => ['src'],
+    track  => ['src'],
+    video  => ['src', 'poster'],
 };
 
 # Tag=>attribute mapping of things we treat as space separated lists of links.
