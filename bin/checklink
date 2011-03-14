@@ -252,13 +252,13 @@ use constant LINK_ATTRS => {
 
     # form/@action not checked (side effects)
     frame  => ['longdesc', 'src'],
-    iframe => ['longdesc', 'src'],
     html   => ['manifest'],
+    iframe => ['longdesc', 'src'],
     img    => ['longdesc', 'src'],
-    ins    => ['cite'],
 
     # input/@action, input/@formaction not checked (side effects)
     input  => ['src'],
+    ins    => ['cite'],
     link   => ['href'],
     object => ['data'],
     q      => ['cite'],
