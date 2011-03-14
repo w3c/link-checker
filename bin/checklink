@@ -697,11 +697,8 @@ else {
 
 sub parse_arguments ()
 {
-    eval {
-        require I18N::Langinfo;
-        my $encoding = I18N::Langinfo::langinfo(I18N::Langinfo::CODESET());
-        @ARGV = map { Encode::decode($encoding, $_) } @ARGV;
-    };
+    require Encode::Locale;
+    Encode::Locale::decode_argv();
 
     require Getopt::Long;
     Getopt::Long->require_version(2.17);

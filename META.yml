@@ -20,6 +20,7 @@ requires:
     CSS::DOM::Style:      0
     CSS::DOM::Util:       0
     Encode:               0
+    Encode::Locale:       0
     File::Spec:           0
     Getopt::Long:         2.17
     HTML::Entities:       0
@@ -29,7 +30,6 @@ requires:
     HTTP::Message:        5.827
     HTTP::Request:        0
     HTTP::Response:       1.50
-    I18N::Langinfo:       0
     Locale::Country:      0
     Locale::Language:     0
     LWP::RobotUA:         1.19

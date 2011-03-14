@@ -50,7 +50,7 @@ WriteMakefile(
         Locale::Language => 0,
 
         # Optional, used when decoding arguments in command line mode:
-        I18N::Langinfo => 0,
+        Encode::Locale => 0,
 
         # Optional, but required in CGI mode:
         CGI         => 0,
