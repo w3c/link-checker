@@ -1,5 +1,5 @@
 This file contains message digests of all files listed in MANIFEST,
-signed via the Module::Signature module, version 0.63.
+signed via the Module::Signature module, version 0.64.
 
 To verify the content in this distribution, first make sure you have
 Module::Signature installed, then type:
@@ -14,18 +14,16 @@ not run its Makefile.PL or Build.PL.
 -----BEGIN PGP SIGNED MESSAGE-----
 Hash: SHA1
 
-SHA1 342ef250457963b2387424eeae6d4a368359686b ChangeLog
-SHA1 bcb07f9feaa907ee1f23e760591f8d6151acc2d8 ChangeLog.old
-SHA1 eea148ae65efe50bbd6e0b926c67ed0888a6f866 MANIFEST
-SHA1 bf6b9ed89b76c0e55fe9d6394fe7f975186f9098 META.yml
-SHA1 fca65e1736b320bcf3d18a33dd98f5c0358c7409 Makefile.PL
-SHA1 6ef54ee63e07d59694301bd7e839abf54cf1b7a0 NEWS
-SHA1 1ae320e904ee0033dd169132a7c8d47a70981183 README
-SHA1 f295bd4d49f187a2fba6267d4daa86c6b7cbf29f bin/checklink
-SHA1 5a1a21ac2e1561ae5795e2f797d23634841a635c bin/checklink.pod
-SHA1 e056cb350baaeaaf7168d104cc74f19ee0ac1309 docs/checklink.html
-SHA1 b976d4bf5f24873baaf49d4b70c20ee7b554d1e8 docs/linkchecker.css
-SHA1 2bfde7a0549f7128d74fea2346aca614c0cee31a etc/checklink.conf
+SHA1 be94f7305b57b86945ffac2e855cd9c687d829ec MANIFEST
+SHA1 838d23b4a1e435126c9ee820fdd51f7f0baa43ca META.yml
+SHA1 ab9150095a45776c2020e5781d19054c7018da8b Makefile.PL
+SHA1 66a454333dfdb1ab49d1846d583aba735ed35ab7 NEWS
+SHA1 f1f868ea73db7d39ab491ebb50c84de76cce4b44 README
+SHA1 4e5c0c858e53971eb11d4621cc36720617242f6c bin/checklink
+SHA1 07cc637f007a0d57868a9f1105d4e9b7c6c8da5d bin/checklink.pod
+SHA1 b188063249c820f0aa5a34b5f735e8f334a536e1 docs/checklink.html
+SHA1 fa101fed018fc8e41beca63a0a667fb94c10a557 docs/linkchecker.css
+SHA1 94659a6cba9d947859df23d202aa4c411e2c488b etc/checklink.conf
 SHA1 87c74944dbc80b5d6ab8aac1d09419607b15efff etc/perltidyrc
 SHA1 bcb7896bee3764f85a03ab14495efc233f70e215 images/double.png
 SHA1 ff9a7be7fee245dd81a7dc4124544d692a140119 images/grad.png
@@ -35,20 +33,20 @@ SHA1 11243aa6b3463dd8d6a9b2e69027e42a1d9480ab images/info_icons/README
 SHA1 a54abf3d12f207b81e19ea8ce783d37c6200cf40 images/info_icons/error.png
 SHA1 3fd2638079cd0698655614a5a5afc97a976a4af4 images/info_icons/info.png
 SHA1 552c52188188f560dc02a03200164de3045ac3f4 images/info_icons/warning.png
-SHA1 2e90d6266025a7103bed90689fb6c5469bf2c3b3 images/no_w3c.png
+SHA1 1631ed7d5b20c2c036e61225854134f0674cb10a images/no_w3c.png
 SHA1 401b5fba02d0d8484775a4a77503fa0d136b96ce images/round-br.png
 SHA1 9eb1ee6188391715284a3db080e6e92d163864d9 images/round-tr.png
 SHA1 cc01bd358bc1d6d42ca350ad0a4a42778ca4440e images/textbg.png
-SHA1 a3a3f91e9e1ef54bf8200d78df9f299f79fa384c lib/W3C/LinkChecker.pm
+SHA1 307f3bef10b817772b619a97b23a711fd06fd3e8 lib/W3C/LinkChecker.pm
 SHA1 962ba9fff082c4087239b55618ada2a8f1564464 t/00compile.t
 -----BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.14 (GNU/Linux)
+Version: GnuPG v1.4.11 (GNU/Linux)
 
-iQEVAwUBS9C7mod580Rxl2NsAQILtQgAxR9QTKHDmAaImyMnQKJtB9XDYezYO05U
-ukfDE4i3C3fdKELVjTKUXsfn0Jq7Y92/wEXF8qwBV2OV+SMbVlVwft1HY/u82ESk
-D5E5G6cY7UVH7rDc/YRV3JE2vQ1KcBNv2yJZ9VkGYO/ytMFZ1dFt4A3fDtJKCnho
-GiaWDRbASKJ6TR3nbG/xEY75VrOddy9I+7H8SRdWad1Wr4I4PCurl9lRlWcxfadU
-wWjz+1YWfoNTanT/dPVIHw2C84NH+or19mmC0Ddlzk5jbZCmiMqtMlrlxjTcqRcY
-H9RxQPp51Rct6r3TziUiAndgLoJyQGm0B2onE070GaU9dR6IHBBL+A==
-=eEhn
+iQEVAwUBTYJfUod580Rxl2NsAQKW6Af/XVf0TroCS1AuV7y9gEqWLGFxEfqY19WF
+f44SU3dwuawr2NMSOPBCcdpThfPrteVMBXjZYTXS7kqZnWcQ2chwTPknYX6g6zrX
+L5mmXNxx7CuYG/1CO1h0+deZ231Z+/R/0uKYDOsL9FsdhTrAJ7qyP3tJyfNECZie
+0g+t+xtYRhXbMUw1LFSB+81szZv1XXZVRnKhLWP54kwBVbebt4/XmsMCYtdCDzPK
+2IU4NSssB/rNxykbNTT8EqPYT8ecXeNG7YqNZkdcGimKzfzsYxdcZnIo6WLGP6Yg
+sTon4mKVsIpeGwYYf4uAprc1Jqf+g+EOhUOP7XWOf6sWQkFrmYR6zQ==
+=APVv
 -----END PGP SIGNATURE-----
