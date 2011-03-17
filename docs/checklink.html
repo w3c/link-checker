@@ -10,7 +10,7 @@
 
   <body>
 	<div id="banner"><h1 id="title"><a href="http://www.w3.org/" title="W3C"><img alt="W3C" id="logo" src="../images/no_w3c.png" width="110" height="61" /></a>
-	<a href="checklink"><span>Link Checker</span></a></h1>
+	<a href="../checklink"><span>Link Checker</span></a></h1>
 	<p id="tagline">Check links and anchors in Web pages or full Web sites</p></div>
     <div id="main">
     <ul>
@@ -45,9 +45,8 @@
       <a href="http://search.cpan.org/dist/W3C-LinkChecker/"><abbr
       title="Comprehensive Perl Archive Network">CPAN</abbr></a> (released
       versions) and a
-      <a href="http://dvcs.w3.org/hg/">Mercurial repository</a>
-      (development and archived release versions; see the
-      <code>link-checker</code> entry there).
+      <a href="http://dvcs.w3.org/hg/link-checker/">Mercurial repository</a>
+      (development and archived release versions).
     </p>
 
     <h2><a name="what" id="what">What it does</a></h2>
@@ -247,7 +246,8 @@
 
     <p>
       The link checker honors
-      <a href="http://www.robotstxt.org/wc/exclusion.html#robotstxt">robots exclusion rules</a>.  To place rules specific to the W3C Link Checker in
+      <a href="http://www.robotstxt.org/robotstxt.html">robots exclusion
+        rules</a>.  To place rules specific to the W3C Link Checker in
       <code>/robots.txt</code> files, sites can use the
       <code>W3C-checklink</code> user agent string.  For example, to allow
       the link checker to access all documents on a server and to disallow
@@ -266,7 +266,7 @@ Disallow:
       Robots exlusion support in the link checker is based on the
       <a href="http://search.cpan.org/dist/libwww-perl/lib/LWP/RobotUA.pm">LWP::RobotUA</a>
       Perl module.  It currently supports the
-      "<a href="http://www.robotstxt.org/wc/norobots.html">original 1994 version</a>"
+      "<a href="http://www.robotstxt.org/orig.html">original 1994 version</a>"
       of the standard.  The robots META tag, ie.
       <code>&lt;meta name="robots" content="..."&gt;</code>, is not supported.
       Other than that, the link checker's implementation goes all the way
@@ -330,7 +330,7 @@ Disallow:
     <p class="copyright">
       <a rel="Copyright" href="http://www.w3.org/Consortium/Legal/ipr-notice#Copyright">Copyright</a> &copy; 1994-2011
       <a href="http://www.w3.org/"><acronym title="World Wide Web Consortium">W3C</acronym></a>&reg;
-      (<a href="http://www.lcs.mit.edu/"><acronym title="Massachusetts Institute of Technology">MIT</acronym></a>,
+      (<a href="http://www.csail.mit.edu/"><acronym title="Massachusetts Institute of Technology">MIT</acronym></a>,
       <a href="http://www.ercim.eu/"><acronym title="European Research Consortium for Informatics and Mathematics">ERCIM</acronym></a>,
       <a href="http://www.keio.ac.jp/">Keio</a>),
       All Rights Reserved.

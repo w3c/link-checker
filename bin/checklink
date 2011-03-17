@@ -11,8 +11,8 @@
 # The documentation is at:
 #       http://validator.w3.org/docs/checklink.html
 #
-# See the Mercurial interface (the link-checker entry) at:
-#       http://dvcs.w3.org/hg/
+# See the Mercurial interface at:
+#       http://dvcs.w3.org/hg/link-checker/
 #
 # An online version is available at:
 #       http://validator.w3.org/checklink
@@ -2767,7 +2767,7 @@ sub links_summary (\%\%\%\%)
         RC_ROBOTS_TXT() => sprintf(
             'The link was not checked due to %srobots exclusion rules%s. Check the link manually, and see also the link checker %sdocumentation on robots exclusion%s.',
             $Opts{HTML} ? (
-                '<a href="http://www.robotstxt.org/wc/exclusion.html#robotstxt">',
+                '<a href="http://www.robotstxt.org/robotstxt.html">',
                 '</a>',
                 "<a href=\"$Cfg{Doc_URI}#bot\">",
                 '</a>'
