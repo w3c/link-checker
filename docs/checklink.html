@@ -196,9 +196,9 @@
 
     <p>
       In online mode, link checker's output should not be buffered to avoid
-      browser timeouts.	 The link checker itself does not buffer its output,
+      browser timeouts.  The link checker itself does not buffer its output,
       but in some cases output buffering needs to be explicitly disabled for
-      it in the web server running it.	One such case is Apache's mod_deflate
+      it in the web server running it.  One such case is Apache's mod_deflate
       compression module which as a side effect results in output buffering;
       one way to disable it for the link checker (while leaving it enabled for
       other resources if configured so elsewhere) is to add the following
@@ -220,7 +220,7 @@
 
     <p>
       The link checker honors proxy settings from the
-      <code><em>scheme</em>_proxy</code> environment variables.	 See
+      <code><em>scheme</em>_proxy</code> environment variables.  See
       <a href="http://search.cpan.org/dist/libwww-perl/lib/LWP.pm#ENVIRONMENT">LWP(3)</a> and
       <a href="http://search.cpan.org/dist/libwww-perl/lib/LWP/UserAgent.pm#%24ua-%3Eenv_proxy">LWP::UserAgent(3)'s
 	<code>env_proxy</code></a> method for more information.
@@ -267,7 +267,7 @@ Disallow:
       <a href="http://search.cpan.org/dist/libwww-perl/lib/LWP/RobotUA.pm">LWP::RobotUA</a>
       Perl module.  It currently supports the
       "<a href="http://www.robotstxt.org/wc/norobots.html">original 1994 version</a>"
-      of the standard.	The robots META tag, ie.
+      of the standard.  The robots META tag, ie.
       <code>&lt;meta name="robots" content="..."&gt;</code>, is not supported.
       Other than that, the link checker's implementation goes all the way
       in trying to honor robots exclusion rules; if a
@@ -309,7 +309,7 @@ Disallow:
       If a link checker run in "summary only" mode takes a long time, some
       user agents may stop loading the results page due to a timeout.  We
       have placed workarounds hoping to avoid this in the code, but have not
-      yet found one that would work reliably for all browsers.	If you
+      yet found one that would work reliably for all browsers.  If you
       experience these timeouts, try avoiding "summary only" mode, or try
       using the link checker with another browser.
     </p>
