@@ -1,6 +1,14 @@
 This document contains information about high level changes between
 Link Checker releases.
 
+Version 4.7
+- Support for IRI.
+- Support for more HTML5 links.
+- Decode query string parameters as UTF-8.
+- Decode command line arguments according to locale.
+- New dependencies: Encode-Locale (command line mode only).
+- Updated dependencies: libwww-perl >= 5.833, URI >= 1.53.
+
 Version 4.6
 - Support for checking links in CSS.
 - Results UI improvements, added "progress bar".

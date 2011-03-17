@@ -1,6 +1,6 @@
 --- #YAML:1.0
 name:               W3C-LinkChecker
-version:            4.6
+version:            4.7
 abstract:           W3C Link Checker
 author:
     - W3C QA-dev Team <public-qa-dev@w3.org>
@@ -54,7 +54,7 @@ no_index:
     directory:
         - t
         - inc
-generated_by:       ExtUtils::MakeMaker version 6.55_02
+generated_by:       ExtUtils::MakeMaker version 6.56
 meta-spec:
     url:      http://module-build.sourceforge.net/META-spec-v1.4.html
     version:  1.4
