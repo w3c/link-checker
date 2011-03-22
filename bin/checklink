@@ -1463,7 +1463,7 @@ sub get_document ($\$$;\%\$$$$$)
     }
     else {
         $response = &get_uri($method, $uri, $referer);
-        &record_results($uri, $method, $response);
+        &record_results($uri, $method, $response, $referer);
         &record_redirects($redirects, $response);
     }
     if (!$response->is_success()) {
@@ -1704,9 +1704,10 @@ sub get_uri ($\$;\$$\%$$$$)
 # Record the results of an HTTP request #
 #########################################
 
-sub record_results (\$$$)
+sub record_results (\$$$$)
 {
-    my ($uri, $method, $response) = @_;
+    my ($uri, $method, $response, $referer) = @_;
+    $results{$uri}{referer}        = $referer;
     $results{$uri}{response}       = $response;
     $results{$uri}{method}         = $method;
     $results{$uri}{location}{code} = $response->code();
@@ -2179,10 +2180,14 @@ sub check_validity (\$\$$\%\%)
         $response = &get_uri($method, $uri, $referer);
 
         # Get the information back from get_uri()
-        &record_results($uri, $method, $response);
+        &record_results($uri, $method, $response, $referer);
 
         # Record the redirects
         &record_redirects($redirects, $response);
+    }
+    elsif (!($Opts{Summary_Only} || (!$doc_count && $Opts{HTML}))) {
+        my $ref = $results{$uri}{referer};
+        &hprintf("Already checked%s\n", $ref ? ", referrer $ref" : ".");
     }
 
     # We got the response of the HTTP request. Stop here if it was a HEAD.
