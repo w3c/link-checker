@@ -573,7 +573,7 @@ else {
     $uri = $query->param('uri');
 
     if (!$uri) {
-        &html_header('', 1);    # Set cookie only from results page.
+        &html_header('', undef);    # Set cookie only from results page.
         my %cookies = CGI::Cookie->fetch();
         &print_form(scalar($query->Vars()), $cookies{$PROGRAM}, 1);
         &html_footer();
@@ -1039,7 +1039,7 @@ sub check_uri (\%\$$$$;\$$)
     return if defined($response->{Stop});
 
     if ($Opts{HTML}) {
-        &html_header($uri, 0, $cookie) if ($check_num == 1);
+        &html_header($uri, $cookie) if ($check_num == 1);
         &print_form($params, $cookie, $check_num) if $is_start;
     }
 
@@ -1460,7 +1460,7 @@ sub get_document ($\$$;\%\$$$$$)
             }
             else {
                 if ($Opts{HTML}) {
-                    &html_header($uri, 0, $cookie) if ($check_num == 1);
+                    &html_header($uri, $cookie) if ($check_num == 1);
                     &print_form($params, $cookie, $check_num) if $is_start;
                     print "<p>", &status_icon($response->code());
                 }
@@ -1494,7 +1494,7 @@ sub get_document ($\$$;\%\$$$$$)
         # No, there is a problem...
         if (!$in_recursion) {
             if ($Opts{HTML}) {
-                &html_header($uri, 0, $cookie) if ($check_num == 1);
+                &html_header($uri, $cookie) if ($check_num == 1);
                 &print_form($params, $cookie, $check_num) if $is_start;
                 print "<p>", &status_icon(406);
 
@@ -2920,16 +2920,16 @@ sub global_stats ()
 # HTML interface #
 ##################
 
-sub html_header ($;$$)
+sub html_header ($$)
 {
-    my ($uri, $doform, $cookie) = @_;
+    my ($uri, $cookie) = @_;
 
     my $title = defined($uri) ? $uri : '';
     $title = ': ' . $title if ($title =~ /\S/);
 
     my $headers = '';
     if (!$Opts{Command_Line}) {
-        $headers .= "Cache-Control: no-cache\nPragma: no-cache\n" if $doform;
+        $headers .= "Cache-Control: no-cache\nPragma: no-cache\n" if $uri;
         $headers .= "Content-Type: text/html; charset=utf-8\n";
         $headers .= "Set-Cookie: $cookie\n"                       if $cookie;
 
@@ -2938,11 +2938,8 @@ sub html_header ($;$$)
         $headers .= "Content-Language: en\n\n";
     }
 
-    my $onload = '';
-    if ($doform) {
-        $onload =
-            ' onload="if(document.getElementById){document.getElementById(\'uri_1\').focus()}"';
-    }
+    my $onload = $uri ? '' :
+          ' onload="if(document.getElementById){document.getElementById(\'uri_1\').focus()}"';
 
     print $headers, $DocType, "
 <html lang=\"en\" xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\">
