@@ -388,7 +388,7 @@ function show_progress(progress_id, progress_text, progress_percentage)
 EOF
 
     # Trusted environment variables that need laundering in taint mode.
-    foreach (qw(NNTPSERVER NEWSHOST)) {
+    for (qw(NNTPSERVER NEWSHOST)) {
         ($ENV{$_}) = ($ENV{$_} =~ /^(.*)$/) if $ENV{$_};
     }
 
@@ -533,7 +533,7 @@ if ($Opts{Command_Line}) {
 
     my $check_num = 1;
     my @bases     = @{$Opts{Base_Locations}};
-    foreach my $uri (@ARGV) {
+    for my $uri (@ARGV) {
 
         # Reset base locations so that previous URI's given on the command line
         # won't affect the recursion scope for this URI (see check_uri())
@@ -550,7 +550,7 @@ if ($Opts{Command_Line}) {
     if ($Opts{HTML}) {
         &html_footer();
     }
-    elsif (($doc_count > 0) && !$Opts{Summary_Only}) {
+    elsif ($doc_count > 0 && !$Opts{Summary_Only}) {
         printf("\n%s\n", &global_stats());
     }
 
@@ -1247,7 +1247,7 @@ EOF
         my $canon_uri = URI->new($abs_link_uri->canonical());
         my $fragment  = $canon_uri->fragment(undef);
         if (!defined($Opts{Exclude}) || $canon_uri !~ $Opts{Exclude}) {
-            foreach my $line_num (keys(%$lines)) {
+            for my $line_num (keys(%$lines)) {
                 if (!defined($fragment) || !length($fragment)) {
 
                     # Document without fragment
@@ -1330,7 +1330,7 @@ EOF
             $broken{$u}{location} = 1;
 
             # All the fragments associated are hence broken
-            foreach my $fragment (keys %{$ulinks->{fragments}}) {
+            for my $fragment (keys %{$ulinks->{fragments}}) {
                 $broken{$u}{fragments}{$fragment}++;
             }
         }
@@ -1357,7 +1357,7 @@ EOF
     # Do we want to process other documents?
     if ($depth != 0) {
 
-        foreach my $u (map { URI->new($_) } keys %links) {
+        for my $u (map { URI->new($_) } keys %links) {
 
             next unless $results{$u}{location}{success};    # Broken link?
 
@@ -1457,7 +1457,7 @@ sub get_document ($\$$;\%\$$$$$)
     # Get the resource
     my $response;
     if (defined($results{$uri}{response}) &&
-        !(($method eq 'GET') && ($results{$uri}{method} eq 'HEAD')))
+        !($method eq 'GET' && $results{$uri}{method} eq 'HEAD'))
     {
         $response = $results{$uri}{response};
     }
@@ -1543,7 +1543,7 @@ sub in_recursion_scope (\$)
         return 0 if ($candidate =~ $excluded_doc);
     }
 
-    foreach my $base (@{$Opts{Base_Locations}}) {
+    for my $base (@{$Opts{Base_Locations}}) {
         my $rel = $candidate->rel($base);
         next if ($candidate eq $rel);    # Relative path not possible?
         next if ($rel =~ m|^(\.\.)?/|);  # Relative path upwards?
@@ -1754,8 +1754,8 @@ sub record_results (\$$$$)
 
     # What type of broken link is it? (stored in {record} - the {display}
     #              information is just for visual use only)
-    if (($results{$uri}{location}{display} == 401) &&
-        ($results{$uri}{location}{code} == 404))
+    if ($results{$uri}{location}{display} == 401 &&
+        $results{$uri}{location}{code} == 404)
     {
         $results{$uri}{location}{record} = 404;
     }
@@ -2110,9 +2110,9 @@ sub declaration
 
     # Extract the doctype
     my @declaration = split(/\s+/, $text, 4);
-    if (($#declaration >= 3) &&
-        ($declaration[0] eq 'DOCTYPE') &&
-        (lc($declaration[1]) eq 'html'))
+    if ($#declaration >= 3 &&
+        $declaration[0] eq 'DOCTYPE' &&
+        lc($declaration[1]) eq 'html')
     {
 
         # Parse the doctype declaration
@@ -2168,13 +2168,13 @@ sub check_validity (\$\$$\%\%)
     # Get the document with the appropriate method
     # Only use GET if there are fragments. HEAD is enough if it's not the
     # case.
-    my @fragments = keys %{$links->{$uri}{fragments}};
-    my $method = scalar(@fragments) ? 'GET' : 'HEAD';
+    my $fragments = $links->{$uri}{fragments} || {};
+    my $method = scalar(%$fragments) ? 'GET' : 'HEAD';
 
     my $response;
     my $being_processed = 0;
-    if ((!defined($results{$uri})) ||
-        (($method eq 'GET') && ($results{$uri}{method} eq 'HEAD')))
+    if (!defined($results{$uri}) ||
+        ($method eq 'GET' && $results{$uri}{method} eq 'HEAD'))
     {
         $being_processed = 1;
         $response = &get_uri($method, $uri, $referer);
@@ -2225,7 +2225,7 @@ sub check_validity (\$\$$\%\%)
     }
 
     # Check that the fragments exist
-    foreach my $fragment (keys %{$links->{$uri}{fragments}}) {
+    for my $fragment (keys %$fragments) {
         if (defined($p->{Anchors}{$fragment}) ||
             &escape_match($fragment, $p->{Anchors}) ||
             grep { $_ eq "$uri#$fragment" } @{$Opts{Suppress_Fragment}})
@@ -2242,7 +2242,7 @@ sub check_validity (\$\$$\%\%)
 sub escape_match ($\%)
 {
     my ($a, $hash) = (URI::Escape::uri_unescape($_[0]), $_[1]);
-    foreach my $b (keys %$hash) {
+    for my $b (keys %$hash) {
         return 1 if ($a eq URI::Escape::uri_unescape($b));
     }
     return 0;
@@ -2472,7 +2472,7 @@ sub anchors_summary (\%\%)
 EOF
     print("\n");
 
-    foreach my $anchor (@errors) {
+    for my $anchor (@errors) {
         my $format;
         my @unique = &sort_unique(
             map { line_number($_) }
@@ -2504,7 +2504,7 @@ sub show_link_report (\%\%\%\%\@;$\%)
 
     # Process each URL
     my ($c, $previous_c);
-    foreach my $u (@$urls) {
+    for my $u (@$urls) {
         my @fragments = keys %{$broken->{$u}{fragments}};
 
         # Did we get a redirect?
@@ -2513,7 +2513,7 @@ sub show_link_report (\%\%\%\%\@;$\%)
         # List of lines
         my @total_lines;
         push(@total_lines, keys(%{$links->{$u}{location}}));
-        foreach my $f (@fragments) {
+        for my $f (@fragments) {
             push(@total_lines, keys(%{$links->{$u}{fragments}{$f}}))
                 unless ($f eq $u && defined($links->{$u}{$u}{LINE_UNKNOWN()}));
         }
@@ -2692,7 +2692,7 @@ on how to solve this</a>.';
         }
 
         # Fragments
-        foreach my $f (@fragments) {
+        for my $f (@fragments) {
             my @unique_lines =
                 &sort_unique(keys %{$links->{$u}{fragments}{$f}});
             my $plural = (scalar(@unique_lines) > 1) ? 's' : '';
@@ -2772,10 +2772,8 @@ sub links_summary (\%\%\%\%)
         RC_ROBOTS_TXT() => sprintf(
             'The link was not checked due to %srobots exclusion rules%s. Check the link manually, and see also the link checker %sdocumentation on robots exclusion%s.',
             $Opts{HTML} ? (
-                '<a href="http://www.robotstxt.org/robotstxt.html">',
-                '</a>',
-                "<a href=\"$Cfg{Doc_URI}#bot\">",
-                '</a>'
+                '<a href="http://www.robotstxt.org/robotstxt.html">', '</a>',
+                "<a href=\"$Cfg{Doc_URI}#bot\">",                     '</a>'
                 ) : ('') x 4
         ),
         RC_DNS_ERROR() =>
@@ -2845,7 +2843,7 @@ sub links_summary (\%\%\%\%)
         # Sort the URI's by HTTP Code
         my %code_summary;
         my @idx;
-        foreach my $u (@urls) {
+        for my $u (@urls) {
             if (defined($results->{$u}{location}{record})) {
                 my $c = &code_shown($u, $results);
                 $code_summary{$c}++;
@@ -2883,7 +2881,7 @@ issues and suggested actions by HTTP response status code.</em></p>
 </thead>
 <tbody>
 EOF
-            foreach my $code (sort(keys(%code_summary))) {
+            for my $code (sort(keys(%code_summary))) {
                 printf('<tr%s>', &bgcolor($code));
                 printf('<td><a href="#d%scode_%s">%s</a></td>',
                     $doc_count, $code, http_rc($code));
