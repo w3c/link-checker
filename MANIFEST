@@ -9,7 +9,8 @@ bin/checklink.pod       Manual page for the link checker
 etc/checklink.conf      Optional configuration file
 etc/perltidyrc          perltidy(1) profile
 docs/checklink.html     Additional documentation
-docs/linkchecker.css    Cascading style sheet for the documentation
+docs/linkchecker.css    Cascading style sheet used in docs and generated HTML
+docs/linkchecker.js     JavaScript used in the generated HTML
 images/double.png
 images/grad.png
 images/head-bl.png

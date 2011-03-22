@@ -234,12 +234,11 @@ checker results view in the online/CGI version.  The defaults are:
    CSS_Validator_URI =
      http://jigsaw.w3.org/css-validator/validator?uri=%s
 
-C<Doc_URI> and C<Style_URI> are URIs used for linking to the documentation
-and style sheet from the dynamically generated content of the link checker.
-The defaults are:
+C<Doc_URI> is a URI used for linking to the documentation, and CSS and
+JavaScript files in the dynamically generated content of the link checker.
+The default is:
 
    Doc_URI = http://validator.w3.org/docs/checklink.html
-   Style_URI = http://validator.w3.org/docs/linkchecker.css
 
 =back
 
