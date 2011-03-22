@@ -2165,11 +2165,10 @@ sub check_validity (\$\$$\%\%)
     # $links is a hash of the links in the documents checked
     # $redirects is a map of the redirects encountered
 
-    # Get the document with the appropriate method
-    # Only use GET if there are fragments. HEAD is enough if it's not the
-    # case.
+    # Get the document with the appropriate method: GET if there are
+    # fragments to check or links are wanted, HEAD is enough otherwise.
     my $fragments = $links->{$uri}{fragments} || {};
-    my $method = scalar(%$fragments) ? 'GET' : 'HEAD';
+    my $method = ($want_links || %$fragments) ? 'GET' : 'HEAD';
 
     my $response;
     my $being_processed = 0;
