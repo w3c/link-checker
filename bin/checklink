@@ -401,6 +401,7 @@ my %Opts = (
     Hide_Same_Realm => 0,
     Depth                    => 0,             # < 0 means unlimited recursion.
     Sleep_Time               => 1,
+    Connection_Cache_Size    => 2,
     Max_Documents            => 150,           # For the online version.
     User                     => undef,
     Password                 => undef,
@@ -446,8 +447,7 @@ my $doc_header;
 
 my $ua = W3C::UserAgent->new($AGENT);    # @@@ TODO: admin address
 
-# @@@ make number of keep-alive connections customizable
-$ua->conn_cache({total_capacity => 1});    # 1 keep-alive connection
+$ua->conn_cache({total_capacity => $Opts{Connection_Cache_Size}});
 if ($ua->can('delay')) {
     $ua->delay($Opts{Sleep_Time} / 60);
 }
@@ -721,6 +721,7 @@ sub parse_arguments ()
         'u|user=s'                    => \$Opts{User},
         'p|password=s'                => \$Opts{Password},
         't|timeout=i'                 => \$Opts{Timeout},
+        'C|connection-cache=i'        => \$Opts{Connection_Cache_Size},
         'S|sleep=i'                   => \$Opts{Sleep_Time},
         'L|languages=s'               => \$Opts{Accept_Language},
         'c|cookies=s'                 => \$Opts{Cookies},

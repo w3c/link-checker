@@ -160,6 +160,12 @@ Defaults to 1 second, which is also the minimum allowed.
 
 Timeout for requests, in seconds.  The default is 30.
 
+=item B<-C, --connection-cache> I<number>
+
+Maximum number of cached connections.  Using this option overrides the
+C<Connection_Cache_Size> configuration file parameter, see its
+documentation below for the default value and more information.
+
 =item B<-d, --domain> I<domain>
 
 Perl regular expression describing the domain to which the authentication
@@ -239,6 +245,12 @@ JavaScript files in the dynamically generated content of the link checker.
 The default is:
 
    Doc_URI = http://validator.w3.org/docs/checklink.html
+
+C<Connection_Cache_Size> is an integer denoting the maximum number of
+connections the link checker will keep open at any given time.  The
+default is:
+
+   Connection_Cache_Size = 2
 
 =back
 
