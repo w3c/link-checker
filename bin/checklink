@@ -1212,6 +1212,7 @@ EOF
         scalar(keys %{$p->{Links}}))
         if ($Opts{Verbose});
     my %links;
+    my %hostlinks;
 
     # Record all the links found
     while (my ($link, $lines) = each(%{$p->{Links}})) {
@@ -1232,6 +1233,9 @@ EOF
         my $canon_uri = URI->new($abs_link_uri->canonical());
         my $fragment  = $canon_uri->fragment(undef);
         if (!defined($Opts{Exclude}) || $canon_uri !~ $Opts{Exclude}) {
+            my $hostport =
+                $canon_uri->can('host_port') ? $canon_uri->host_port() : '';
+            push(@{$hostlinks{$hostport}}, $canon_uri);
             for my $line_num (keys(%$lines)) {
                 if (!defined($fragment) || !length($fragment)) {
 
@@ -1247,17 +1251,20 @@ EOF
         }
     }
 
+    my @order = &distribute_links(\%hostlinks);
+    undef %hostlinks;
+
     # Build the list of broken URI's
 
-    my $nlinks = scalar(keys(%links));
+    my $nlinks = scalar(@order);
 
     &hprintf("Checking %d links to build list of broken URI's\n", $nlinks)
         if ($Opts{Verbose});
 
     my %broken;
     my $link_num = 0;
-    while (my ($u, $ulinks) = each(%links)) {
-        $u = URI->new($u);
+    for my $u (@order) {
+        my $ulinks = $links{$u};
 
         if ($Opts{Summary_Only}) {
 
@@ -1385,6 +1392,42 @@ EOF
         }
     }
     return;
+}
+
+###############################################################
+# Distribute links based on host:port to avoid RobotUA delays #
+###############################################################
+
+sub distribute_links(\%)
+{
+    my $hostlinks = shift;
+
+    # Hosts ordered by weight (number of links), descending
+    my @order =
+        sort { scalar(@{$hostlinks->{$b}}) <=> scalar(@{$hostlinks->{$a}}) }
+        keys %$hostlinks;
+
+    # All link list flattened into one, in host weight order
+    my @all;
+    push(@all, @{$hostlinks->{$_}}) for @order;
+
+    return @all if (scalar(@order) == 1);
+
+    # Indexes and chunk size for "zipping" the end result list
+    my $num = scalar(@{$hostlinks->{$order[0]}});
+    my @indexes = map { $_ * $num } (0 .. $num - 1);
+
+    # Distribute them
+    my @result;
+    while (my @chunk = splice(@all, 0, $num)) {
+        @result[@indexes] = @chunk;
+        @indexes = map { $_ + 1 } @indexes;
+    }
+
+    # Weed out undefs
+    @result = grep(defined, @result);
+
+    return @result;
 }
 
 ##########################################
