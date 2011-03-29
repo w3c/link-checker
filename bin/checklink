@@ -1233,9 +1233,12 @@ EOF
         my $canon_uri = URI->new($abs_link_uri->canonical());
         my $fragment  = $canon_uri->fragment(undef);
         if (!defined($Opts{Exclude}) || $canon_uri !~ $Opts{Exclude}) {
-            my $hostport =
-                $canon_uri->can('host_port') ? $canon_uri->host_port() : '';
-            push(@{$hostlinks{$hostport}}, $canon_uri);
+            if (!exists($links{$canon_uri})) {
+                my $hostport =
+                    $canon_uri->can('host_port') ? $canon_uri->host_port() :
+                                                   '';
+                push(@{$hostlinks{$hostport}}, $canon_uri);
+            }
             for my $line_num (keys(%$lines)) {
                 if (!defined($fragment) || !length($fragment)) {
 
