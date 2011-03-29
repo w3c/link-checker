@@ -1,6 +1,13 @@
 This document contains information about high level changes between
 Link Checker releases.
 
+Version x.x
+- Avoid some robot delays by improving the order in which links are checked.
+- Avoid some unnecessary HEAD requests in recursive mode.
+- Clarify output wrt. links that have already been checked.
+- Make connection cache size configurable, and increase the default to 2.
+- Move JavaScript to an external file.
+
 Version 4.7
 - Support for IRI.
 - Support for more HTML5 links.
