@@ -1414,7 +1414,7 @@ sub distribute_links(\%)
     my @all;
     push(@all, @{$hostlinks->{$_}}) for @order;
 
-    return @all if (scalar(@order) == 1);
+    return @all if (scalar(@order) < 2);
 
     # Indexes and chunk size for "zipping" the end result list
     my $num = scalar(@{$hostlinks->{$order[0]}});
