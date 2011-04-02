@@ -1,6 +1,6 @@
 --- #YAML:1.0
 name:               W3C-LinkChecker
-version:            4.7
+version:            4.8
 abstract:           W3C Link Checker
 author:
     - W3C QA-dev Team <public-qa-dev@w3.org>
