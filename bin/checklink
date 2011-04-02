@@ -268,18 +268,19 @@ use constant LINK_ATTRS => {
     video  => ['src', 'poster'],
 };
 
-# Tag=>attribute mapping of things we treat as space separated lists of links.
+# Tag=>[separator, attributes] mapping of things we treat as lists of links.
 use constant LINK_LIST_ATTRS => {
-    a    => ['ping'],
-    area => ['ping'],
-    head => ['profile'],
+    a      => [qr/\s+/,    ['ping']],
+    applet => [qr/[\s,]+/, ['archive']],
+    area   => [qr/\s+/,    ['ping']],
+    head   => [qr/\s+/,    ['profile']],
+    object => [qr/\s+/,    ['archive']],
 };
 
 # TBD/TODO:
-# - applet/@archive, @code?
+# - applet/@code?
 # - bgsound/@src?
 # - object/@classid?
-# - object/@archive?
 # - isindex/@action?
 # - layer/@background,@src?
 # - ilayer/@background?
@@ -2047,6 +2048,10 @@ sub start
         elsif ($tag eq 'applet' || $tag eq 'object') {
             if (my $codebase = $attr->{codebase}) {
 
+                # Applet codebases are directories, append trailing slash
+                # if it's not there so that new_abs does the right thing.
+                $codebase .= "/" if ($tag eq 'applet' && $codebase !~ m|/$|);
+
                 # TODO: HTML 4 spec says applet/@codebase may only point to
                 # subdirs of the directory containing the current document.
                 # Should we do something about that?
@@ -2063,9 +2068,10 @@ sub start
 
         # List of links attributes:
         if (my $link_attrs = LINK_LIST_ATTRS()->{$tag}) {
-            for my $la (@$link_attrs) {
+            my ($sep, $attrs) = @$link_attrs;
+            for my $la (@$attrs) {
                 if (defined(my $value = $attr->{$la})) {
-                    for my $link (split(/\s+/, $value)) {
+                    for my $link (split($sep, $value)) {
                         $self->add_link($link, $tag_local_base, $line);
                     }
                 }
