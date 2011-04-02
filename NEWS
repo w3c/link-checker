@@ -7,6 +7,7 @@ Version x.x
 - Clarify output wrt. links that have already been checked.
 - Make connection cache size configurable, and increase the default to 2.
 - Move JavaScript to an external file.
+- Check applet and object archive links.
 
 Version 4.7
 - Support for IRI.
