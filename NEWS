@@ -1,7 +1,7 @@
 This document contains information about high level changes between
 Link Checker releases.
 
-Version x.x - 2011-xx-xx
+Version 4.8 - 2011-04-02
 - Avoid some robot delays by improving the order in which links are checked.
 - Avoid some unnecessary HEAD requests in recursive mode.
 - Clarify output wrt. links that have already been checked.
