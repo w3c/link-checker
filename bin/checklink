@@ -1235,9 +1235,10 @@ EOF
         my $fragment  = $canon_uri->fragment(undef);
         if (!defined($Opts{Exclude}) || $canon_uri !~ $Opts{Exclude}) {
             if (!exists($links{$canon_uri})) {
-                my $hostport =
-                    $canon_uri->can('host_port') ? $canon_uri->host_port() :
-                                                   '';
+                my $hostport;
+                $hostport = $canon_uri->host_port()
+                    if $canon_uri->can('host_port');
+                $hostport = '' unless defined $hostport;
                 push(@{$hostlinks{$hostport}}, $canon_uri);
             }
             for my $line_num (keys(%$lines)) {
