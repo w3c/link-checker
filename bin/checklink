@@ -1302,22 +1302,22 @@ EOF
 
             # List the broken fragments
             while (my ($fragment, $lines) = each(%{$ulinks->{fragments}})) {
+
+                my $fragment_ok = $results{$u}{fragments}{$fragment};
+
                 if ($Opts{Verbose}) {
                     my @line_nums = sort { $a <=> $b } keys(%$lines);
                     &hprintf(
                         "\t\t%s %s - Line%s: %s\n",
                         $fragment,
-                        ($results{$u}{fragments}{$fragment}) ? 'OK' :
-                            'Not found',
-                        (scalar(@line_nums) > 1) ? 's' : '',
+                        $fragment_ok             ? 'OK' : 'Not found',
+                        (scalar(@line_nums) > 1) ? 's'  : '',
                         join(', ', @line_nums)
                     );
                 }
 
                 # A broken fragment?
-                if ($results{$u}{fragments}{$fragment} == 0) {
-                    $broken{$u}{fragments}{$fragment} += 2;
-                }
+                $broken{$u}{fragments}{$fragment} += 2 unless $fragment_ok;
             }
         }
         elsif (!($Opts{Quiet} && &informational($results{$u}{location}{code})))
