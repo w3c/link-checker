@@ -1180,8 +1180,8 @@ EOF
     $processed{$response->{absolute_uri}} = 1;
 
     # Parse the document
-    my $p = &parse_document($uri, $response->{absolute_uri},
-        $response, 1, ($depth != 0));
+    my $p =
+        &parse_document($uri, $response->base(), $response, 1, ($depth != 0));
     my $base = URI->new($p->{base});
 
     # Check anchors
