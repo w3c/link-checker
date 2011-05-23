@@ -238,6 +238,7 @@ use constant LINK_ATTRS => {
     a => ['href'],
 
     # base/@href intentionally not checked
+    # http://www.w3.org/mid/200802091439.27764.ville.skytta%40iki.fi
     area       => ['href'],
     audio      => ['src'],
     blockquote => ['cite'],
@@ -2033,8 +2034,19 @@ sub start
 
         my $tag_local_base = undef;
 
+        # Special case: base/@href
+        # @@@TODO: The reason for handling <base href> ourselves is that LWP's
+        # head parsing magic fails at least for responses that have
+        # Content-Encodings: https://rt.cpan.org/Ticket/Display.html?id=54361
+        if ($tag eq 'base') {
+
+            # Ignore <base> with missing/empty href.
+            $self->{base} = $attr->{href}
+                if (defined($attr->{href}) && length($attr->{href}));
+        }
+
         # Special case: meta[@http-equiv=Refresh]/@content
-        if ($tag eq 'meta') {
+        elsif ($tag eq 'meta') {
             if ($attr->{'http-equiv'} &&
                 lc($attr->{'http-equiv'}) eq 'refresh')
             {
