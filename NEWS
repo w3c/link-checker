@@ -1,6 +1,10 @@
 This document contains information about high level changes between
 Link Checker releases.
 
+Version 4.9 - 2011-xx-xx
+- Work around some <base> related problems (#12720, rt.cpan.org#54361).
+- Eliminate some warnings (emitted by code, not from results).
+
 Version 4.8 - 2011-04-02
 - Avoid some robot delays by improving the order in which links are checked.
 - Avoid some unnecessary HEAD requests in recursive mode.
