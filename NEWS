@@ -1,7 +1,7 @@
 This document contains information about high level changes between
 Link Checker releases.
 
-Version 4.9 - 2011-xx-xx
+Version 4.81 - 2011-10-16
 - Work around some <base> related problems (#12720, rt.cpan.org#54361).
 - Eliminate some warnings (emitted by code, not from results).
 

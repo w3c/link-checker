@@ -1,5 +1,5 @@
 This file contains message digests of all files listed in MANIFEST,
-signed via the Module::Signature module, version 0.64.
+signed via the Module::Signature module, version 0.68.
 
 To verify the content in this distribution, first make sure you have
 Module::Signature installed, then type:
@@ -15,11 +15,11 @@ not run its Makefile.PL or Build.PL.
 Hash: SHA1
 
 SHA1 b075772a968f5694bfbb4ce33eadf26566a25f47 MANIFEST
-SHA1 2c2e46c15a894e6fdb6360a96d3e46fef368ea13 META.yml
+SHA1 e8175087619cebc9d0e0ead8ca06b9d8ee73b678 META.yml
 SHA1 ab9150095a45776c2020e5781d19054c7018da8b Makefile.PL
-SHA1 0e45d552ca655a7aa616b5580fe26360194c7b25 NEWS
+SHA1 05b3e35c8352063f2c99efa9cd3881c208fa1bb0 NEWS
 SHA1 f1f868ea73db7d39ab491ebb50c84de76cce4b44 README
-SHA1 75b87d400f5656fa36865cbb8638ae761ef8a045 bin/checklink
+SHA1 619d90efc63090552be8926418d69a0364989501 bin/checklink
 SHA1 4406433ae670dd4f7be3f2c76d55aefb239e9bc9 bin/checklink.pod
 SHA1 b188063249c820f0aa5a34b5f735e8f334a536e1 docs/checklink.html
 SHA1 fa101fed018fc8e41beca63a0a667fb94c10a557 docs/linkchecker.css
@@ -38,16 +38,16 @@ SHA1 1631ed7d5b20c2c036e61225854134f0674cb10a images/no_w3c.png
 SHA1 401b5fba02d0d8484775a4a77503fa0d136b96ce images/round-br.png
 SHA1 9eb1ee6188391715284a3db080e6e92d163864d9 images/round-tr.png
 SHA1 cc01bd358bc1d6d42ca350ad0a4a42778ca4440e images/textbg.png
-SHA1 993d4a54cd4a6672afeaa938d15cd9154f94aa44 lib/W3C/LinkChecker.pm
+SHA1 7587466f1487eb446fe5da1a70d445e7b33efd36 lib/W3C/LinkChecker.pm
 SHA1 962ba9fff082c4087239b55618ada2a8f1564464 t/00compile.t
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.11 (GNU/Linux)
 
-iQEVAwUBTZdffId580Rxl2NsAQIQgwf/VFvg4vg7KvODiSA5vkfmGJU56Pr9Oxbq
-MCkmCpWfVHo3i4Dzxz7QTubELk6nksKHaoUfVdDCmgRaG9XNVZBb59WCPzedFYsS
-7BoUpzB0u580fOfBO0FhxbEIfEVoGplFN/9BTMBHzJxO/fSRNwHnqsZ1nn1yeCN4
-j23yqibBQapFnd8NFyNHSEzTDEsqtV7cLLYljJlljYP5au2IChaV3hAJ3gsRs0OL
-KVLGGoPQSHR/MhxzIWfituh8MwB4ttjZ5Z0AQibiUfcCfxBA+rgrsT61rquLJOmk
-wUQQHXZVBj9xXdB7fbbezi44+kqOf4U2GTgmNr1quexHm1W24YPd9w==
-=yFBd
+iQEVAwUBTpqXHId580Rxl2NsAQJqPAf/XrqTWrlZa9DFkWrnOSxIYsyDGPl14fCl
+ohGFL7jBYxdKndEHo2aA7bA95EOypZVxakUIFcizpC5ujbrqasGPEnxinhJQYLqA
+S+4G+yzen3DqbbLndd5eIWVLPS5992gXwuLaeZrNFlGv/kG892NSLGfu3JQiePlc
+jNNUZ4dvwe+MHSSvs3DEkAPJqeIR7bx55tp+O7n5HX3ab/sqYIaqI2V3tXP/EHFy
+PA/Ig9QFQmfB7SY3TFN7iUFuIDRqIQOzC/Ij/WqY1Uj9885zZJvq0GWT/huFvyVG
+IGFM+sZp8gr6fr/bkB7de5xCoVUpkCz+mFkIJFQCu1cwJcP9pa81+g==
+=W5f6
 -----END PGP SIGNATURE-----
