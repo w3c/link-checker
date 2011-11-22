@@ -649,7 +649,7 @@ else {
     } if (MP2() && !$ENV{HTTP_AUTHORIZATION});
 
     $uri =~ s/^\s+//g;
-    if ($uri =~ /:/) {
+    if (index($uri, ":") != -1) {
         $uri = URI->new($uri);
     }
     else {
@@ -1747,10 +1747,10 @@ sub record_results (\$$$$)
     $results{$uri}{location}{code} = $response->code();
     $results{$uri}{location}{code} = RC_ROBOTS_TXT()
         if ($results{$uri}{location}{code} == 403 &&
-        $response->message() =~ /Forbidden by robots\.txt/);
+        index($response->message(), "Forbidden by robots.txt") != -1);
     $results{$uri}{location}{code} = RC_IP_DISALLOWED()
         if ($results{$uri}{location}{code} == 403 &&
-        $response->message() =~ /non-public IP/);
+        index($response->message(), "non-public IP") != -1);
     $results{$uri}{location}{code} = RC_DNS_ERROR()
         if ($results{$uri}{location}{code} == 500 &&
         $response->message() =~ /Bad hostname '[^\']*'/);
