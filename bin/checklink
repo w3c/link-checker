@@ -814,7 +814,7 @@ sub parse_arguments ()
     for my $i (0 .. $#{$Opts{Suppress_Broken}}) {
         ${$Opts{Suppress_Broken}}[$i] =~ s/ /:/;
         my $sb_arg = ${$Opts{Suppress_Broken}}[$i];
-        if ($sb_arg !~ /^(-1|[0-9]+):./) {
+        if ($sb_arg !~ /^(?:-1|[0-9]+):./) {
             &usage(1,
                 "Bad suppress-broken argument, should be prefixed by a numeric response code: $sb_arg"
             );
@@ -1580,7 +1580,7 @@ sub in_recursion_scope (\$)
     for my $base (@{$Opts{Base_Locations}}) {
         my $rel = $candidate->rel($base);
         next if ($candidate eq $rel);    # Relative path not possible?
-        next if ($rel =~ m|^(\.\.)?/|);  # Relative path upwards?
+        next if ($rel =~ m|^(?:\.\.)?/|);    # Relative path upwards?
         return 1;
     }
 
