@@ -94,7 +94,8 @@ lib/W3C/LinkChecker.pm: Makefile.PL bin/checklink
 	$(ECHO) "\$$VERSION = \"$(VERSION)\";"               >> $@
 	$(ECHO) "1;"                                         >> $@
 
-PERLTIDY = perltidy --profile=etc/perltidyrc --backup-and-modify-in-place
+PERLTIDY = perltidy --profile=etc/perltidyrc --backup-and-modify-in-place \
+	--backup-file-extension=/
 
 perltidy:
 	@for file in Makefile.PL bin/checklink ; do \
