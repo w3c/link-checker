@@ -3227,8 +3227,9 @@ of a document that you would like to check:</label></p>
 </fieldset>
 <p class=\"submit_button\"><input type=\"submit\" name=\"check\" value=\"Check\" /></p>
 </form>
-<div class=\"intro\" id=\"don_program\"></div>
-<script type=\"text/javascript\" src=\"http://www.w3.org/QA/Tools/don_prog.js\"></script>
+<div id=\"w3c-include\">
+    <script type=\"text/javascript\" src=\"//www.w3.org/QA/Tools/w3c-include.js\"></script>
+</div>
 ";
     return;
 }
