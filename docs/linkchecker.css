@@ -411,25 +411,6 @@ span.err_type img {
     vertical-align: middle;
 }
 
-/* donation and sponsorship program */
+/* W3C includes (donation and sponsorship program) */
+#w3c-include {}
 
-div#don_program {
-    border: 1px solid #55B05A;
-    padding: .5em;
-    line-height: 150%;
-    text-align: center;
-    margin-top: .5em;
-}
-div#don_program span#don_program_img {
-    float: left;
-    width: 150px;
-    height: 60px;
-}
-div#don_program span#don_program_img img {
-    vertical-align: middle;
-}
-div#don_program span#don_program_text {
-}
-div#don_program span#don_program_text a {
-    font-weight: bold;
-}
