@@ -354,7 +354,9 @@ EOF
     $Cfg{Markup_Validator_URI} ||= 'http://validator.w3.org/check?uri=%s';
     $Cfg{CSS_Validator_URI} ||=
         'http://jigsaw.w3.org/css-validator/validator?uri=%s';
-    $Cfg{Doc_URI} ||= 'http://validator.w3.org/docs/checklink.html';
+    $Cfg{Doc_URI} ||= 'http://validator.w3.org/checklink/docs/checklink.html';
+    $Cfg{Doc_Base_URI} ||= '/checklink/docs/';
+    $Cfg{Doc_Images_URI} ||= '/checklink/images/';
 
     # Untaint config params that are used as the format argument to (s)printf(),
     # Perl 5.10 does not want to see that in taint mode.
@@ -363,8 +365,8 @@ EOF
 
     $DocType =
         '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">';
-    my $css_url = URI->new_abs('linkchecker.css', $Cfg{Doc_URI});
-    my $js_url  = URI->new_abs('linkchecker.js',  $Cfg{Doc_URI});
+    my $css_url = $Cfg{Doc_Base_URI} . 'linkchecker.css';
+    my $js_url  = $Cfg{Doc_Base_URI} . 'linkchecker.js';
     $Head =
         sprintf(<<'EOF', HTML::Entities::encode($AGENT), $css_url, $js_url);
 <meta http-equiv="Content-Script-Type" content="text/javascript" />
@@ -3022,7 +3024,7 @@ sub banner ($)
     my $tagline = "Check links and anchors in Web pages or full Web sites";
 
     printf(
-        <<'EOF', URI->new_abs("../images/no_w3c.png", $Cfg{Doc_URI}), $tagline);
+        <<'EOF', $Cfg{Doc_Images_URI} . 'no_w3c.png', $tagline);
 <div id="banner"><h1 id="title"><a href="http://www.w3.org/" title="W3C"><img alt="W3C" id="logo" src="%s" width="110" height="61" /></a>
 <a href="checklink"><span>Link Checker</span></a></h1>
 <p id="tagline">%s</p></div>
@@ -3059,7 +3061,7 @@ sub status_icon($)
         $icon_type = 'error';
     }
     return sprintf('<span class="err_type"><img src="%s" alt="%s" /></span>',
-        URI->new_abs("../images/info_icons/$icon_type.png", $Cfg{Doc_URI}),
+        $Cfg{Doc_Images_URI} . 'info_icons/'. $icon_type . '.png',
         $icon_type);
 }
 
