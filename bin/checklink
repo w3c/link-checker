@@ -3185,7 +3185,7 @@ sub print_form (\%$$)
     }
     else {
         $cookie_options = "
-    <label for=\"cookie_$check_num\"><input type=\"checkbox\" id=\"cookie_$check_num\" name=\"cookie\" value=\"set\" /> Save options in a <a href=\"http://www.w3.org/Protocols/rfc2109/rfc2109\">cookie</a></label>";
+    <label for=\"cookie_$check_num\"><input type=\"checkbox\" id=\"cookie_$check_num\" name=\"cookie\" value=\"set\" /> Save options in a <a href=\"http://tools.ietf.org/html/rfc6265\">cookie</a></label>";
     }
 
     print "<form action=\"", $Opts{_Self_URI},
