@@ -1138,9 +1138,9 @@ EOF
 <div class="settings">
 Settings used:
  <ul>
-  <li><tt><a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.1">Accept</a></tt>: %s</li>
-  <li><tt><a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.4">Accept-Language</a></tt>: %s</li>
-  <li><tt><a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.36">Referer</a></tt>: %s</li>
+  <li><tt><a href="http://tools.ietf.org/html/rfc7231#section-5.3.2">Accept</a></tt>: %s</li>
+  <li><tt><a href="http://tools.ietf.org/html/rfc7231#section-5.3.5">Accept-Language</a></tt>: %s</li>
+  <li><tt><a href="http://tools.ietf.org/html/rfc7231#section-5.5.2">Referer</a></tt>: %s</li>
   <li>Sleeping %d second%s between requests to each server</li>
  </ul>
 </div>
@@ -3203,7 +3203,7 @@ of a document that you would like to check:</label></p>
     <br />
     <label for=\"hide_redirects_$check_num\"><input type=\"checkbox\" id=\"hide_redirects_$check_num\" name=\"hide_redirects\" value=\"on\"",
         $red,
-        " /> Hide <a href=\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.3\">redirects</a>:</label>
+        " /> Hide <a href=\"http://tools.ietf.org/html/rfc7231#section-6.4\">redirects</a>:</label>
     <label for=\"hide_type_all_$check_num\"><input type=\"radio\" id=\"hide_type_all_$check_num\" name=\"hide_type\" value=\"all\"",
         $all, " /> all</label>
     <label for=\"hide_type_dir_$check_num\"><input type=\"radio\" id=\"hide_type_dir_$check_num\" name=\"hide_type\" value=\"dir\"",
@@ -3211,11 +3211,11 @@ of a document that you would like to check:</label></p>
     <br />
     <label for=\"no_accept_language_$check_num\"><input type=\"checkbox\" id=\"no_accept_language_$check_num\" name=\"no_accept_language\" value=\"on\"",
         $acc,
-        " /> Don't send the <tt><a href=\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.4\">Accept-Language</a></tt> header</label>
+        " /> Don't send the <tt><a href=\"http://tools.ietf.org/html/rfc7231#section-5.3.5\">Accept-Language</a></tt> header</label>
     <br />
     <label for=\"no_referer_$check_num\"><input type=\"checkbox\" id=\"no_referer_$check_num\" name=\"no_referer\" value=\"on\"",
         $ref,
-        " /> Don't send the <tt><a href=\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.36\">Referer</a></tt> header</label>
+        " /> Don't send the <tt><a href=\"http://tools.ietf.org/html/rfc7231#section-5.5.2\">Referer</a></tt> header</label>
     <br />
     <label title=\"Check linked documents recursively (maximum: ",
         $Opts{Max_Documents},
