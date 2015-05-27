@@ -619,14 +619,14 @@ else {
         if ($action eq 'clear') {
 
             # Clear the cookie.
-            $cookie = CGI::Cookie->new(-name => $PROGRAM);
+            $cookie = CGI::Cookie->new(-name => $PROGRAM,-value => $PROGRAM);
             $cookie->value({clear => 1});
             $cookie->expires('-1M');
         }
         elsif ($action eq 'set') {
 
             # Set the options.
-            $cookie = CGI::Cookie->new(-name => $PROGRAM);
+            $cookie = CGI::Cookie->new(-name => $PROGRAM,-value => $PROGRAM);
             my %options = $query->Vars();
             delete($options{$_})
                 for qw(url uri check cookie);    # Non-persistent.
