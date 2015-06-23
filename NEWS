@@ -1,0 +1,72 @@
+This document contains information about high level changes between
+Link Checker releases.
+
+Version 4.81 - 2011-10-16
+- Work around some <base> related problems (#12720, rt.cpan.org#54361).
+- Eliminate some warnings (emitted by code, not from results).
+
+Version 4.8 - 2011-04-02
+- Avoid some robot delays by improving the order in which links are checked.
+- Avoid some unnecessary HEAD requests in recursive mode.
+- Clarify output wrt. links that have already been checked.
+- Make connection cache size configurable, and increase the default to 2.
+- Move JavaScript to an external file.
+- Check applet and object archive links.
+
+Version 4.7 - 2011-03-17
+- Support for IRI.
+- Support for more HTML5 links.
+- Decode query string parameters as UTF-8.
+- Decode command line arguments according to locale.
+- New dependencies: Encode-Locale (command line mode only).
+- Updated dependencies: libwww-perl >= 5.833, URI >= 1.53.
+
+Version 4.6 - 2010-05-01
+- Support for checking links in CSS.
+- Results UI improvements, added "progress bar".
+- Support for larger variety of character and content encodings.
+- Support for HTTP responses with > 4kB header lines.
+- Additional output suppress options in command line mode.
+- Improved heuristics when passed non-absolute URLs.
+- Support for cookies (command line only for now).
+- More "false positive" failure avoidance efforts for "make test".
+- The set of forbidden protocols is now configurable.
+- New dependencies: CSS-DOM >= 0.09.
+- Updated dependencies: Perl >= 5.8.
+
+Version 4.5 - 2009-03-30
+- Removed W3C trademarked icons from distribution tarball.
+- Avoid "false positive" failures from "make test" in certain setups.
+- Make quiet command line mode quieter.
+- Lowered default timeout to 30 seconds.
+
+Version 4.4 - 2009-02-12
+- checking more elements and attributes, such as BLOCKQUOTE cite="", BODY
+  background="", EMBED, etc
+- Changes in the UI to make it match other validators more closely
+- in HTML/cgi output, using javascript to show checklink status as it happens
+- added support for HTML5 links
+- softer wording for broken link results
+- Add non-robot developer mode
+- many bug fixes and code cleanup
+
+Version 4.3 - 2006-10-22
+- Various minor improvements to result output, both in text and HTML modes.
+- Fix --quiet and checking multiple documents to match documentation.
+- Eliminate various warnings (emitted by code, not from results).
+- Documentation improvements.
+
+Version 4.2.1 - 2005-05-15
+- Include documentation of the reorganized access keys.
+
+Version 4.2 - 2005-04-27
+- Access key reorganization, making them less likely to conflict with
+  browsers' "native" key bindings.
+- Redirects are now checked for private IP addresses too.
+
+Version 4.1 - 2004-11-24
+- Added workarounds against browser timeouts in "summary only" mode.
+- Improved caching and reuse of fetched /robots.txt information.
+- Fixed a bug where a complete protocol response (including headers)
+  was passed to the HTML parser, which caused unexpected behaviour.
+- Minor user interface and installation related improvements.

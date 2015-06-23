@@ -1,0 +1,53 @@
+This file contains message digests of all files listed in MANIFEST,
+signed via the Module::Signature module, version 0.68.
+
+To verify the content in this distribution, first make sure you have
+Module::Signature installed, then type:
+
+    % cpansign -v
+
+It will check each file's integrity, as well as the signature's
+validity.  If "==> Signature verified OK! <==" is not displayed,
+the distribution may already have been compromised, and you should
+not run its Makefile.PL or Build.PL.
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
+
+SHA1 b075772a968f5694bfbb4ce33eadf26566a25f47 MANIFEST
+SHA1 e8175087619cebc9d0e0ead8ca06b9d8ee73b678 META.yml
+SHA1 ab9150095a45776c2020e5781d19054c7018da8b Makefile.PL
+SHA1 05b3e35c8352063f2c99efa9cd3881c208fa1bb0 NEWS
+SHA1 f1f868ea73db7d39ab491ebb50c84de76cce4b44 README
+SHA1 619d90efc63090552be8926418d69a0364989501 bin/checklink
+SHA1 4406433ae670dd4f7be3f2c76d55aefb239e9bc9 bin/checklink.pod
+SHA1 b188063249c820f0aa5a34b5f735e8f334a536e1 docs/checklink.html
+SHA1 fa101fed018fc8e41beca63a0a667fb94c10a557 docs/linkchecker.css
+SHA1 8fa71b54357c9ed6ac8e01ab600120032d35b080 docs/linkchecker.js
+SHA1 92d01a8a6e7edcd200d70492f4e551984b97b7a0 etc/checklink.conf
+SHA1 87c74944dbc80b5d6ab8aac1d09419607b15efff etc/perltidyrc
+SHA1 bcb7896bee3764f85a03ab14495efc233f70e215 images/double.png
+SHA1 ff9a7be7fee245dd81a7dc4124544d692a140119 images/grad.png
+SHA1 61aeb3ea5616833678f66c7baa6db373eedcd86b images/head-bl.png
+SHA1 bcb7bf006b79106309350bfa578e94af80aed82d images/head-br.png
+SHA1 11243aa6b3463dd8d6a9b2e69027e42a1d9480ab images/info_icons/README
+SHA1 a54abf3d12f207b81e19ea8ce783d37c6200cf40 images/info_icons/error.png
+SHA1 3fd2638079cd0698655614a5a5afc97a976a4af4 images/info_icons/info.png
+SHA1 552c52188188f560dc02a03200164de3045ac3f4 images/info_icons/warning.png
+SHA1 1631ed7d5b20c2c036e61225854134f0674cb10a images/no_w3c.png
+SHA1 401b5fba02d0d8484775a4a77503fa0d136b96ce images/round-br.png
+SHA1 9eb1ee6188391715284a3db080e6e92d163864d9 images/round-tr.png
+SHA1 cc01bd358bc1d6d42ca350ad0a4a42778ca4440e images/textbg.png
+SHA1 7587466f1487eb446fe5da1a70d445e7b33efd36 lib/W3C/LinkChecker.pm
+SHA1 962ba9fff082c4087239b55618ada2a8f1564464 t/00compile.t
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+
+iQEVAwUBTpqXHId580Rxl2NsAQJqPAf/XrqTWrlZa9DFkWrnOSxIYsyDGPl14fCl
+ohGFL7jBYxdKndEHo2aA7bA95EOypZVxakUIFcizpC5ujbrqasGPEnxinhJQYLqA
+S+4G+yzen3DqbbLndd5eIWVLPS5992gXwuLaeZrNFlGv/kG892NSLGfu3JQiePlc
+jNNUZ4dvwe+MHSSvs3DEkAPJqeIR7bx55tp+O7n5HX3ab/sqYIaqI2V3tXP/EHFy
+PA/Ig9QFQmfB7SY3TFN7iUFuIDRqIQOzC/Ij/WqY1Uj9885zZJvq0GWT/huFvyVG
+IGFM+sZp8gr6fr/bkB7de5xCoVUpkCz+mFkIJFQCu1cwJcP9pa81+g==
+=W5f6
+-----END PGP SIGNATURE-----

@@ -1,0 +1,60 @@
+--- #YAML:1.0
+name:               W3C-LinkChecker
+version:            4.81
+abstract:           W3C Link Checker
+author:
+    - W3C QA-dev Team <public-qa-dev@w3.org>
+license:            open_source
+distribution_type:  module
+configure_requires:
+    ExtUtils::MakeMaker:  0
+build_requires:
+    ExtUtils::MakeMaker:  0
+requires:
+    CGI:                  0
+    CGI::Carp:            0
+    CGI::Cookie:          0
+    Config::General:      2.06
+    CSS::DOM:             0.09
+    CSS::DOM::Constants:  0
+    CSS::DOM::Style:      0
+    CSS::DOM::Util:       0
+    Encode:               0
+    Encode::Locale:       0
+    File::Spec:           0
+    Getopt::Long:         2.17
+    HTML::Entities:       0
+    HTML::Parser:         3.40
+    HTTP::Cookies:        0
+    HTTP::Headers::Util:  0
+    HTTP::Message:        5.827
+    HTTP::Request:        0
+    HTTP::Response:       1.50
+    Locale::Country:      0
+    Locale::Language:     0
+    LWP::RobotUA:         1.19
+    LWP::UserAgent:       0
+    Net::hostent:         0
+    Net::HTTP::Methods:   5.833
+    Net::IP:              0
+    Socket:               0
+    Term::ReadKey:        2
+    Test::More:           0
+    Text::Wrap:           0
+    Time::HiRes:          0
+    URI:                  1.53
+    URI::Escape:          0
+    URI::file:            0
+resources:
+    bugtracker:   http://www.w3.org/Bugs/Public/
+    homepage:     http://validator.w3.org/checklink
+    MailingList:  http://lists.w3.org/Archives/Public/www-validator/
+    repository:   http://dvcs.w3.org/hg/link-checker/
+no_index:
+    directory:
+        - t
+        - inc
+generated_by:       ExtUtils::MakeMaker version 6.56
+meta-spec:
+    url:      http://module-build.sourceforge.net/META-spec-v1.4.html
+    version:  1.4

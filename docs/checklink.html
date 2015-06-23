@@ -1,0 +1,347 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <title>W3C Link Checker Documentation</title>
+    <link rev="made" href="mailto:www-validator@w3.org" />
+    <style type="text/css" media="all">@import "linkchecker.css";</style>
+  </head>
+
+  <body>
+	<div id="banner"><h1 id="title"><a href="http://www.w3.org/" title="W3C"><img alt="W3C" id="logo" src="../images/no_w3c.png" width="110" height="61" /></a>
+	<a href="../checklink"><span>Link Checker</span></a></h1>
+	<p id="tagline">Check links and anchors in Web pages or full Web sites</p></div>
+    <div id="main">
+    <ul>
+      <li><a href="#about">About this service</a></li>
+      <li><a href="#what">What it does</a></li>
+      <li><a href="#online">Use it online</a></li>
+      <li><a href="#install">Install it locally</a></li>
+      <li><a href="#bot">Robots exclusion</a></li>
+      <li><a href="#csb">Comments, suggestions and bugs</a></li>
+    </ul>
+
+    <h2><a name="about" id="about">About this service</a></h2>
+
+    <p>
+      In order to check the validity of the technical reports that W3C
+      publishes, the Systems Team has developed a link checker.
+    </p>
+
+    <p>
+      A first version was developed in August 1998 by
+      <a href="http://www.w3.org/People/Renaud/">Renaud Bruyeron</a>.
+      Since it was lacking some functionalities,
+      <a href="http://www.w3.org/People/Hugo/">Hugo Haas</a>
+      rewrote it more or less from scratch in November 1999.
+      It has been improved by Ville Skyttä and many other volunteers since.
+    </p>
+
+    <p>
+      The source code is available publicly under the
+      <a href="http://www.w3.org/Consortium/Legal/copyright-software">W3C IPR
+      software notice</a> from
+      <a href="http://search.cpan.org/dist/W3C-LinkChecker/"><abbr
+      title="Comprehensive Perl Archive Network">CPAN</abbr></a> (released
+      versions) and a
+      <a href="http://dvcs.w3.org/hg/link-checker/">Mercurial repository</a>
+      (development and archived release versions).
+    </p>
+
+    <h2><a name="what" id="what">What it does</a></h2>
+
+    <p>
+      The link checker reads an HTML or XHTML document or a CSS style sheet
+      and extracts a list of anchors and links.
+    </p>
+
+    <p>
+      It checks that no anchor is defined twice.
+    </p>
+
+    <p>
+      It then checks that all the links are dereferenceable, including
+      the fragments. It warns about HTTP redirects, including directory
+      redirects.
+    </p>
+
+    <p>
+      It can check recursively a part of a Web site.
+    </p>
+
+    <p>
+      There is a command line version and a
+      <abbr title="Common Gateway Interface">CGI</abbr> version. They both
+      support <a href="http://www.ietf.org/rfc/rfc2617.txt">HTTP basic
+      authentication</a>. This is achieved in the CGI version
+      by passing through the authorization information from the user browser
+      to the site tested.
+    </p>
+
+    <h2><a name="online" id="online">Use it online</a></h2>
+
+    <p>
+      There is an
+      <a href="http://validator.w3.org/checklink">online version</a>
+      of the link checker.
+    </p>
+
+    <p>
+      In the online version (and in general, when run as a CGI script),
+      the number of documents that can be checked recursively is limited.
+    </p>
+    <p id="wait">
+      Both the command line version and the online one sleep at least one
+      second between requests to each server to avoid abuses and target
+      server congestion.
+    </p>
+
+    <h3>Access keys</h3>
+      
+    <p>
+      The following access keys are implemented throughout the
+      site in an attempt to help users using screen readers.
+    </p>
+    <ol>
+      <li>Home: access key "1" leads back to the service's home page.</li>
+      <li>Downloads: access key "2" leads to downloads.</li>
+      <li>Documentation: access key "3" leads to the documentation index for
+	 the service.</li>
+      <li>Feedback: access key "4" leads to the feedback instructions.</li>
+    </ol>
+
+    <h2><a name="install" id="install">Install it locally</a></h2>
+
+    <p>
+      The link checker is written in Perl. It is packaged as a standard
+      <a href="http://www.cpan.org/">CPAN</a> distribution, and depends on
+      a few other modules which are also available from CPAN.
+    </p>
+    <h3 id="install-CPAN">Install with the CPAN utility</h3>
+    
+    <p>If you system has a working installation of Perl, you should be able to install the link checker and its dependencies with a single line from the commandline shell:</p>
+    <p><kbd>sudo perl -MCPAN -e 'install W3C::LinkChecker'</kbd> (use without the <kbd>sudo</kbd> command if installing from an administrator account).</p>
+    <p>If this is the first time you use the CPAN utility, you may have to answer a few setup questions before the tool downloads, builds and installs the link checker.</p>
+    
+    <h3 id="install-manual">Install by hand</h3>
+
+    <p>If for any reason the technique described above is not working or if you prefer installing each package by hand, follow the instructions below:</p>
+
+    <ol>
+      <li>
+	Install <a href="http://www.perl.org/get.html">Perl</a>, version 5.8
+	or newer.
+      </li>
+      <li>
+	You will need the following <a href="http://www.cpan.org/">CPAN</a>
+	distributions, as well as the distributions they possibly depend on.
+	Depending on your Perl version, you might already have some of
+	these installed.  Also, the latest versions of these may require a
+	recent version of Perl.	 As long as the minimum version requirement(s)
+	below are satisfied, everything should be fine.	 The latest version
+	should not be needed, just get an older version that works with your
+	Perl.  For an introduction to installing Perl modules,
+	see <a href="http://www.cpan.org/misc/cpan-faq.html#How_install_Perl_modules">The CPAN FAQ</a>.
+	<ul>
+	  <li><a href="http://search.cpan.org/dist/W3C-LinkChecker/">W3C-LinkChecker</a> (the link checker itself)</li>
+	  <li><a href="http://search.cpan.org/dist/CGI.pm/">CGI.pm</a> (required for CGI mode only)</li>
+	  <li><a href="http://search.cpan.org/dist/Config-General/">Config-General</a> (optional, version 2.06 or newer; required only for reading the (optional) configuration file)</li>
+	  <li><a href="http://search.cpan.org/dist/CSS-DOM/">CSS-DOM</a> (version 0.09 or newer)</li>
+	  <li><a href="http://search.cpan.org/dist/Encode-Locale/">Encode-Locale</a> (required for command line mode only)</li>
+	  <li><a href="http://search.cpan.org/dist/HTML-Parser/">HTML-Parser</a> (version 3.20 or newer)</li>
+	  <li><a href="http://search.cpan.org/dist/libwww-perl/">libwww-perl</a> (version 5.833 or newer)</li>
+	  <li><a href="http://search.cpan.org/dist/Net-IP/">Net-IP</a> (optional but recommended; required for restricting access to <a href="http://www.ietf.org/rfc/rfc1918.txt">private IP addresses</a>)</li>
+	  <li><a href="http://search.cpan.org/dist/TermReadKey/">TermReadKey</a> (optional but recommended; required only in command line mode for password input)</li>
+	  <li><a href="http://search.cpan.org/dist/Time-HiRes/">Time-HiRes</a></li>
+	  <li><a href="http://search.cpan.org/dist/URI/">URI</a> (version 1.53 or newer)</li>
+	</ul>
+      </li>
+      <li>
+	Optionally install the link checker configuration file,
+	<code>etc/checklink.conf</code> contained in the link checker
+	distribution package into <code>/etc/w3c/checklink.conf</code>
+	or set the <code>W3C_CHECKLINK_CFG</code> environment variable to the
+	location where you installed it.
+      </li>
+      <li>
+	Optionally, install the <code>checklink</code> script into a location
+	in your web server which allows execution of CGI scripts (typically a
+	directory named <code>cgi-bin</code> somewhere below your web server's
+	root directory).
+      </li>
+      <li>
+	See also the <code>README</code> and <code>INSTALL</code> file(s)
+	included in the above distributions.
+      </li>
+    </ol>
+
+    <p>
+      Running <kbd>checklink --help</kbd> shows how to
+      use the command line version.  The distribution package also includes
+      more extensive <abbr title="Plain Old Documentation">POD</abbr>
+      documentation, use
+      <kbd><a href="http://search.cpan.org/dist/Pod-Perldoc/lib/perldoc.pod">perldoc</a> checklink</kbd> (or <kbd>man checklink</kbd> on Unixish systems)
+      to view it.
+    </p>
+
+    <p>
+      <abbr title="Secure Sockets Layer">SSL</abbr>/<abbr title="Transport Layer Security">TLS</abbr>v1
+      support for <code>https</code> in the link checker needs support for
+      it in libwww-perl; see
+      <a href="http://search.cpan.org/dist/libwww-perl/README.SSL">README.SSL</a>
+      in the libwww-perl distribution for more information.
+    </p>
+
+    <p>
+      In online mode, link checker's output should not be buffered to avoid
+      browser timeouts.  The link checker itself does not buffer its output,
+      but in some cases output buffering needs to be explicitly disabled for
+      it in the web server running it.  One such case is Apache's mod_deflate
+      compression module which as a side effect results in output buffering;
+      one way to disable it for the link checker (while leaving it enabled for
+      other resources if configured so elsewhere) is to add the following
+      section to an appropriate place in the Apache configuration (assuming the
+      link checker script's filename is <code>checklink</code>):
+    </p>
+
+    <blockquote><pre>
+&lt;Files checklink&gt;
+    SetEnv no-gzip
+&lt;/Files&gt;
+</pre></blockquote>
+
+    <p>
+      If you want to enable the authentication capabilities with Apache,
+      have a look at
+      <a href="http://lists.w3.org/Archives/Public/www-validator/1999JulSep/0140.html">Steven Drake's hack</a>.
+    </p>
+
+    <p>
+      The link checker honors proxy settings from the
+      <code><em>scheme</em>_proxy</code> environment variables.  See
+      <a href="http://search.cpan.org/dist/libwww-perl/lib/LWP.pm#ENVIRONMENT">LWP(3)</a> and
+      <a href="http://search.cpan.org/dist/libwww-perl/lib/LWP/UserAgent.pm#%24ua-%3Eenv_proxy">LWP::UserAgent(3)'s
+	<code>env_proxy</code></a> method for more information.
+    </p>
+
+    <p>
+      Some environment variables affect the way how the link checker uses
+      <a href="http://www.ietf.org/rfc/rfc959.txt"><abbr title="File Transfer Protocol">FTP</abbr></a>.
+      In particular, passive mode is the default.  See
+      <a href="http://search.cpan.org/dist/libnet/Net/FTP.pm#CONSTRUCTOR">Net::FTP(3)</a>
+      for more information.
+    </p>
+
+    <p>
+      There are multiple alternatives for configuring the default
+      <a href="http://www.ietf.org/rfc/rfc977.txt"><abbr title="Network News Transfer Protocol">NNTP</abbr></a>
+      server for use with <code>news:</code> URIs without explicit hostnames,
+      see
+      <a href="http://search.cpan.org/dist/libnet/Net/NNTP.pm#CONSTRUCTOR">Net::NNTP(3)</a>
+      for more information.
+    </p>
+
+    <h2><a name="bot" id="bot">Robots exclusion</a></h2>
+
+    <p>
+      The link checker honors
+      <a href="http://www.robotstxt.org/robotstxt.html">robots exclusion
+        rules</a>.  To place rules specific to the W3C Link Checker in
+      <code>/robots.txt</code> files, sites can use the
+      <code>W3C-checklink</code> user agent string.  For example, to allow
+      the link checker to access all documents on a server and to disallow
+      all other robots, one could use the following:
+    </p>
+
+    <pre>
+User-Agent: *
+Disallow: /
+
+User-Agent: W3C-checklink
+Disallow:
+</pre>
+
+    <p>
+      Robots exlusion support in the link checker is based on the
+      <a href="http://search.cpan.org/dist/libwww-perl/lib/LWP/RobotUA.pm">LWP::RobotUA</a>
+      Perl module.  It currently supports the
+      "<a href="http://www.robotstxt.org/orig.html">original 1994 version</a>"
+      of the standard.  The robots META tag, ie.
+      <code>&lt;meta name="robots" content="..."&gt;</code>, is not supported.
+      Other than that, the link checker's implementation goes all the way
+      in trying to honor robots exclusion rules; if a
+      <code>/robots.txt</code> disallows it, not even the first document
+      submitted as the root for a link checker run is fetched.
+    </p>
+
+    <p>
+      Note that <code>/robots.txt</code> rules affect only user agents
+      that honor it; it is not a generic method for access control.
+    </p>
+
+    <h2><a name="csb" id="csb">Comments, suggestions and bugs</a></h2>
+
+    <p>
+      The current version has proven to be stable. It could however be
+      improved, see the <a href="http://www.w3.org/Bugs/Public/buglist.cgi?product=LinkChecker&amp;bug_status=NEW&amp;bug_status=ASSIGNED&amp;bug_status=REOPENED">list of open enhancement ideas and bugs</a> for details.
+    </p>
+
+    <p>
+      Please send comments, suggestions and bug reports about the link checker
+      to the <a href="mailto:www-validator@w3.org?subject=checklink%3A%20">www-validator mailing list</a>
+      (<a href="http://lists.w3.org/Archives/Public/www-validator/">archives</a>),
+      with 'checklink' in the subject. See examples below
+    </p>
+
+	<dl>
+		<dt>Good</dt>
+		<dd>Subject: online checklink times out when accessed with Iceweasel 2.1.12</dd>
+		<dt>Bad</dt>
+		<dd>Subject: checklink</dd>
+		<dt>Bad</dt>
+		<dd>Subject: checklink does not work</dd>
+	</dl>
+
+    <h3><a name="issues" id="issues">Known issues</a></h3>
+
+    <p>
+      If a link checker run in "summary only" mode takes a long time, some
+      user agents may stop loading the results page due to a timeout.  We
+      have placed workarounds hoping to avoid this in the code, but have not
+      yet found one that would work reliably for all browsers.  If you
+      experience these timeouts, try avoiding "summary only" mode, or try
+      using the link checker with another browser.
+    </p>
+
+    </div>
+
+    <ul class="navbar" id="menu">
+	<li><a href="http://validator.w3.org/checklink" accesskey="1" title="The Link Checker Service at W3C">Link Checker</a></li>
+	<li><a href="http://search.cpan.org/dist/W3C-LinkChecker/" accesskey="2" title="Download the source / Install this service">Download</a></li>
+	<li><a href="#csb" title="feedback: comments, suggestions and bugs" accesskey="4">Feedback</a></li>
+	<li><a href="http://validator.w3.org" title="Validate your markup with the W3C Markup Validation Service">Validator</a></li>
+    </ul>
+
+    <address>
+      <a title="Send Feedback for the W3C Link Checker"
+	href="http://validator.w3.org/feedback.html">The W3C QA-dev Team</a>
+    </address>
+    <p class="copyright">
+      <a rel="Copyright" href="http://www.w3.org/Consortium/Legal/ipr-notice#Copyright">Copyright</a> &copy; 1994-2011
+      <a href="http://www.w3.org/"><acronym title="World Wide Web Consortium">W3C</acronym></a>&reg;
+      (<a href="http://www.csail.mit.edu/"><acronym title="Massachusetts Institute of Technology">MIT</acronym></a>,
+      <a href="http://www.ercim.eu/"><acronym title="European Research Consortium for Informatics and Mathematics">ERCIM</acronym></a>,
+      <a href="http://www.keio.ac.jp/">Keio</a>),
+      All Rights Reserved.
+      W3C <a href="http://www.w3.org/Consortium/Legal/ipr-notice#Legal_Disclaimer">liability</a>,
+      <a href="http://www.w3.org/Consortium/Legal/ipr-notice#W3C_Trademarks">trademark</a>,
+      <a rel="Copyright" href="http://www.w3.org/Consortium/Legal/copyright-documents">document use</a>
+      and <a rel="Copyright" href="http://www.w3.org/Consortium/Legal/copyright-software">software licensing</a>
+      rules apply. Your interactions with this site are in accordance
+      with our <a href="http://www.w3.org/Consortium/Legal/privacy-statement#Public">public</a> and
+      <a href="http://www.w3.org/Consortium/Legal/privacy-statement#Members">Member</a> privacy
+      statements.
+    </p>
+  </body>
+</html>

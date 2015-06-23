@@ -1,0 +1,27 @@
+Makefile.PL
+MANIFEST
+META.yml
+NEWS                    Overview of changes between releases
+README                  Start by reading this
+SIGNATURE
+bin/checklink           The link checker
+bin/checklink.pod       Manual page for the link checker
+etc/checklink.conf      Optional configuration file
+etc/perltidyrc          perltidy(1) profile
+docs/checklink.html     Additional documentation
+docs/linkchecker.css    Cascading style sheet used in docs and generated HTML
+docs/linkchecker.js     JavaScript used in the generated HTML
+images/double.png
+images/grad.png
+images/head-bl.png
+images/head-br.png
+images/no_w3c.png
+images/round-br.png
+images/round-tr.png
+images/textbg.png
+images/info_icons/README
+images/info_icons/error.png
+images/info_icons/info.png
+images/info_icons/warning.png
+lib/W3C/LinkChecker.pm  Dummy *.pm for CPAN indexing purposes
+t/00compile.t

@@ -1,0 +1,295 @@
+=encoding utf8
+
+=head1 NAME
+
+checklink - check the validity of links in an HTML or XHTML document
+
+=head1 SYNOPSIS
+
+B<checklink>  [ I<options> ] I<uri> ...
+
+=head1 DESCRIPTION
+
+This manual page documents briefly the B<checklink> command, a.k.a. the
+W3C® Link Checker.
+
+B<checklink> is a program that reads an HTML or XHTML document,
+extracts a list of anchors and links and checks that no anchor is
+defined twice and that all the links are dereferenceable, including
+the fragments. It warns about HTTP redirects, including directory
+redirects, and can check recursively a part of a web site.
+
+The program can be used either as a command line tool or as a CGI script.
+
+=head1 OPTIONS
+
+This program follow the usual GNU command line syntax, with long options
+starting with two dashes (`-'). A summary of options is included below.
+
+=over 5
+
+=item B<-?, -h, --help>
+
+Show summary of options.
+
+=item B<-V, --version>
+
+Output version information.
+
+=item B<-s, --summary>
+
+Show result summary only.
+
+=item B<-b, --broken>
+
+Show only the broken links, not the redirects.
+
+=item B<-e, --directory>
+
+Hide directory redirects - e.g. L<http://www.w3.org/TR> ->
+L<http://www.w3.org/TR/>.
+
+=item B<-r, --recursive>
+
+Check the documents linked from the first one.
+
+=item B<-D, --depth> I<n>
+
+Check the documents linked from the first one to depth I<n>
+(implies B<--recursive>).
+
+=item B<-l, --location> I<uri>
+
+Scope of the documents checked (implies B<--recursive>).
+Can be specified multiple times in order to specify multiple recursion
+bases.  If the URI of a candidate document is downwards relative to any of
+the bases, it is considered to be within the scope.  If not specified, the
+default is the base URI of the initial document, for example for
+L<http://www.w3.org/TR/html4/Overview.html> it would be
+L<http://www.w3.org/TR/html4/>.
+
+=item B<-X, --exclude> I<regexp>
+
+Do not check links whose full, canonical URIs match I<regexp>.  Note that
+this option limits recursion the same way as B<--exclude-docs> with the same
+regular expression would.
+
+=item B<--exclude-docs> I<regexp>
+
+In recursive mode, do not check links in documents whose full, canonical
+URIs match I<regexp>.  This option may be specified multiple times.
+
+=item B<--suppress-redirect> I<URI-E<gt>URI>
+
+Do not report a redirect from the first to the second URI.  The "-E<gt>" is
+literal text.  This option may be specified multiple times.  Whitespace may
+be used instead of "-E<gt>" to separate the URIs.
+
+=item B<--suppress-redirect-prefix> I<URI-E<gt>URI>
+
+Do not report a redirect from a child of the first URI to the same child of
+the second URI.  The \"->\" is literal text.  This option may be specified
+multiple times.  Whitespace may be used instead of "-E<gt>" to separate the
+URIs.
+
+=item B<--suppress-temp-redirects>
+
+Do not report warnings about temporary redirects.
+
+=item B<--suppress-broken> I<CODE:URI>
+
+Do not report a broken link with the given CODE.  CODE is the HTTP
+response, or -1 for robots exclusion.  The ":" is literal text.  This
+option may be specified multiple times.  Whitespace may be used instead of
+":" to separate the CODE and the URI.
+
+=item B<--suppress-fragment> I<URI>
+
+Do not report the given broken fragment URI.  A fragment URI contains "#".
+This option may be specified multiple times.
+
+=item B<-L, --languages> I<accept-language>
+
+The C<Accept-Language> HTTP header to send.  In command line mode,
+this header is not sent by default.  The special value C<auto> causes
+a value to be detected from the C<LANG> environment variable, and sent
+if found.  In CGI mode, the default is to send the value received from
+the client as is.
+
+=item B<-c, --cookies> I<cookie-file>
+
+Use cookies, load/save them in I<cookie-file>.  The special value
+C<tmp> causes non-persistent use of cookies, i.e. they are used but
+only stored in memory for the duration of this link checker run.
+
+=item B<-R, --no-referer>
+
+Do not send the C<Referer> HTTP header.
+
+=item B<-q, --quiet>
+
+No output if no errors are found.  Implies B<--summary>.
+
+=item B<-v, --verbose>
+
+Verbose mode.
+
+=item B<-i, --indicator>
+
+Show progress while parsing as percentage of lines processed.  No
+indicator is shown for documents containing no linefeeds.
+
+=item B<-u, --user> I<username>
+
+Specify a username for authentication.
+
+=item B<-p, --password> I<password>
+
+Specify a password for authentication.
+
+=item B<--hide-same-realm>
+
+Hide 401's that are in the same realm as the document checked.
+
+=item B<-S, --sleep> I<secs>
+
+Sleep the specified number of seconds between requests to each server.
+Defaults to 1 second, which is also the minimum allowed.
+
+=item B<-t, --timeout> I<secs>
+
+Timeout for requests, in seconds.  The default is 30.
+
+=item B<-C, --connection-cache> I<number>
+
+Maximum number of cached connections.  Using this option overrides the
+C<Connection_Cache_Size> configuration file parameter, see its
+documentation below for the default value and more information.
+
+=item B<-d, --domain> I<domain>
+
+Perl regular expression describing the domain to which the authentication
+information (if present) will be sent.  The default value can be specified
+in the configuration file.  See the C<Trusted> entry in the configuration
+file description below for more information.
+
+=item B<--masquerade> I<"real-prefix surrogate-prefix">
+
+Perform a simple string substitution: URIs which begin with the
+string C<real-prefix> are rewritten using the C<surrogate-prefix>
+before being dereferenced.  Useful for making a local
+directory masquerade as a remote one. For example:
+
+  --masquerade "http://example.com/x/y/z/ file:///my/local/dir/"
+
+If the document being checked contains a link to
+http://example.com/x/y/z/foo.html, then the local file system will be
+checked for file:///my/local/dir/foo.html.
+
+B<--masquerade> takes a single argument consisting of two URIs,
+separated by whitespace.  The quote marks are not part of the
+argument, but one usual way of providing a value with embedded
+whitespace is to enclose it in quotes.
+
+=item B<-H, --html>
+
+HTML output.
+
+=back
+
+=head1 FILES
+
+=over 5
+
+=item F</etc/w3c/checklink.conf>
+
+The main configuration file.  You can use the L<W3C_CHECKLINK_CFG> environment
+variable to override the default location.
+
+C<Trusted> specifies a regular expression for matching trusted domains
+(ie. domains where HTTP basic authentication, if any, will be sent).
+The regular expression will be matched case insensitively against host
+names.  The default behavior (when unset, that is) is to send the
+authentication information only to the host which requests it; usually
+you don't want to change this.  For example, the following configures
+I<only> the w3.org domain as trusted:
+
+    Trusted = \.w3\.org$
+
+C<Allow_Private_IPs> is a boolean flag indicating whether checking links
+on non-public IP addresses is allowed.  The default is true in command line
+mode and false when run as a CGI script.  For example, to disallow checking
+non-public IP addresses, regardless of the mode, use:
+
+   Allow_Private_IPs = 0
+
+C<Forbidden_Protocols> is a comma separated list of additional protocols/URI
+schemes that the link checker is not allowed to use.  The C<javascript> and
+C<mailto> schemes are always forbidden, and so is the C<file> scheme when
+running as a CGI script.
+
+   Forbidden_Protocols = javascript,mailto
+
+C<Markup_Validator_URI> and C<CSS_Validator_URI> are formatted URIs to the
+respective validators.  The C<%s> in these will be replaced with the full
+"URI encoded" URI to the document being checked, and shown in the link
+checker results view in the online/CGI version.  The defaults are:
+
+   Markup_Validator_URI =
+     http://validator.w3.org/check?uri=%s
+   CSS_Validator_URI =
+     http://jigsaw.w3.org/css-validator/validator?uri=%s
+
+C<Doc_URI> is a URI used for linking to the documentation, and CSS and
+JavaScript files in the dynamically generated content of the link checker.
+The default is:
+
+   Doc_URI = http://validator.w3.org/docs/checklink.html
+
+C<Connection_Cache_Size> is an integer denoting the maximum number of
+connections the link checker will keep open at any given time.  The
+default is:
+
+   Connection_Cache_Size = 2
+
+=back
+
+=head1 ENVIRONMENT
+
+checklink uses the libwww-perl library which has a number of environment
+variables affecting its behaviour.  See L</"SEE ALSO"> for some
+pointers.
+
+=over 5
+
+=item B<W3C_CHECKLINK_CFG>
+
+If set, overrides the path to the configuration file.
+
+=back
+
+=head1 SEE ALSO
+
+The documentation for this program is available on the web at
+L<http://validator.w3.org/docs/checklink.html>.
+
+L<LWP>, L<Net::FTP>, L<Net::NNTP>, L<Net::IP>, L<perlre>.
+
+=head1 AUTHOR
+
+This program was originally written by Hugo Haas E<lt>hugo@w3.orgE<gt>, based
+on Renaud Bruyeron's F<checklink.pl>.  It has been enhanced by Ville Skyttä
+and many other volunteers since.  Use the E<lt>www-validator@w3.orgE<gt>
+mailing list for feedback, and see
+L<http://validator.w3.org/docs/checklink.html#csb> for more information.
+
+This manual page was originally written by Frédéric Schütz
+E<lt>schutz@mathgen.chE<gt> for the Debian GNU/Linux system (but may
+be used by others).
+
+=head1 COPYRIGHT
+
+This program is licensed under the W3C® Software License,
+L<http://www.w3.org/Consortium/Legal/copyright-software>.
+
+=cut

@@ -1,0 +1,416 @@
+/*
+   Base Style Sheet for the W3C Link Checker.
+
+   Copyright 2000-2011 W3C (MIT, INRIA, Keio). All Rights Reserved.
+   See http://www.w3.org/Consortium/Legal/ipr-notice.html#Copyright
+*/
+
+html, body {
+    line-height: 120%;
+    color: black;
+    background: white;
+    font-family: "Bitstream Vera Sans", sans-serif;
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+
+div#main {
+    margin: 1em 2em;
+}
+
+div#main form {
+    clear: both;
+    background: #EAEBEE url(../images/round-tr.png) no-repeat top right;
+    padding: 0.5em 1.3em;
+    border-bottom: 1px solid #DCDDE0;
+}
+
+a img {
+    border: 0;
+}
+
+a:link, a:visited {
+    text-decoration: underline;
+    color: #365D95;
+}
+
+a:hover, a:active {
+    text-decoration: underline;
+    color: #1F2126;
+}
+
+acronym:hover, abbr:hover {
+    cursor: help;
+}
+abbr[title], acronym[title], span[title], strong[title] {
+    border-bottom: thin dotted;
+    cursor: help;
+}
+
+pre, code, tt {
+    font-family: "Bitstream Vera Sans Mono", monospace;
+    line-height: 100%;
+    white-space: pre;
+}
+
+div.progress pre {
+    height: 12em;
+    font-size: small;
+    overflow: auto;
+    padding: 0.5em 1.3em;
+    border: 1px solid #DCDDE0;
+    margin-top: 0;
+}
+
+div.progress h3 {
+    margin-bottom: 0;
+    background: white;
+    border: 1px solid #DCDDE0;
+    border-bottom: 0;
+    padding: .4em .8em;
+    text-indent: 0;
+    overflow: hidden;
+}
+
+div.progressbar {
+    border: 1px solid #DCDDE0;
+    border-bottom: 0;
+}
+
+div.progressbar div {
+    height: .15em;
+    width: 0;
+    background-color: #55B05A;
+}
+
+fieldset {
+    border: 0;
+    padding: 0;
+}
+legend {
+    font-size: 1.1em;
+    padding: 1em 0 0.23em;
+    letter-spacing: 0.06em;
+}
+
+fieldset p {
+    margin: 0 !important;
+    padding: 0.7em 0 0.5em 1em;
+    border-top: 1px solid #CBCDD5;
+    background: #EAEBEE url(../images/double.png) left top repeat-x;
+}
+
+input#uri {
+    font-family: Monaco, "Courier New", Monospace;
+    font-size: 0.9em;
+    border: 1px solid #BBB;
+    border-top: 1px solid #777;
+    border-bottom: 1px solid #DDD;
+    background: #FEFEFE url(../images/textbg.png) no-repeat top left;
+    padding: 0.2em 0.2em;
+    max-width: 1000px;
+    font-variant: normal;
+    width: 95%;
+    margin: 0.3em 0 0 1em;
+}
+
+p.submit_button {
+    padding: 0.6em 0 0;
+    margin: 0;
+    text-align: center;
+    border-top: 1px solid #CBCDD5;
+    background: #EAEBEE url(../images/double.png) left top repeat-x;
+}
+
+p.submit_button input {
+    overflow: visible;
+    width: auto;
+    background: #FFF;
+    color: #365D95;
+    padding: 0.3em 0.4em 0.1em 0.3em;
+    font-size: 1em;
+    width: 9em;
+    text-align: center;
+    border-bottom: 2px solid #444;
+    border-right: 2px solid #444;
+    border-top: 1px solid #AAA;
+    border-left: 1px solid #AAA;
+    background: #EEE url(../images/grad.png) repeat-x top left;
+    cursor: pointer;
+}
+
+p.submit_button input:active {
+    color: #1F2126;
+    border-bottom: 1px solid #AAA;
+    border-right: 1px solid #AAA;
+    border-top: 2px solid #444;
+    border-left: 2px solid #444;
+}
+
+a:link img, a:visited img {
+    border-style: none;
+}
+a img {
+    color: black; /* The only way to hide the border in NS 4.x */
+}
+
+ul.toc {
+    list-style: none;
+}
+
+ol li {
+    padding: .1em;
+}
+
+th {
+    text-align: left;
+}
+
+.hideme {
+    display: none;
+}
+
+/* These are usually targets and not links */
+h1 a, h1 a:hover, h2 a, h2 a:hover, h3 a, h3 a:hover {
+    color: inherit;
+    background-color: inherit;
+}
+
+img {
+    vertical-align: middle;
+}
+
+address img {
+    float: right;
+    width: 88px;
+}
+
+address {
+    padding: 0 2em;
+    font-size: small;
+    text-align: center;
+    color: #888;
+    background-color: white;
+}
+
+p.copyright {
+    margin-top: 5em;
+    padding-top: .5em;
+    font-size: xx-small;
+    max-width: 85ex;
+    text-align: justify;
+    text-transform: uppercase;
+    margin-left: auto;
+    margin-right:auto;
+    font-family: "Bitstream Vera Sans Mono", monospace;
+    color: #888;
+    line-height: 120%;
+}
+
+p.copyright a {
+    color: #88F;
+    text-decoration: none;
+}
+
+/* Various header(ish) things. Definitions cribbed from the CORE Styles. */
+
+h1#title {
+    font-family: "Myriad Web", "Myriad Pro", "Gill Sans", Helvetica, Arial, Sans-Serif;
+    background-color: #365D95;
+    color: #FDFDFD;
+    font-size: 1.6em;
+    font-weight: normal;
+    background: url(../images/head-bl.png) bottom left no-repeat;
+    padding-bottom: 0.430em;
+    margin: 0;
+    line-height: 1;
+}
+h1#title a, h1#title a img {
+    background-color: #365D95;
+}
+
+h1 span {
+    border-bottom: 1px solid #6383B1;
+    border-color: #4E6F9E;
+}
+
+h1#title a:link, h1#title a:hover, h1#title a:visited, h1#title a:active {
+    color: #FDFDFD !important;
+    text-decoration: none;
+}
+
+h1#title img {
+    vertical-align: middle;
+    margin-right: 0.7em;
+}
+
+p#tagline {
+    font-size: 0.7em;
+    margin: -2em 0 0 12.1em;
+    padding-bottom: 1em;
+    letter-spacing: 0.1em;
+    line-height: 100% !important;
+    color: #D0DCEE;
+    background-color: transparent;
+}
+
+div#banner {
+    background: #365D95 url(../images/head-br.png) bottom right no-repeat;
+    margin: 1.5em 2em;
+}
+
+h2 {
+    font-size: 1.5em;
+    text-align: left;
+    font-weight: bold;
+    font-style: normal;
+    text-decoration: none;
+    margin-top: 1em;
+    margin-bottom: 1em;
+    line-height: 120%;
+}
+
+h3 {
+    font-size: 1.3em;
+    font-weight: normal;
+    font-style: normal;
+    text-decoration: none;
+    background-color: #EEE;
+    text-indent: 1em;
+    padding: .2em;
+    border-top: 1px dotted black;
+}
+
+/*
+   Navbar
+*/
+
+ul#menu {
+    text-align: center;
+    margin: 1em 2em;
+    background: #EAEBEE url(../images/round-br.png) no-repeat bottom right;
+    padding: 0.5em 0 0.3em;
+    border-top: 1px solid #DCDDE0;
+}
+
+ul#menu span {
+    display: none;
+}
+
+ul#menu a:link, ul#menu a:visited {
+    background: #EAEBEE;
+    color: #365D95;
+    text-decoration: none;
+}
+
+ul#menu a:hover, ul#menu a:active {
+    color: #1F2126;
+    text-decoration: underline;
+}
+
+ul#menu li {
+    display: inline;
+    margin-right: 0.8em;
+}
+
+/* Results */
+
+.report {
+    width: 100%;
+}
+
+table.report {
+    border-collapse: collapse;
+}
+table.report th {
+    padding: .5em;
+    background-color: #FCFCFC;
+}
+table.report td {
+    padding: .5em;
+}
+
+dl.report {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding: 0;
+    border-bottom: 1px solid #EAEBEE;
+    border-left: 1px solid #EAEBEE;
+    border-right: 1px solid #EAEBEE;
+}
+
+dl.report dt, dl.report dd {
+    border-bottom: 0;
+}
+dl.report dt {
+    border-top: 1px solid #EAEBEE;
+    margin-top: .8em;
+    padding-left: .5em;
+    padding-top: .5em;
+    font-weight: bold;
+}
+dl.report dt span.msg_loc, dl.report dt span.redirected_to {
+    font-weight: normal;
+}
+dl.report dd {
+    border-top: 0;
+    margin: 0;
+    text-indent: 0;
+    padding: 0;
+    margin-left: 1.5em;
+}
+dl.report dd.responsecode {
+    padding-top: 1em;
+    font-size: smaller;
+}
+dl.report dd.message_explanation {
+    font-size: smaller;
+    margin-bottom: 1.5em;
+}
+
+dl.report dd p{
+    padding: 0;
+    line-height: 150%;
+}
+
+div.settings {
+    font-size: smaller;
+    float: right;
+}
+div.settings ul {
+    margin: 0;
+    padding-left: 1.5em;
+}
+.unauthorized {
+    background-color: aqua;
+}
+
+.redirect {
+    font-weight: normal;
+    font-style: italic;
+}
+.broken {
+    color: #A00;
+}
+dl.report .broken {
+    font-weight: bold;
+}
+.multiple {
+    color: fuchsia;
+}
+.dubious {
+    font-style: italic;
+}
+
+span.err_type img {
+    width: 1.2em;
+    height: 1.2em;
+    padding-bottom: .2em;
+    margin-right: .5em;
+    vertical-align: middle;
+}
+
+/* W3C includes (donation and sponsorship program) */
+#w3c-include {}
+

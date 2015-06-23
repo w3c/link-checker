@@ -1,0 +1,13 @@
+\.hgignore$
+\.hgtags$
+\bblib\b
+\bpm_to_blib\b
+\.hg\b
+~$
+\bMANIFEST\.SKIP$
+\bMakefile$
+\bMakefile\.old$
+\.tar\.
+\bREADME\.cvs$
+\bdocs/tests\b
+\bimages/w3c\.png$

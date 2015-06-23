@@ -1,0 +1,19 @@
+<p>
+This is the code for the <a href="http://validator.w3.org/checklink">W3C
+Link Checker</a>.
+</p>
+
+<p>A stable version of this tool is available for download 
+from
+      <a href="http://search.cpan.org/dist/W3C-LinkChecker/"><abbr
+      title="Comprehensive Perl Archive Network">CPAN</abbr></a>.
+</p>
+
+<p>
+Developers are encouraged to check out the latest development code
+from this Mercurial repository, by following these instructions:
+</p>
+
+<pre>
+    bash$ <kbd>hg clone https://dvcs.w3.org/hg/link-checker</kbd>
+</pre>
