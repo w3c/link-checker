@@ -199,19 +199,7 @@ sub ip_disallowed
     my $port = undef;
     $port = $uri->port();
     #whitelist regex if short enough
-#    if (! $port =~ m/^(80|443|8000|8080)$/ ) {
-    if ( $port =~ '22' ) {
-        $resp = HTTP::Response->new(403,
-            'Checking certain ports disallowed by link checker configuration'
-        );
-        $resp->header('Client-Warning', 'Internal response');
-    }
-
-#    #defaults to 80
-    my $port = undef;
-    $port = $uri->port();
-    #whitelist regex if short enough
-    if ($port !~ m/^(80|443|8000|8080|8081|115|21)$/ ) {
+    if ($port !~ m/^(8[0-9]|21|443)$/ && $port < 1024) {
         $resp = HTTP::Response->new(403,
             'Checking certain ports disallowed by link checker configuration'
         );
