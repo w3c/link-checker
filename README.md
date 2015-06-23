@@ -1,11 +1,13 @@
-W3C-LinkChecker
-===============
+#W3C-LinkChecker
 
 This distribution contains the W3C Link Checker.
 
 The link checker can be run as a CGI script in a web server as well as
 on the command line.  The CGI version provides a HTML interface as
 seen at [http://validator.w3.org/checklink](http://validator.w3.org/checklink).
+
+
+## Install
 
 To install the distribution for command line use:
 
@@ -30,7 +32,7 @@ source):
 ...as well as the HTML documentation in docs/checklink.html.
 
 
-COPYRIGHT AND LICENCE
+##Copyright and License
 
 Written by the following people for the W3C:
 - Hugo Haas <hugo@w3.org>
