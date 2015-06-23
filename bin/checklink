@@ -9,7 +9,7 @@
 #       http://www.w3.org/Consortium/Legal/copyright-software
 #
 # The documentation is at:
-#       http://validator.w3.org/docs/checklink.html
+#       http://validator.w3.org/checklink/docs/checklink.html
 #
 # See the Mercurial interface at:
 #       http://dvcs.w3.org/hg/link-checker/
@@ -376,7 +376,7 @@ EOF
     $Cfg{Markup_Validator_URI} ||= 'http://validator.w3.org/check?uri=%s';
     $Cfg{CSS_Validator_URI} ||=
         'http://jigsaw.w3.org/css-validator/validator?uri=%s';
-    $Cfg{Doc_URI} ||= 'http://validator.w3.org/docs/checklink.html';
+    $Cfg{Doc_URI} ||= 'http://validator.w3.org/checklink/docs/checklink.html';
     $Cfg{Doc_Base_URI} ||= '/checklink/docs/';
     $Cfg{Doc_Images_URI} ||= '/checklink/images/';
 
