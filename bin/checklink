@@ -82,7 +82,7 @@ sub new
 
     $self->allow_private_ips(1);
 
-    $self->protocols_forbidden([qw(mailto javascript)]);
+    $self->protocols_allowed([qw(http https ftp)]);
 
     return $self;
 }
@@ -202,16 +202,6 @@ sub ip_disallowed
     if ($port !~ m/^(8[0-9]|21|443)$/ && $port < 1024) {
         $resp = HTTP::Response->new(403,
             'Checking certain ports disallowed by link checker configuration'
-        );
-        $resp->header('Client-Warning', 'Internal response');
-    }
-
-    my $scheme = undef;
-    $scheme = $uri->scheme();
-    #whitelist regex if short enough
-    if ($scheme !~ m/^(http|https|ftp|urn)$/ ) {
-        $resp = HTTP::Response->new(403,
-            'Checking certain protocols disallowed by link checker configuration'
         );
         $resp->header('Client-Warning', 'Internal response');
     }
@@ -500,11 +490,11 @@ $@
 EOF
 }
 
-# Add configured forbidden protocols
-if ($Cfg{Forbidden_Protocols}) {
-    my $forbidden = $ua->protocols_forbidden();
-    push(@$forbidden, split(/[,\s]+/, lc($Cfg{Forbidden_Protocols})));
-    $ua->protocols_forbidden($forbidden);
+# Add configured allowed protocols
+if ($Cfg{Allowed_Protocols}) {
+    my $allowed = $ua->protocols_allowed();
+    push(@$allowed, split(/[,\s]+/, lc($Cfg{Allowed_Protocols})));
+    $ua->protocols_allowed($allowed);
 }
 
 if ($Opts{Command_Line}) {
