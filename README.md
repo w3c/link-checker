@@ -11,10 +11,12 @@ seen at [http://validator.w3.org/checklink](http://validator.w3.org/checklink).
 
 To install the distribution for command line use:
 
-    perl Makefile.PL
-    make
-    make test
-    make install # as root
+```sh
+perl Makefile.PL
+make
+make test
+make install # as root
+```
 
 To install the CGI version, in addition to the above, copy the
 bin/checklink script into a location in your web server from where
@@ -27,7 +29,9 @@ For more information, please consult the POD documentation in the
 checklink.pod file, typically (in the directory where you unpacked the
 source):
 
-    perldoc ./bin/checklink.pod
+```sh
+perldoc ./bin/checklink.pod
+```
 
 ...as well as the HTML documentation in docs/checklink.html.
 
