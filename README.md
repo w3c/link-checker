@@ -1,4 +1,4 @@
-#W3C-LinkChecker
+# W3C-LinkChecker
 
 This distribution contains the W3C Link Checker.
 
@@ -11,10 +11,12 @@ seen at [http://validator.w3.org/checklink](http://validator.w3.org/checklink).
 
 To install the distribution for command line use:
 
-   perl Makefile.PL
-   make
-   make test
-   make install # as root
+```sh
+perl Makefile.PL
+make
+make test
+make install # as root
+```
 
 To install the CGI version, in addition to the above, copy the
 bin/checklink script into a location in your web server from where
@@ -27,14 +29,17 @@ For more information, please consult the POD documentation in the
 checklink.pod file, typically (in the directory where you unpacked the
 source):
 
-  perldoc ./bin/checklink.pod
+```sh
+perldoc ./bin/checklink.pod
+```
 
 ...as well as the HTML documentation in docs/checklink.html.
 
 
-##Copyright and License
+## Copyright and License
 
 Written by the following people for the W3C:
+
 - Hugo Haas <hugo@w3.org>
 - Ville Skyttä <ville.skytta@iki.fi>
 - W3C QA-dev Team <public-qa-dev@w3.org>
