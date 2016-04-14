@@ -44,7 +44,7 @@ Show result summary only.
 
 Show only the broken links, not the redirects.
 
-=item B<-e, --directory>
+=item B<-e, --dir-redirects>
 
 Hide directory redirects - e.g. L<http://www.w3.org/TR> ->
 L<http://www.w3.org/TR/>.

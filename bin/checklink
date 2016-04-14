@@ -869,7 +869,7 @@ Usage: checklink <options> <uris>
 Options:
  -s, --summary              Result summary only.
  -b, --broken               Show only the broken links, not the redirects.
- -e, --directory            Hide directory redirects, for example
+ -e, --dir-redirects        Hide directory redirects, for example
                             http://www.w3.org/TR -> http://www.w3.org/TR/
  -r, --recursive            Check the documents linked from the first one.
  -D, --depth N              Check the documents linked from the first one to
