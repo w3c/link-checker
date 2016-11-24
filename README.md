@@ -12,10 +12,12 @@ seen at [http://validator.w3.org/checklink](http://validator.w3.org/checklink).
 To install the distribution for command line use:
 
 ```sh
+#if you have cpanminus installed
+cpanm --installdeps .
 perl Makefile.PL
 make
 make test
-make install # as root
+make install # as root unless you are using local::lib
 ```
 
 To install the CGI version, in addition to the above, copy the
