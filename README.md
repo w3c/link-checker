@@ -39,7 +39,7 @@ perldoc ./bin/checklink.pod
 
 ## As a Docker container
 
-You may want to use @stupchiy's [Dockerfile](https://github.com/stupchiy/docker-w3c-checklink/blob/master/Dockerfile), which is based on Ubuntu Linux, and
+You may want to use [@stupchiy](https://github.com/stupchiy)'s [Dockerfile](https://github.com/stupchiy/docker-w3c-checklink/blob/master/Dockerfile), which is based on Ubuntu Linux, and
 follow his instructions:
 
 ```sh
