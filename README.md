@@ -37,6 +37,17 @@ perldoc ./bin/checklink.pod
 
 ...as well as the HTML documentation in docs/checklink.html.
 
+## As a Docker container
+
+You may want to use [@stupchiy](https://github.com/stupchiy)'s [Dockerfile](https://github.com/stupchiy/docker-w3c-checklink/blob/master/Dockerfile), which is
+based on Ubuntu Linux, and follow his instructions:
+
+```sh
+$ docker build -t link-checker .                                                                        # Build an image
+$ docker run -it --rm link-checker                                                                      # Run a container
+$ docker run -it --rm link-checker checklink https://foo.bar                                            # Run script directly
+$ docker run -it --rm -v "$PWD":/home/checklink link-checker checklink -H https://foo.bar > report.html # Write to HTML file
+```
 
 ## Copyright and License
 
