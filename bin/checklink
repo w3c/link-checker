@@ -334,7 +334,7 @@ BEGIN {
     $ContentTypes = qr{\b(?:$re)\b}io;
 
     # Regexp for matching URL values in CSS.
-    $CssUrl = qr/(?:\s|^)url\(\s*(['"]?)(.*?)\1\s*\)(?=\s|$)/;
+    $CssUrl = qr/url\(\s*(['"]?)(.*?)\1\s*\)/;
 
     #
     # Read configuration.  If the W3C_CHECKLINK_CFG environment variable has
