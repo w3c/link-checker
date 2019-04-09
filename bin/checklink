@@ -1265,7 +1265,9 @@ EOF
                 else {
 
                     # Resource with a fragment
-                    $links{$canon_uri}{fragments}{$fragment}{$line_num} = 1;
+                    if (! grep { $_ eq "$canon_uri#$fragment" } @{$Opts{Suppress_Fragment}}) {
+                        $links{$canon_uri}{fragments}{$fragment}{$line_num} = 1;
+                    }
                 }
             }
         }
@@ -1335,7 +1337,7 @@ EOF
                 $broken{$u}{fragments}{$fragment} += 2 unless $fragment_ok;
             }
         }
-        elsif (!($Opts{Quiet} && &informational($results{$u}{location}{code})))
+        elsif (!($Opts{Quiet} && defined($results{$u}{location}{code}) && &informational($results{$u}{location}{code})))
         {
 
             # Couldn't find the document
@@ -1376,7 +1378,7 @@ EOF
             next unless &in_recursion_scope($u);
 
             # Do we understand its content type?
-            next unless ($results{$u}{location}{type} =~ $ContentTypes);
+            next unless (defined $results{$u}{location}{type} && $results{$u}{location}{type} =~ $ContentTypes);
 
             # Have we already processed this URI?
             next if &already_processed($u, $uri);
@@ -2261,9 +2263,13 @@ sub check_validity (\$\$$\%\%)
     if ($being_processed) {
 
         # Can we really parse the document?
-        if (!defined($results{$uri}{location}{type}) ||
-            $results{$uri}{location}{type} !~ $ContentTypes)
-        {
+        if (!defined($results{$uri}{location}{type})) {
+            &hprintf("Can't check content: Content-Type for '%s' is undefined.\n",
+                $uri)
+                if ($Opts{Verbose});
+            $response->content("");
+            return;
+        } elsif ($results{$uri}{location}{type} !~ $ContentTypes) {
             &hprintf("Can't check content: Content-Type for '%s' is '%s'.\n",
                 $uri, $results{$uri}{location}{type})
                 if ($Opts{Verbose});
@@ -2883,6 +2889,8 @@ sub links_summary (\%\%\%\%)
             push(@urls, $l);
         }
     }
+
+    @urls = grep { defined($results->{$_}{location}{record}) } @urls;
 
     # Broken links and redirects
     if ($#urls < 0) {
