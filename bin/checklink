@@ -11,15 +11,13 @@
 # The documentation is at:
 #       http://validator.w3.org/checklink/docs/checklink.html
 #
-# See the Mercurial interface at:
-#       http://dvcs.w3.org/hg/link-checker/
+# See the Github repository at:
+#       https://github.com/w3c/link-checker/
 #
 # An online version is available at:
 #       http://validator.w3.org/checklink
 #
-# Comments and suggestions should be sent to the www-validator mailing list:
-#       www-validator@w3.org (with 'checklink' in the subject)
-#       http://lists.w3.org/Archives/Public/www-validator/ (archives)
+# Comments and suggestions should be filed on github
 
 use strict;
 use 5.008;
@@ -932,9 +930,7 @@ configuration file to use.  See details in the full manual page, it can
 be displayed with: perldoc checklink
 
 More documentation at: $Cfg{Doc_URI}
-Please send bug reports and comments to the www-validator mailing list:
-  www-validator\@w3.org (with 'checklink' in the subject)
-  Archives are at: http://lists.w3.org/Archives/Public/www-validator/
+Please file bug reports and comments at https://github.com/w3c/link-checker/issues
 ";
     exit $exitval;
 }
