@@ -6,16 +6,16 @@
 # based on Renaud Bruyeron's checklink.pl
 #
 # This program is licensed under the W3C(r) Software License:
-#       http://www.w3.org/Consortium/Legal/copyright-software
+#       https://www.w3.org/Consortium/Legal/copyright-software
 #
 # The documentation is at:
-#       http://validator.w3.org/checklink/docs/checklink.html
+#       https://validator.w3.org/checklink/docs/checklink.html
 #
 # See the Github repository at:
 #       https://github.com/w3c/link-checker/
 #
 # An online version is available at:
-#       http://validator.w3.org/checklink
+#       https://validator.w3.org/checklink
 #
 # Comments and suggestions should be filed on github
 
@@ -248,7 +248,7 @@ use constant LINK_ATTRS => {
     a => ['href'],
 
     # base/@href intentionally not checked
-    # http://www.w3.org/mid/200802091439.27764.ville.skytta%40iki.fi
+    # https://www.w3.org/mid/200802091439.27764.ville.skytta%40iki.fi
     area       => ['href'],
     audio      => ['src'],
     blockquote => ['cite'],
@@ -361,10 +361,10 @@ $@
 EOF
         }
     }
-    $Cfg{Markup_Validator_URI} ||= 'http://validator.w3.org/check?uri=%s';
+    $Cfg{Markup_Validator_URI} ||= 'https://validator.w3.org/check?uri=%s';
     $Cfg{CSS_Validator_URI} ||=
-        'http://jigsaw.w3.org/css-validator/validator?uri=%s';
-    $Cfg{Doc_URI} ||= 'http://validator.w3.org/docs/checklink.html';
+        'https://jigsaw.w3.org/css-validator/validator?uri=%s';
+    $Cfg{Doc_URI} ||= 'https://validator.w3.org/docs/checklink.html';
     $Cfg{Doc_Base_URI} ||= '/checklink/docs/';
     $Cfg{Doc_Images_URI} ||= '/checklink/images/';
 
@@ -504,7 +504,7 @@ if ($Opts{Command_Line}) {
 
     &usage(1) unless scalar(@ARGV);
 
-    $Opts{_Self_URI} = 'http://validator.w3.org/checklink';   # For HTML output
+    $Opts{_Self_URI} = 'https://validator.w3.org/checklink';   # For HTML output
 
     &ask_password() if ($Opts{User} && !$Opts{Password});
 
@@ -868,15 +868,15 @@ Options:
  -s, --summary              Result summary only.
  -b, --broken               Show only the broken links, not the redirects.
  -e, --dir-redirects        Hide directory redirects, for example
-                            http://www.w3.org/TR -> http://www.w3.org/TR/
+                            https://www.w3.org/TR -> https://www.w3.org/TR/
  -r, --recursive            Check the documents linked from the first one.
  -D, --depth N              Check the documents linked from the first one to
                             depth N (implies --recursive).
  -l, --location URI         Scope of the documents checked in recursive mode
                             (implies --recursive).  Can be specified multiple
                             times.  If not specified, the default eg. for
-                            http://www.w3.org/TR/html4/Overview.html
-                            would be http://www.w3.org/TR/html4/
+                            https://www.w3.org/TR/html4/Overview.html
+                            would be https://www.w3.org/TR/html4/
  -X, --exclude REGEXP       Do not check links whose full, canonical URIs
                             match REGEXP; also limits recursion the same way
                             as --exclude-docs with the same regexp would.
@@ -1146,9 +1146,9 @@ EOF
 <div class="settings">
 Settings used:
  <ul>
-  <li><tt><a href="http://tools.ietf.org/html/rfc7231#section-5.3.2">Accept</a></tt>: %s</li>
-  <li><tt><a href="http://tools.ietf.org/html/rfc7231#section-5.3.5">Accept-Language</a></tt>: %s</li>
-  <li><tt><a href="http://tools.ietf.org/html/rfc7231#section-5.5.2">Referer</a></tt>: %s</li>
+  <li><tt><a href="https://tools.ietf.org/html/rfc7231#section-5.3.2">Accept</a></tt>: %s</li>
+  <li><tt><a href="https://tools.ietf.org/html/rfc7231#section-5.3.5">Accept-Language</a></tt>: %s</li>
+  <li><tt><a href="https://tools.ietf.org/html/rfc7231#section-5.5.2">Referer</a></tt>: %s</li>
   <li>Sleeping %d second%s between requests to each server</li>
  </ul>
 </div>
@@ -2598,9 +2598,9 @@ sub show_link_report (\%\%\%\%\@;$\%)
                     $whattodo =
                         'You must change this link: people using a browser without JavaScript support
 will <em>not</em> be able to follow this link. See the
-<a href="http://www.w3.org/TR/WAI-WEBCONTENT/#tech-scripts">Web Content
+<a href="https://www.w3.org/TR/WAI-WEBCONTENT/#tech-scripts">Web Content
 Accessibility Guidelines on the use of scripting on the Web</a> and the
-<a href="http://www.w3.org/TR/WCAG10-HTML-TECHS/#directly-accessible-scripts">techniques
+<a href="https://www.w3.org/TR/WCAG10-HTML-TECHS/#directly-accessible-scripts">techniques
 on how to solve this</a>.';
                 }
                 else {
@@ -2876,7 +2876,7 @@ sub links_summary (\%\%\%\%)
                 !defined($broken->{$l}));
 
             # Check whether we have a "directory redirect"
-            # e.g. http://www.w3.org/TR -> http://www.w3.org/TR/
+            # e.g. https://www.w3.org/TR -> https://www.w3.org/TR/
             my ($redirect_loop, @redirects) = get_redirects($l, %$redirects);
             if ($#redirects == 1) {
                 push(@dir_redirect_urls, $l);
@@ -3127,9 +3127,9 @@ sub html_footer ()
     This Link Checker looks for issues in links, anchors and referenced objects
     in a Web page, CSS style sheet, or recursively on a whole Web site. For
     best results, it is recommended to first ensure that the documents checked
-    use Valid <a href="http://validator.w3.org/">(X)HTML Markup</a> and
-    <a href="http://jigsaw.w3.org/css-validator/">CSS</a>. The Link Checker is
-    part of the W3C's <a href="http://www.w3.org/QA/Tools/">validators and
+    use Valid <a href="https://validator.w3.org/">(X)HTML Markup</a> and
+    <a href="https://jigsaw.w3.org/css-validator/">CSS</a>. The Link Checker is
+    part of the W3C's <a href="https://www.w3.org/QA/Tools/">validators and
     Quality Web tools</a>.
   </p>
 </div>
