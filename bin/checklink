@@ -374,7 +374,7 @@ EOF
     ($Cfg{CSS_Validator_URI})    = ($Cfg{CSS_Validator_URI}    =~ /^(.*)$/);
 
     $DocType =
-        '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">';
+        '<!DOCTYPE html>';
     my $css_url = $Cfg{Doc_Base_URI} . 'linkchecker.css';
     my $js_url  = $Cfg{Doc_Base_URI} . 'linkchecker.js';
     $Head =
@@ -1079,7 +1079,7 @@ sub check_uri (\%\$$$$;\$$)
 
     if ($check_num != 1) {
         if ($Opts{HTML}) {
-            $doc_header = "\n<hr />\n";
+            $doc_header = "\n<hr>\n";
         }
         else {
             $doc_header = "\n" . ('-' x 40) . "\n";
@@ -1385,7 +1385,7 @@ EOF
                 if (!$Opts{Command_Line}) {
                     if ($doc_count == $Opts{Max_Documents}) {
                         print(
-                            "<hr />\n<p><strong>Maximum number of documents ($Opts{Max_Documents}) reached!</strong></p>\n"
+                            "<hr>\n<p><strong>Maximum number of documents ($Opts{Max_Documents}) reached!</strong></p>\n"
                         );
                     }
                     if ($doc_count >= $Opts{Max_Documents}) {
@@ -2345,7 +2345,7 @@ EOF
 
         printf(
             "%s
-<html lang=\"en\" xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\">
+<html lang=\"en\">
 <head>
 <title>W3C Link Checker: 401 Authorization Required</title>
 %s</head>
@@ -2356,7 +2356,7 @@ EOF
         printf(
             '<p>
   %s
-  You need "%s" access to <a href="%s">%s</a> to perform link checking.<br />
+  You need "%s" access to <a href="%s">%s</a> to perform link checking.<br>
 ',
             &status_icon(401),
             &encode($realm), (&encode($response->request()->url())) x 2
@@ -2696,7 +2696,7 @@ on how to solve this</a>.';
 
                 # Realm
                 defined($currloc->{realm}) ?
-                    sprintf('Realm: %s<br />', &encode($currloc->{realm})) :
+                    sprintf('Realm: %s<br>', &encode($currloc->{realm})) :
                     '',
 
                 # HTTP original message
@@ -3026,7 +3026,7 @@ sub html_header ($$)
           ' onload="if(document.getElementById){document.getElementById(\'uri_1\').focus()}"';
 
     print $headers, $DocType, "
-<html lang=\"en\" xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\">
+<html lang=\"en\">
 <head>
 <title>W3C Link Checker", &encode($title), "</title>
 ",      $Head,   "</head>
@@ -3041,7 +3041,7 @@ sub banner ($)
 
     printf(
         <<'EOF', $Cfg{Doc_Images_URI} . 'w3c.png', $tagline);
-<div id="banner"><h1 id="title"><a href="http://www.w3.org/" title="W3C"><img alt="W3C" id="logo" src="%s" width="110" height="61" /></a>
+<div id="banner"><h1 id="title"><a href="https://www.w3.org/" title="W3C"><img alt="W3C" id="logo" src="%s" width="110" height="61"></a>
 <a href="checklink"><span>Link Checker</span></a></h1>
 <p id="tagline">%s</p></div>
 <div id="main">
@@ -3076,7 +3076,7 @@ sub status_icon($)
     else {
         $icon_type = 'error';
     }
-    return sprintf('<span class="err_type"><img src="%s" alt="%s" /></span>',
+    return sprintf('<span class="err_type"><img src="%s" alt="%s"></span>',
         $Cfg{Doc_Images_URI} . 'info_icons/' . $icon_type . '.png',
         $icon_type);
 }
@@ -3140,12 +3140,12 @@ EOF
 <ul class="navbar" id="menu">
   <li><a href="%s" accesskey="3" title="Documentation for this Link Checker Service">Docs</a></li>
   <li><a href="http://search.cpan.org/dist/W3C-LinkChecker/" accesskey="2" title="Download the source / Install this service">Download</a></li>
-  <li><a href="%s#csb" title="feedback: comments, suggestions and bugs" accesskey="4">Feedback</a></li>
-  <li><a href="http://validator.w3.org/" title="Validate your markup with the W3C Markup Validation Service">Validator</a></li>
+  <li><a href="https://github.com/w3c/link-checker" title="feedback: comments, suggestions and bugs" accesskey="4">Feedback</a></li>
+  <li><a href="https://validator.w3.org/" title="Validate your markup with the W3C Markup Validation Service">Validator</a></li>
 </ul>
 <div>
 <address>
-%s<br /> %s
+%s<br> %s
 </address>
 </div>
 </body>
@@ -3195,55 +3195,55 @@ sub print_form (\%$$)
     my $cookie_options = '';
     if ($valid_cookie) {
         $cookie_options = "
-    <label for=\"cookie1_$check_num\"><input type=\"radio\" id=\"cookie1_$check_num\" name=\"cookie\" value=\"nochanges\" checked=\"checked\" /> Don't modify saved options</label>
-    <label for=\"cookie2_$check_num\"><input type=\"radio\" id=\"cookie2_$check_num\" name=\"cookie\" value=\"set\" /> Save these options</label>
-    <label for=\"cookie3_$check_num\"><input type=\"radio\" id=\"cookie3_$check_num\" name=\"cookie\" value=\"clear\" /> Clear saved options</label>";
+    <label for=\"cookie1_$check_num\"><input type=\"radio\" id=\"cookie1_$check_num\" name=\"cookie\" value=\"nochanges\" checked=\"checked\"> Don't modify saved options</label>
+    <label for=\"cookie2_$check_num\"><input type=\"radio\" id=\"cookie2_$check_num\" name=\"cookie\" value=\"set\"> Save these options</label>
+    <label for=\"cookie3_$check_num\"><input type=\"radio\" id=\"cookie3_$check_num\" name=\"cookie\" value=\"clear\"> Clear saved options</label>";
     }
     else {
         $cookie_options = "
-    <label for=\"cookie_$check_num\"><input type=\"checkbox\" id=\"cookie_$check_num\" name=\"cookie\" value=\"set\" /> Save options in a <a href=\"http://tools.ietf.org/html/rfc6265\">cookie</a></label>";
+    <label for=\"cookie_$check_num\"><input type=\"checkbox\" id=\"cookie_$check_num\" name=\"cookie\" value=\"set\"> Save options in a <a href=\"https://tools.ietf.org/html/rfc6265\">cookie</a></label>";
     }
 
     print "<form action=\"", $Opts{_Self_URI},
         "\" method=\"get\" onsubmit=\"return uriOk($check_num)\" accept-charset=\"UTF-8\">
-<p><label for=\"uri_$check_num\">Enter the address (<a href=\"http://www.w3.org/Addressing/\">URL</a>)
+<p><label for=\"uri_$check_num\">Enter the address (<a href=\"https://www.w3.org/Addressing/\">URL</a>)
 of a document that you would like to check:</label></p>
 <p><input type=\"text\" size=\"50\" id=\"uri_$check_num\" name=\"uri\" value=\"",
-        $requested_uri, "\" /></p>
+        $requested_uri, "\"></p>
 <fieldset id=\"extra_opt_uri_$check_num\" class=\"moreoptions\">
 	<legend class=\"toggletext\">More Options</legend>
 	<div class=\"options\">
   <p>
     <label for=\"summary_$check_num\"><input type=\"checkbox\" id=\"summary_$check_num\" name=\"summary\" value=\"on\"",
-        $sum, " /> Summary only</label>
-    <br />
+        $sum, "> Summary only</label>
+    <br>
     <label for=\"hide_redirects_$check_num\"><input type=\"checkbox\" id=\"hide_redirects_$check_num\" name=\"hide_redirects\" value=\"on\"",
         $red,
-        " /> Hide <a href=\"http://tools.ietf.org/html/rfc7231#section-6.4\">redirects</a>:</label>
+        "> Hide <a href=\"https://tools.ietf.org/html/rfc7231#section-6.4\">redirects</a>:</label>
     <label for=\"hide_type_all_$check_num\"><input type=\"radio\" id=\"hide_type_all_$check_num\" name=\"hide_type\" value=\"all\"",
-        $all, " /> all</label>
+        $all, "> all</label>
     <label for=\"hide_type_dir_$check_num\"><input type=\"radio\" id=\"hide_type_dir_$check_num\" name=\"hide_type\" value=\"dir\"",
-        $dir, " /> for directories only</label>
-    <br />
+        $dir, "> for directories only</label>
+    <br>
     <label for=\"no_accept_language_$check_num\"><input type=\"checkbox\" id=\"no_accept_language_$check_num\" name=\"no_accept_language\" value=\"on\"",
         $acc,
-        " /> Don't send the <tt><a href=\"http://tools.ietf.org/html/rfc7231#section-5.3.5\">Accept-Language</a></tt> header</label>
-    <br />
+        "> Don't send the <tt><a href=\"https://tools.ietf.org/html/rfc7231#section-5.3.5\">Accept-Language</a></tt> header</label>
+    <br>
     <label for=\"no_referer_$check_num\"><input type=\"checkbox\" id=\"no_referer_$check_num\" name=\"no_referer\" value=\"on\"",
         $ref,
-        " /> Don't send the <tt><a href=\"http://tools.ietf.org/html/rfc7231#section-5.5.2\">Referer</a></tt> header</label>
-    <br />
+        "> Don't send the <tt><a href=\"https://tools.ietf.org/html/rfc7231#section-5.5.2\">Referer</a></tt> header</label>
+    <br>
     <label title=\"Check linked documents recursively (maximum: ",
         $Opts{Max_Documents},
         " documents)\" for=\"recursive_$check_num\"><input type=\"checkbox\" id=\"recursive_$check_num\" name=\"recursive\" value=\"on\"",
-        $rec, " /> Check linked documents recursively</label>,
+        $rec, "> Check linked documents recursively</label>,
     <label title=\"Depth of the recursion (-1 is the default and means unlimited)\" for=\"depth_$check_num\">recursion depth: <input type=\"text\" size=\"3\" maxlength=\"3\" id=\"depth_$check_num\" name=\"depth\" value=\"",
-        $dep, "\" /></label>
-    <br /><br />", $cookie_options, "
+        $dep, "\"></label>
+    <br><br>", $cookie_options, "
   </p>
   </div>
 </fieldset>
-<p class=\"submit_button\"><input type=\"submit\" name=\"check\" value=\"Check\" /></p>
+<p class=\"submit_button\"><input type=\"submit\" name=\"check\" value=\"Check\"></p>
 </form>
 <div id=\"w3c-include\"><script type=\"text/javascript\" src=\"//www.w3.org/QA/Tools/w3c-include.js\"></script></div>
 ";
