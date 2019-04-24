@@ -2596,12 +2596,8 @@ sub show_link_report (\%\%\%\%\@;$\%)
             if ($u =~ m/^javascript:/) {
                 if ($Opts{HTML}) {
                     $whattodo =
-                        'You must change this link: people using a browser without JavaScript support
-will <em>not</em> be able to follow this link. See the
-<a href="https://www.w3.org/TR/WAI-WEBCONTENT/#tech-scripts">Web Content
-Accessibility Guidelines on the use of scripting on the Web</a> and the
-<a href="https://www.w3.org/TR/WCAG10-HTML-TECHS/#directly-accessible-scripts">techniques
-on how to solve this</a>.';
+                        'You should change this link: people using a browser without JavaScript support
+will <em>not</em> be able to follow this link.';
                 }
                 else {
                     $whattodo =
