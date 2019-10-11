@@ -115,37 +115,31 @@ input#uri {
     margin: 0.3em 0 0 1em;
 }
 
-p.submit_button {
-    padding: 0.6em 0 0;
-    margin: 0;
-    text-align: center;
-    border-top: 1px solid #CBCDD5;
-    background: #EAEBEE url(../images/double.png) left top repeat-x;
-}
-
 p.submit_button input {
-    overflow: visible;
-    width: auto;
-    background: #FFF;
-    color: #365D95;
-    padding: 0.3em 0.4em 0.1em 0.3em;
-    font-size: 1em;
-    width: 9em;
-    text-align: center;
-    border-bottom: 2px solid #444;
-    border-right: 2px solid #444;
-    border-top: 1px solid #AAA;
-    border-left: 1px solid #AAA;
-    background: #EEE url(../images/grad.png) repeat-x top left;
-    cursor: pointer;
+	display: block;
+	width: 8em;
+	text-align: center;
+	margin: 10px auto;
+	padding: 0 12px;
+	-webkit-border-radius: 28px;
+	-moz-border-radius: 28px;
+	border-radius: 28px;
+	-webkit-box-shadow: 0 0 2px #86888e;
+	-moz-box-shadow: 0 0 2px #86888e;
+	box-shadow: 0 0 2px #86888e;
+	color: #365d95;
+	font-size: 16px;
+	background-color: #eaebee;
+	border: solid #86888e 1px;
+	text-decoration: none;
+	line-height: 32px;
+	cursor: pointer;
 }
 
-p.submit_button input:active {
-    color: #1F2126;
-    border-bottom: 1px solid #AAA;
-    border-right: 1px solid #AAA;
-    border-top: 2px solid #444;
-    border-left: 2px solid #444;
+
+p.submit_button input:active,
+p.submit_button input:hover {
+	color: #1f2126;
 }
 
 a:link img, a:visited img {
