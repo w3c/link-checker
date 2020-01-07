@@ -413,6 +413,7 @@ my %Opts = (
     Cookies         => undef,
     No_Referer      => 0,
     Hide_Same_Realm => 0,
+    Follow_File_Links        => 0,
     Depth                    => 0,             # < 0 means unlimited recursion.
     Sleep_Time               => 1,
     Connection_Cache_Size    => 2,
@@ -494,6 +495,11 @@ if ($Cfg{Allowed_Protocols}) {
     push(@$allowed, split(/[,\s]+/, lc($Cfg{Allowed_Protocols})));
     $ua->protocols_allowed($allowed);
 }
+if ($Opts{Follow_File_Links}) {
+    my $allowed = $ua->protocols_allowed();
+    push(@$allowed, "file");
+    $ua->protocols_allowed($allowed);
+}
 
 if ($Opts{Command_Line}) {
 
@@ -560,11 +566,6 @@ else {
     require CGI::Carp;
     CGI::Carp->import(qw(fatalsToBrowser));
     require CGI::Cookie;
-
-    # file: URIs are not allowed in CGI mode
-    my $forbidden = $ua->protocols_forbidden();
-    push(@$forbidden, 'file');
-    $ua->protocols_forbidden($forbidden);
 
     my $query = CGI->new();
 
@@ -728,6 +729,7 @@ sub parse_arguments ()
         'l|location=s'                => \@locs,
         'X|exclude=s'                 => \$Opts{Exclude},
         'exclude-docs=s@'             => \@{$Opts{Exclude_Docs}},
+        'follow-file-links'           => \$Opts{Follow_File_Links},
         'suppress-redirect=s@'        => \@{$Opts{Suppress_Redirect}},
         'suppress-redirect-prefix=s@' => \@{$Opts{Suppress_Redirect_Prefix}},
         'suppress-temp-redirects'     => \$Opts{Suppress_Temp_Redirects},
@@ -899,6 +901,8 @@ Options:
  --suppress-fragment URI    Do not report the given broken fragment URI.
                             A fragment URI contains \"#\".  This option may be
                             specified multiple times.
+ --follow-file-links        When encountering a file: URI, try to follow it
+                            (disabled by default for security reasons)
  -L, --languages LANGS      Accept-Language header to send.  The special value
                             'auto' causes autodetection from the environment.
  -c, --cookies FILE         Use cookies, load/save them in FILE.  The special
