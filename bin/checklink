@@ -530,6 +530,7 @@ if ($Opts{Command_Line}) {
     );
 
     my $check_num = 1;
+    my $has_error = 0;
     my @bases     = @{$Opts{Base_Locations}};
     for my $uri (@ARGV) {
 
@@ -540,7 +541,7 @@ if ($Opts{Command_Line}) {
         # Transform the parameter into a URI
         $uri = &urize($uri);
         $params{uri} = $uri;
-        &check_uri(\%params, $uri, $check_num, $Opts{Depth}, undef, undef, 1);
+        $has_error += &check_uri(\%params, $uri, $check_num, $Opts{Depth}, undef, undef, 1);
         $check_num++;
     }
     undef $check_num;
@@ -551,7 +552,7 @@ if ($Opts{Command_Line}) {
     elsif ($doc_count > 0 && !$Opts{Summary_Only}) {
         printf("\n%s\n", &global_stats());
     }
-
+    exit ($has_error ? 64 : 0);
 }
 else {
 
@@ -826,7 +827,7 @@ sub parse_arguments ()
     for my $i (0 .. $#{$Opts{Suppress_Broken}}) {
         ${$Opts{Suppress_Broken}}[$i] =~ s/ /:/;
         my $sb_arg = ${$Opts{Suppress_Broken}}[$i];
-        if ($sb_arg !~ /^(-1|[0-9]+):./) {
+        if ($sb_arg !~ /^(-1|[0-9]+)(:.)?/) {
             &usage(1,
                 "Bad suppress-broken argument, should be prefixed by a numeric response code: $sb_arg"
             );
@@ -890,9 +891,11 @@ Options:
                             the first URI to the same child of the second URI.
                             This option may be specified multiple times.
  --suppress-temp-redirects  Suppress warnings about temporary redirects.
- --suppress-broken CODE:URI  Do not report a broken link with the given CODE.
+ --suppress-broken CODE(:URI)  Do not report a broken link with the given CODE.
                             CODE is HTTP response, or -1 for robots exclusion.
-                            This option may be specified multiple times.
+                            This option may be specified multiple times, and
+                            can optionally be limited to a single pair of CODE /
+                            URI.
  --suppress-fragment URI    Do not report the given broken fragment URI.
                             A fragment URI contains \"#\".  This option may be
                             specified multiple times.
@@ -1041,6 +1044,7 @@ sub check_uri (\%\$$$$;\$$)
     $is_start ||= ($check_num == 1);
 
     my $start = $Opts{Summary_Only} ? 0 : &get_timestamp();
+    my $error_found = 0;
 
     # Get and parse the document
     my $response = &get_document(
@@ -1049,7 +1053,7 @@ sub check_uri (\%\$$$$;\$$)
     );
 
     # Can we check the resource? If not, we exit here...
-    return if defined($response->{Stop});
+    return 0 if defined($response->{Stop});
 
     if ($Opts{HTML}) {
         &html_header($uri, $cookie) if ($check_num == 1);
@@ -1069,7 +1073,7 @@ sub check_uri (\%\$$$$;\$$)
             hprintf("Not in recursion scope: %s\n")
                 if ($Opts{Verbose});
             $response->content("");
-            return;
+            return $error_found;
         }
     }
 
@@ -1315,9 +1319,9 @@ EOF
 
             # List the broken fragments
             while (my ($fragment, $lines) = each(%{$ulinks->{fragments}})) {
-
-                my $fragment_ok = $results{$u}{fragments}{$fragment};
-
+                my $fragment_ok = $results{$u}{fragments}{$fragment}
+                # 100 matches what we get for ignored error codes
+                || $results{$u}{location}{code} == 100;
                 if ($Opts{Verbose}) {
                     my @line_nums = sort { $a <=> $b } keys(%$lines);
                     &hprintf(
@@ -1364,6 +1368,8 @@ EOF
     &links_summary(\%links, \%results, \%broken, \%redirects);
     &anchors_summary($p->{Anchors}, \%errors);
 
+    $error_found = scalar(keys(%errors)) + scalar(keys(%broken));
+
     # Do we want to process other documents?
     if ($depth != 0) {
 
@@ -1402,14 +1408,14 @@ EOF
             no warnings 'recursion';
 
             if ($depth < 0) {
-                &check_uri($params, $u, 0, -1, $cookie, $uri);
+                $error_found += &check_uri($params, $u, 0, -1, $cookie, $uri);
             }
             else {
-                &check_uri($params, $u, 0, $depth - 1, $cookie, $uri);
+                $error_found += &check_uri($params, $u, 0, $depth - 1, $cookie, $uri);
             }
         }
     }
-    return;
+    return $error_found;
 }
 
 ###############################################################
@@ -1784,8 +1790,9 @@ sub record_results (\$$$$)
     # print STDERR "success? " . $results{$uri}{location}{success} . ": $uri\n";
     if (!$results{$uri}{location}{success}) {
         my $code = $results{$uri}{location}{code};
-        my $match = grep { $_ eq "$code:$uri" } @{$Opts{Suppress_Broken}};
-        if ($match) {
+        my $matchCodeUri = grep { $_ eq "$code:$uri" } @{$Opts{Suppress_Broken}};
+        my $matchCode = grep { $_ eq "$code" } @{$Opts{Suppress_Broken}};
+        if ($matchCodeUri || $matchCode) {
             $results{$uri}{location}{success} = 1;
             $results{$uri}{location}{code}    = 100;
             $results{$uri}{location}{display} = 100;
