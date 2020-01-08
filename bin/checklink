@@ -242,50 +242,59 @@ use constant LINE_UNKNOWN => -1;
 use constant MP2 =>
     (exists($ENV{MOD_PERL_API_VERSION}) && $ENV{MOD_PERL_API_VERSION} >= 2);
 
-# Tag=>attribute mapping of things we treat as links.
+# Mixed content status based on https://w3c.github.io/webappsec-mixed-content/
+use constant MC_NONE        => 0;
+use constant MC_OPTIONAL    => 1;
+use constant MC_CONDITIONAL => 2;
+use constant MC_BLOCK       => 3;
+
+# Tag=>[[mixedContentStatus, attribute]] mapping of things we treat as links.
 # Note: meta/@http-equiv gets special treatment, see start() for details.
 use constant LINK_ATTRS => {
-    a => ['href'],
+    a => [[MC_NONE, 'href']],
 
     # base/@href intentionally not checked
     # https://www.w3.org/mid/200802091439.27764.ville.skytta%40iki.fi
-    area       => ['href'],
-    audio      => ['src'],
-    blockquote => ['cite'],
-    body       => ['background'],
-    command    => ['icon'],
+    area       => [[MC_NONE, 'href']],
+    audio      => [[MC_OPTIONAL, 'src']],
+    blockquote => [[MC_NONE, 'cite']],
+    body       => [[MC_OPTIONAL, 'background']],
+    command    => [[MC_OPTIONAL, 'icon']], # no spec says how to handle this
+                                          # wrt to mixed content
 
     # button/@formaction not checked (side effects)
-    del => ['cite'],
+    del => [[MC_NONE, 'cite']],
 
     # @pluginspage, @pluginurl, @href: pre-HTML5 proprietary
-    embed => ['href', 'pluginspage', 'pluginurl', 'src'],
+    embed => [[MC_BLOCK, 'href'], [MC_NONE, 'pluginspage'], [MC_NONE, 'pluginurl'], [MC_BLOCK, 'src']],
 
     # form/@action not checked (side effects)
-    frame  => ['longdesc', 'src'],
-    html   => ['manifest'],
-    iframe => ['longdesc', 'src'],
-    img    => ['longdesc', 'src'],
+    frame  => [[MC_BLOCK, 'longdesc'], [MC_BLOCK, 'src']],
+    html   => [[MC_BLOCK, 'manifest']],
+    iframe => [[MC_BLOCK, 'longdesc'], [MC_BLOCK, 'src']],
+    img    => [[MC_BLOCK, 'longdesc'], [MC_CONDITIONAL, 'src']],
 
     # input/@action, input/@formaction not checked (side effects)
-    input  => ['src'],
-    ins    => ['cite'],
-    link   => ['href'],
-    object => ['data'],
-    q      => ['cite'],
-    script => ['src'],
-    source => ['src'],
-    track  => ['src'],
-    video  => ['src', 'poster'],
+    input  => [[MC_BLOCK,'src']],
+    ins    => [[MC_NONE, 'cite']],
+    link   => [[MC_CONDITIONAL, 'href']],
+    object => [[MC_BLOCK, 'data']],
+    q      => [[MC_NONE, 'cite']],
+    script => [[MC_BLOCK, 'src']],
+    source => [[MC_OPTIONAL, 'src']],
+    track  => [[MC_BLOCK, 'src']],
+    video  => [[MC_OPTIONAL, 'src'], [MC_BLOCK, 'poster']],
 };
 
-# Tag=>[separator, attributes] mapping of things we treat as lists of links.
+# Tag=>[separator, subseparator, attributes] mapping of things we treat as lists of links.
 use constant LINK_LIST_ATTRS => {
-    a      => [qr/\s+/,    ['ping']],
-    applet => [qr/[\s,]+/, ['archive']],
-    area   => [qr/\s+/,    ['ping']],
-    head   => [qr/\s+/,    ['profile']],
-    object => [qr/\s+/,    ['archive']],
+    a      => [qr/\s+/, qr/$/,      [MC_BLOCK, 'ping']],
+    applet => [qr/[\s,]+/, qr/$/,   [MC_BLOCK, 'archive']],
+    area   => [qr/\s+/, qr/$/,      [MC_BLOCK, 'ping']],
+    img    => [qr/\s*,/, qr/\s+/,   [MC_BLOCK, 'srcset']],
+    head   => [qr/\s+/,  qr/$/,     [MC_NONE, 'profile']],
+    object => [qr/\s+/,  qr/$/,     [MC_BLOCK, 'archive']],
+    source => [qr/[\s,]+/, qr/\s+/, [MC_BLOCK, 'srcset']]
 };
 
 # TBD/TODO:
@@ -730,6 +739,7 @@ sub parse_arguments ()
         'X|exclude=s'                 => \$Opts{Exclude},
         'exclude-docs=s@'             => \@{$Opts{Exclude_Docs}},
         'follow-file-links'           => \$Opts{Follow_File_Links},
+        'https'                       => \$Opts{Https},
         'suppress-redirect=s@'        => \@{$Opts{Suppress_Redirect}},
         'suppress-redirect-prefix=s@' => \@{$Opts{Suppress_Redirect_Prefix}},
         'suppress-temp-redirects'     => \$Opts{Suppress_Temp_Redirects},
@@ -923,6 +933,7 @@ Options:
                             (default: $trust).
  --masquerade \"BASE1 BASE2\" Masquerade base URI BASE1 as BASE2.  See the
                             manual page for more information.
+ --https                    Check the file as if it was served on https://
  -H, --html                 HTML output.
  -?, -h, --help             Show this message and exit.
  -V, --version              Output version information and exit.
@@ -1202,6 +1213,7 @@ EOF
     my $p =
         &parse_document($uri, $response->base(), $response, 1, ($depth != 0));
     my $base = URI->new($p->{base});
+    my $check_mixed_content = ($base->scheme eq 'https' || $Opts{Https});
 
     # Check anchors
     ###############
@@ -1236,6 +1248,9 @@ EOF
 
     # Record all the links found
     while (my ($link, $lines) = each(%{$p->{Links}})) {
+        #my @hash = values(%$lines);
+        #print join(',', map { keys(%$_) } @hash);
+        #print $link, $mixedcontent;
         my $link_uri = URI->new($link);
         my $abs_link_uri = URI->new_abs($link_uri, $base);
 
@@ -1261,16 +1276,21 @@ EOF
                 push(@{$hostlinks{$hostport}}, $canon_uri);
             }
             for my $line_num (keys(%$lines)) {
+                my @mixedcontent = keys(%{%$lines{$line_num}});
+                my $mc_block = MC_BLOCK;
+                if (grep(/^$mc_block$/, @mixedcontent)) {
+                    push(@{$links{$canon_uri}{mixedcontent}}, $line_num);
+                }
                 if (!defined($fragment) || !length($fragment)) {
 
                     # Document without fragment
-                    $links{$canon_uri}{location}{$line_num} = 1;
+                    $links{$canon_uri}{location}{$line_num} = @mixedcontent;
                 }
                 else {
 
                     # Resource with a fragment
                     if (! grep { $_ eq "$canon_uri#$fragment" } @{$Opts{Suppress_Fragment}}) {
-                        $links{$canon_uri}{fragments}{$fragment}{$line_num} = 1;
+                        $links{$canon_uri}{fragments}{$fragment}{$line_num} = @mixedcontent;
                     }
                 }
             }
@@ -1310,8 +1330,11 @@ EOF
         $link_num++;
 
         # Check that a link is valid
+        # TODO: take optional into account if CSP: block_mixedcontent is set
+        my $mc_block = MC_BLOCK;
+        my $mixedcontent_lines = $check_mixed_content && %$ulinks{"mixedcontent"} ? %$ulinks{"mixedcontent"} : ();
         &check_validity($uri, $u, ($depth != 0 && &in_recursion_scope($u)),
-            \%links, \%redirects);
+            \%links, \%redirects, $mixedcontent_lines);
         &hprintf("\tReturn code: %s\n", $results{$u}{location}{code})
             if ($Opts{Verbose});
         if ($results{$u}{location}{success}) {
@@ -1762,7 +1785,7 @@ sub get_uri ($\$;\$$\%$$$$)
 
 sub record_results (\$$$$)
 {
-    my ($uri, $method, $response, $referer) = @_;
+    my ($uri, $method, $response, $referer, $mixedcontent_lines) = @_;
     $results{$uri}{referer}        = $referer;
     $results{$uri}{response}       = $response;
     $results{$uri}{method}         = $method;
@@ -2030,7 +2053,7 @@ sub get_anchor
 
 sub add_link
 {
-    my ($self, $uri, $base, $line) = @_;
+    my ($self, $uri, $base, $line, $mixedcontent) = @_;
     if (defined($uri)) {
 
         # Remove repeated slashes after the . or .. in relative links, to avoid
@@ -2038,7 +2061,7 @@ sub add_link
         $uri =~ s|^(\.\.?/)/+|$1|o;
         $uri = Encode::decode_utf8($uri);
         $uri = URI->new_abs($uri, $base) if defined($base);
-        $self->{Links}{$uri}{defined($line) ? $line : LINE_UNKNOWN()}++;
+        $self->{Links}{$uri}{defined($line) ? $line : LINE_UNKNOWN()}{$mixedcontent}++;
     }
     return;
 }
@@ -2075,7 +2098,7 @@ sub start
             {
                 my $content = $attr->{content};
                 if ($content && $content =~ /.*?;\s*(?:url=)?(.+)/i) {
-                    $self->add_link($1, undef, $line);
+                    $self->add_link($1, undef, $line, MC_BLOCK);
                 }
             }
         }
@@ -2097,18 +2120,42 @@ sub start
 
         # Link attributes:
         if (my $link_attrs = LINK_ATTRS()->{$tag}) {
-            for my $la (@$link_attrs) {
-                $self->add_link($attr->{$la}, $tag_local_base, $line);
+            for my $attrdesc (@$link_attrs) {
+                my ($mixedcontent, $la) = @$attrdesc;
+                my $attributes = [];
+                if ($mixedcontent == MC_CONDITIONAL) {
+                    if ($tag eq 'img') {
+                        if ($attr->{crossorigin}) {
+                            $mixedcontent = MC_BLOCK;
+                        } else {
+                            $mixedcontent = MC_OPTIONAL;
+                        }
+                    } elsif ($tag eq 'link') {
+                        my @blocked_link_types = ('stylesheet', 'prefetch', 'preload', 'preconnect', 'prerender', 'modulepreload', 'icon', 'dns-prefetch');
+                        my @link_types = map{ lc($_)} split(/\s+/, $attr->{rel});
+                        for my $type (@link_types) {
+                            if ( grep (/^$type$/, @blocked_link_types)) {
+                                $mixedcontent = MC_BLOCK;
+                                last;
+                            }
+                        }
+                        if ($mixedcontent == MC_CONDITIONAL) {
+                            $mixedcontent = MC_OPTIONAL;
+                        }
+                    }
+                }
+                $self->add_link($attr->{$la}, $tag_local_base, $line, $mixedcontent);
             }
         }
 
         # List of links attributes:
         if (my $link_attrs = LINK_LIST_ATTRS()->{$tag}) {
-            my ($sep, $attrs) = @$link_attrs;
-            for my $la (@$attrs) {
-                if (defined(my $value = $attr->{$la})) {
-                    for my $link (split($sep, $value)) {
-                        $self->add_link($link, $tag_local_base, $line);
+            my ($sep, $subsep, $attrdesc) = @$link_attrs;
+            my ($mixedcontent, $la) = @$attrdesc;
+            if (defined(my $value = $attr->{$la})) {
+                for my $comp (split($sep, $value)) {
+                    for my $link (split($subsep, $comp)) {
+                        $self->add_link($link, $tag_local_base, $line, $mixedcontent);
                     }
                 }
             }
@@ -2150,7 +2197,7 @@ sub parse_css
     my $sheet = CSS::DOM::parse($css);
     for my $rule (@{$sheet->cssRules()}) {
         if ($rule->type() == IMPORT_RULE()) {
-            $self->add_link($rule->href(), $self->{base}, $line);
+            $self->add_link($rule->href(), $self->{base}, $line, MC_BLOCK);
         }
         elsif ($rule->type == STYLE_RULE()) {
             $self->parse_style($rule->style(), $line);
@@ -2170,7 +2217,8 @@ sub parse_style
 
         while ($val =~ /$CssUrl/go) {
             my $url = CSS::DOM::Util::unescape($2);
-            $self->add_link($url, $self->{base}, $line);
+            # FIXME: are there CSS rules with URLs that aren't mixed content blockable?
+            $self->add_link($url, $self->{base}, $line, MC_OPTIONAL);
         }
     }
 
@@ -2198,7 +2246,7 @@ sub declaration
             $self->doctype($1) if $1;
 
             # If there is a link to the DTD, record it
-            $self->add_link($3, undef, $line)
+            $self->add_link($3, undef, $line, MC_NONE)
                 if (!$self->{only_anchors} && $3);
         }
     }
@@ -2228,15 +2276,17 @@ sub end_document
 # Check the validity of a link #
 ################################
 
-sub check_validity (\$\$$\%\%)
+sub check_validity (\$\$$\%\%\$)
 {
-    my ($referer, $uri, $want_links, $links, $redirects) = @_;
+    my ($referer, $uri, $want_links, $links, $redirects, $mixedcontent_lines) = @_;
 
     # $referer is the URI object of the document checked
     # $uri is the URI object of the target that we are verifying
     # $want_links is true if we're interested in links in the target doc
     # $links is a hash of the links in the documents checked
     # $redirects is a map of the redirects encountered
+    # $mixedcontent_lines is an array of lines where the link appears
+    #                     in a mixedcontent context (if any)
 
     # Get the document with the appropriate method: GET if there are
     # fragments to check or links are wanted, HEAD is enough otherwise.
@@ -2252,7 +2302,7 @@ sub check_validity (\$\$$\%\%)
         $response = &get_uri($method, $uri, $referer);
 
         # Get the information back from get_uri()
-        &record_results($uri, $method, $response, $referer);
+        &record_results($uri, $method, $response, $referer, $mixedcontent_lines);
 
         # Record the redirects
         &record_redirects($redirects, $response);
