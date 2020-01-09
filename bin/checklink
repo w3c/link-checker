@@ -236,6 +236,7 @@ use constant RC_ROBOTS_TXT          => -1;
 use constant RC_DNS_ERROR           => -2;
 use constant RC_IP_DISALLOWED       => -3;
 use constant RC_PROTOCOL_DISALLOWED => -4;
+use constant RC_MIXEDCONTENT_BLOCK  => -5;
 
 use constant LINE_UNKNOWN => -1;
 
@@ -1308,6 +1309,7 @@ EOF
         if ($Opts{Verbose});
 
     my %broken;
+    my %blocked;
     my $link_num = 0;
     for my $u (@order) {
         my $ulinks = $links{$u};
@@ -1375,6 +1377,9 @@ EOF
                 $broken{$u}{fragments}{$fragment}++;
             }
         }
+        if ($results{$u}{mixedcontent_blocked}) {
+            $blocked{$u} = $results{$u}{mixedcontent_blocked};
+        }
     }
     &hprintf(
         "\nProcessed in %s seconds.\n",
@@ -1392,10 +1397,10 @@ EOF
     }
     print "\n" unless $Opts{Quiet};
 
-    &links_summary(\%links, \%results, \%broken, \%redirects);
+    &links_summary(\%links, \%results, \%broken, \%redirects, \%blocked);
     &anchors_summary($p->{Anchors}, \%errors);
 
-    $error_found = scalar(keys(%errors)) + scalar(keys(%broken));
+    $error_found = scalar(keys(%errors)) + scalar(keys(%broken)) + scalar(keys(%blocked));
 
     # Do we want to process other documents?
     if ($depth != 0) {
@@ -1802,6 +1807,7 @@ sub record_results (\$$$$)
     $results{$uri}{location}{code} = RC_PROTOCOL_DISALLOWED()
         if ($results{$uri}{location}{code} == 500 &&
         $response->message() =~ /Access to '[^\']*' URIs has been disabled/);
+
     $results{$uri}{location}{type}    = $response->header('Content-type');
     $results{$uri}{location}{display} = $results{$uri}{location}{code};
 
@@ -1810,6 +1816,13 @@ sub record_results (\$$$$)
         $results{$uri}{location}{orig}         = $tmp->code();
         $results{$uri}{location}{orig_message} = $tmp->message() ||
             '(no message)';
+    }
+    # dealing with mixed content
+    if ($mixedcontent_lines && $uri->scheme ne 'https') {
+        # TODO
+        # Check headers of CSP: upgrade-insecure-request (but only if block_mixed_content was not set)
+        # Set this the lines where the URL is used in mixedcontent_block context
+        $results{$uri}{mixedcontent_blocked} = $mixedcontent_lines;
     }
     $results{$uri}{location}{success} = $response->is_success();
 
@@ -2837,6 +2850,27 @@ will <em>not</em> be able to follow this link.';
     return;
 }
 
+sub show_mixedcontent_report (\@\%)
+{
+    my ($mc_blocked_urls, $blocked) = @_;
+
+    print("\n<dl class=\"report\">") if $Opts{HTML};
+    print("\n") if (!$Opts{Quiet});
+    print("\n<dl class=\"report\">") if $Opts{HTML};
+    for my $url (@$mc_blocked_urls) {
+        if ($Opts{HTML}) {
+            printf("<dt>%s</dt>\n", &show_url($url)) ;
+            printf("<dd>Blocked in mixed content context on lines: <span class='msg_loc'>%s</span></dd>\n", join("</span>, <span class='msg_loc'>", @{%$blocked{$url}}));
+        } else {
+            printf("\n%s\n", $url) ;
+            print "Blocked in mixed content context on lines: ";
+            print join(", ", @{%$blocked{$url}});
+            print "\n\n";
+
+        }
+    }
+}
+
 sub code_shown ($$)
 {
     my ($u, $results) = @_;
@@ -2850,7 +2884,7 @@ sub code_shown ($$)
     }
 }
 
-sub links_summary (\%\%\%\%)
+sub links_summary (\%\%\%\%\%)
 {
 
     # Advices to fix the problems
@@ -2908,6 +2942,8 @@ sub links_summary (\%\%\%\%)
                 ('') x 2),
         RC_PROTOCOL_DISALLOWED() =>
             'Accessing links with this URI scheme has been disabled in link checker.',
+        RC_MIXEDCONTENT_BLOCK() =>
+            'The link is blocked as mixed-content. The resource needs to be fetched over https.',
     );
     my %priority = (
         410 => 1,
@@ -2918,10 +2954,11 @@ sub links_summary (\%\%\%\%)
         401 => 20
     );
 
-    my ($links, $results, $broken, $redirects) = @_;
+    my ($links, $results, $broken, $redirects, $blocked) = @_;
 
     # List of the broken links
     my @urls              = keys %{$broken};
+    my @mc_blocked_urls      = keys %{$blocked};
     my @dir_redirect_urls = ();
     if ($Opts{Redirects}) {
 
@@ -3034,6 +3071,16 @@ EOF
             \@dir_redirect_urls);
     }
 
+    # Show mixedcontent blocked URLs
+    if ($#mc_blocked_urls > -1) {
+        print_doc_header();
+        print('<h3>') if $Opts{HTML};
+        print("\nList of URLs blocked because they're mixed content");
+        print(
+            "</h3>\n<p>The URLs below are not necessarily broken, but they will be not loaded correctly since they’re  <code>http:</code> URLs loaded in an <code>https:</code> page and will be blocked as mixed content.</p>"
+        ) if $Opts{HTML};
+        &show_mixedcontent_report(\@mc_blocked_urls, \%$blocked);
+    }
     return;
 }
 
