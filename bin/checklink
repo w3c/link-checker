@@ -1283,6 +1283,12 @@ EOF
                 if (grep(/^$mc_block$/, @mixedcontent)) {
                     push(@{$links{$canon_uri}{mixedcontent}}, $line_num);
                 }
+                # take optional into account if CSP: block-all-mixed-content is set
+                my $mc_optional = MC_OPTIONAL;
+                if (grep(/^block-all-mixed-content$/, $p->{csp})
+                    && grep(/^$mc_optional$/, @mixedcontent)) {
+                    push(@{$links{$canon_uri}{mixedcontent}}, $line_num);
+                }
                 if (!defined($fragment) || !length($fragment)) {
 
                     # Document without fragment
@@ -1333,11 +1339,9 @@ EOF
         $link_num++;
 
         # Check that a link is valid
-        # TODO: take optional into account if CSP: block_mixedcontent is set
-        my $mc_block = MC_BLOCK;
         my $mixedcontent_lines = $check_mixed_content && %$ulinks{"mixedcontent"} ? %$ulinks{"mixedcontent"} : ();
         &check_validity($uri, $u, ($depth != 0 && &in_recursion_scope($u)),
-            \%links, \%redirects, $mixedcontent_lines);
+            \%links, \%redirects, $mixedcontent_lines, $p->{csp});
         &hprintf("\tReturn code: %s\n", $results{$u}{location}{code})
             if ($Opts{Verbose});
         if ($results{$u}{location}{success}) {
@@ -1790,9 +1794,9 @@ sub get_uri ($\$;\$$\%$$$$)
 # Record the results of an HTTP request #
 #########################################
 
-sub record_results (\$$$$)
+sub record_results (\$$$$\@)
 {
-    my ($uri, $method, $response, $referer, $mixedcontent_lines) = @_;
+    my ($uri, $method, $response, $referer, $mixedcontent_lines, @csp) = @_;
     $results{$uri}{referer}        = $referer;
     $results{$uri}{response}       = $response;
     $results{$uri}{method}         = $method;
@@ -1821,10 +1825,11 @@ sub record_results (\$$$$)
     }
     # dealing with mixed content
     if ($mixedcontent_lines && $uri->scheme ne 'https') {
-        # TODO
-        # Check headers of CSP: upgrade-insecure-request (but only if block_mixed_content was not set)
-        # Set this the lines where the URL is used in mixedcontent_block context
-        $results{$uri}{mixedcontent_blocked} = $mixedcontent_lines;
+        # Check headers of CSP: upgrade-insecure-request
+        if (! ($uri->scheme eq 'http' && grep(/^upgrade-insecure-requests$/, @csp))) {
+            # Set this the lines where the URL is used in mixedcontent_block context
+            $results{$uri}{mixedcontent_blocked} = $mixedcontent_lines;
+        }
     }
     $results{$uri}{location}{success} = $response->is_success();
 
@@ -1894,6 +1899,8 @@ sub parse_document (\$\$$$$)
 
     $p = W3C::LinkChecker->new();
     $p->{base} = $base_uri;
+
+    $p->{csp} = $response->header('Content-Security-Policy');
 
     my $stype = $response->header("Content-Style-Type");
     $p->{style_is_css} = !$stype || is_content_type($stype, "text/css");
@@ -2291,9 +2298,9 @@ sub end_document
 # Check the validity of a link #
 ################################
 
-sub check_validity (\$\$$\%\%\$)
+sub check_validity (\$\$$\%\%\$\$)
 {
-    my ($referer, $uri, $want_links, $links, $redirects, $mixedcontent_lines) = @_;
+    my ($referer, $uri, $want_links, $links, $redirects, $mixedcontent_lines, $csp) = @_;
 
     # $referer is the URI object of the document checked
     # $uri is the URI object of the target that we are verifying
@@ -2302,6 +2309,8 @@ sub check_validity (\$\$$\%\%\$)
     # $redirects is a map of the redirects encountered
     # $mixedcontent_lines is an array of lines where the link appears
     #                     in a mixedcontent context (if any)
+    # $csp is an array of values from the content-security-policy header
+    #                     of the page
 
     # Get the document with the appropriate method: GET if there are
     # fragments to check or links are wanted, HEAD is enough otherwise.
@@ -2317,7 +2326,7 @@ sub check_validity (\$\$$\%\%\$)
         $response = &get_uri($method, $uri, $referer);
 
         # Get the information back from get_uri()
-        &record_results($uri, $method, $response, $referer, $mixedcontent_lines);
+        &record_results($uri, $method, $response, $referer, $mixedcontent_lines, $csp);
 
         # Record the redirects
         &record_redirects($redirects, $response);
