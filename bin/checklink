@@ -3239,7 +3239,7 @@ sub html_footer ()
 </div>
 EOF
     }
-    printf(<<'EOF', $Cfg{Doc_URI}, $Cfg{Doc_URI}, $PACKAGE, $REVISION);
+    printf(<<'EOF', $Cfg{Doc_URI}, $PACKAGE, $REVISION);
 </div><!-- main -->
 <ul class="navbar" id="menu">
   <li><a href="%s" accesskey="3" title="Documentation for this Link Checker Service">Docs</a></li>
