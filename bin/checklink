@@ -315,8 +315,8 @@ BEGIN {
     # Version info
     $PACKAGE  = 'W3C Link Checker';
     $PROGRAM  = 'W3C-checklink';
-    $VERSION  = '4.81';
-    $REVISION = sprintf('version %s (c) 1999-2011 W3C', $VERSION);
+    $VERSION  = '5.0.0';
+    $REVISION = sprintf('version %s (c) 1999-2019 W3C', $VERSION);
     $AGENT    = sprintf(
         '%s/%s %s',
         $PROGRAM, $VERSION,
