@@ -1146,6 +1146,7 @@ Settings used:
 - Accept-Language: %s
 - Referer: %s
 - Cookies: %s
+- Upgrade-Insecure-Requets: 1
 - Sleeping %d second%s between requests to each server
 EOF
         printf("- Excluding links matching %s\n", $Opts{Exclude})
@@ -1716,6 +1717,7 @@ sub get_uri ($\$;\$$\%$$$$)
     $request->header('Accept-Language' => $Opts{Accept_Language})
         if $Opts{Accept_Language};
     $request->header('Accept', $Accept);
+    $request->header('Upgrade-Insecure-Requests', 1);
     $request->accept_decodable();
 
     # Are we providing authentication info?
