@@ -1,7 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!DOCTYPE html>
+<html lang="en">
   <head>
     <title>W3C Link Checker Documentation</title>
     <link rev="made" href="mailto:www-validator@w3.org" />
@@ -9,7 +7,7 @@
   </head>
 
   <body>
-	<div id="banner"><h1 id="title"><a href="http://www.w3.org/" title="W3C"><img alt="W3C" id="logo" src="../images/no_w3c.png" width="110" height="61" /></a>
+	<div id="banner"><h1 id="title"><a href="https://www.w3.org/" title="W3C"><img alt="W3C" id="logo" src="../images/no_w3c.png" width="110" height="61" /></a>
 	<a href="../checklink"><span>Link Checker</span></a></h1>
 	<p id="tagline">Check links and anchors in Web pages or full Web sites</p></div>
     <div id="main">
@@ -31,21 +29,21 @@
 
     <p>
       A first version was developed in August 1998 by
-      <a href="http://www.w3.org/People/Renaud/">Renaud Bruyeron</a>.
+      <a href="https://www.w3.org/People/Renaud/">Renaud Bruyeron</a>.
       Since it was lacking some functionalities,
-      <a href="http://www.w3.org/People/Hugo/">Hugo Haas</a>
+      <a href="https://www.w3.org/People/Hugo/">Hugo Haas</a>
       rewrote it more or less from scratch in November 1999.
       It has been improved by Ville Skyttä and many other volunteers since.
     </p>
 
     <p>
       The source code is available publicly under the
-      <a href="http://www.w3.org/Consortium/Legal/copyright-software">W3C IPR
+      <a href="https://www.w3.org/Consortium/Legal/copyright-software">W3C IPR
       software notice</a> from
-      <a href="http://search.cpan.org/dist/W3C-LinkChecker/"><abbr
+      <a href="https://search.cpan.org/dist/W3C-LinkChecker/"><abbr
       title="Comprehensive Perl Archive Network">CPAN</abbr></a> (released
       versions) and a
-      <a href="http://dvcs.w3.org/hg/link-checker/">Mercurial repository</a>
+      <a href="https://githum.com/w3c/link-checker/">github repository</a>
       (development and archived release versions).
     </p>
 
@@ -73,7 +71,7 @@
     <p>
       There is a command line version and a
       <abbr title="Common Gateway Interface">CGI</abbr> version. They both
-      support <a href="http://www.ietf.org/rfc/rfc2617.txt">HTTP basic
+      support <a href="https://www.ietf.org/rfc/rfc2617.txt">HTTP basic
       authentication</a>. This is achieved in the CGI version
       by passing through the authorization information from the user browser
       to the site tested.
@@ -83,7 +81,7 @@
 
     <p>
       There is an
-      <a href="http://validator.w3.org/checklink">online version</a>
+      <a href="https://validator.w3.org/checklink">online version</a>
       of the link checker.
     </p>
 
@@ -115,7 +113,7 @@
 
     <p>
       The link checker is written in Perl. It is packaged as a standard
-      <a href="http://www.cpan.org/">CPAN</a> distribution, and depends on
+      <a href="https://www.cpan.org/">CPAN</a> distribution, and depends on
       a few other modules which are also available from CPAN.
     </p>
     <h3 id="install-CPAN">Install with the CPAN utility</h3>
@@ -130,11 +128,11 @@
 
     <ol>
       <li>
-	Install <a href="http://www.perl.org/get.html">Perl</a>, version 5.8
+	Install <a href="https://www.perl.org/get.html">Perl</a>, version 5.8
 	or newer.
       </li>
       <li>
-	You will need the following <a href="http://www.cpan.org/">CPAN</a>
+	You will need the following <a href="https://www.cpan.org/">CPAN</a>
 	distributions, as well as the distributions they possibly depend on.
 	Depending on your Perl version, you might already have some of
 	these installed.  Also, the latest versions of these may require a
@@ -142,19 +140,19 @@
 	below are satisfied, everything should be fine.	 The latest version
 	should not be needed, just get an older version that works with your
 	Perl.  For an introduction to installing Perl modules,
-	see <a href="http://www.cpan.org/misc/cpan-faq.html#How_install_Perl_modules">The CPAN FAQ</a>.
+	see <a href="https://www.cpan.org/misc/cpan-faq.html#How_install_Perl_modules">The CPAN FAQ</a>.
 	<ul>
-	  <li><a href="http://search.cpan.org/dist/W3C-LinkChecker/">W3C-LinkChecker</a> (the link checker itself)</li>
-	  <li><a href="http://search.cpan.org/dist/CGI.pm/">CGI.pm</a> (required for CGI mode only)</li>
-	  <li><a href="http://search.cpan.org/dist/Config-General/">Config-General</a> (optional, version 2.06 or newer; required only for reading the (optional) configuration file)</li>
-	  <li><a href="http://search.cpan.org/dist/CSS-DOM/">CSS-DOM</a> (version 0.09 or newer)</li>
-	  <li><a href="http://search.cpan.org/dist/Encode-Locale/">Encode-Locale</a> (required for command line mode only)</li>
-	  <li><a href="http://search.cpan.org/dist/HTML-Parser/">HTML-Parser</a> (version 3.20 or newer)</li>
-	  <li><a href="http://search.cpan.org/dist/libwww-perl/">libwww-perl</a> (version 5.833 or newer)</li>
-	  <li><a href="http://search.cpan.org/dist/Net-IP/">Net-IP</a> (optional but recommended; required for restricting access to <a href="http://www.ietf.org/rfc/rfc1918.txt">private IP addresses</a>)</li>
-	  <li><a href="http://search.cpan.org/dist/TermReadKey/">TermReadKey</a> (optional but recommended; required only in command line mode for password input)</li>
-	  <li><a href="http://search.cpan.org/dist/Time-HiRes/">Time-HiRes</a></li>
-	  <li><a href="http://search.cpan.org/dist/URI/">URI</a> (version 1.53 or newer)</li>
+	  <li><a href="https://search.cpan.org/dist/W3C-LinkChecker/">W3C-LinkChecker</a> (the link checker itself)</li>
+	  <li><a href="https://search.cpan.org/dist/CGI.pm/">CGI.pm</a> (required for CGI mode only)</li>
+	  <li><a href="https://search.cpan.org/dist/Config-General/">Config-General</a> (optional, version 2.06 or newer; required only for reading the (optional) configuration file)</li>
+	  <li><a href="https://search.cpan.org/dist/CSS-DOM/">CSS-DOM</a> (version 0.09 or newer)</li>
+	  <li><a href="https://search.cpan.org/dist/Encode-Locale/">Encode-Locale</a> (required for command line mode only)</li>
+	  <li><a href="https://search.cpan.org/dist/HTML-Parser/">HTML-Parser</a> (version 3.20 or newer)</li>
+	  <li><a href="https://search.cpan.org/dist/libwww-perl/">libwww-perl</a> (version 5.833 or newer)</li>
+	  <li><a href="https://search.cpan.org/dist/Net-IP/">Net-IP</a> (optional but recommended; required for restricting access to <a href="https://www.ietf.org/rfc/rfc1918.txt">private IP addresses</a>)</li>
+	  <li><a href="https://search.cpan.org/dist/TermReadKey/">TermReadKey</a> (optional but recommended; required only in command line mode for password input)</li>
+	  <li><a href="https://search.cpan.org/dist/Time-HiRes/">Time-HiRes</a></li>
+	  <li><a href="https://search.cpan.org/dist/URI/">URI</a> (version 1.53 or newer)</li>
 	</ul>
       </li>
       <li>
@@ -181,7 +179,7 @@
       use the command line version.  The distribution package also includes
       more extensive <abbr title="Plain Old Documentation">POD</abbr>
       documentation, use
-      <kbd><a href="http://search.cpan.org/dist/Pod-Perldoc/lib/perldoc.pod">perldoc</a> checklink</kbd> (or <kbd>man checklink</kbd> on Unixish systems)
+      <kbd><a href="https://search.cpan.org/dist/Pod-Perldoc/lib/perldoc.pod">perldoc</a> checklink</kbd> (or <kbd>man checklink</kbd> on Unixish systems)
       to view it.
     </p>
 
@@ -189,7 +187,7 @@
       <abbr title="Secure Sockets Layer">SSL</abbr>/<abbr title="Transport Layer Security">TLS</abbr>v1
       support for <code>https</code> in the link checker needs support for
       it in libwww-perl; see
-      <a href="http://search.cpan.org/dist/libwww-perl/README.SSL">README.SSL</a>
+      <a href="https://search.cpan.org/dist/libwww-perl/README.SSL">README.SSL</a>
       in the libwww-perl distribution for more information.
     </p>
 
@@ -214,31 +212,31 @@
     <p>
       If you want to enable the authentication capabilities with Apache,
       have a look at
-      <a href="http://lists.w3.org/Archives/Public/www-validator/1999JulSep/0140.html">Steven Drake's hack</a>.
+      <a href="https://lists.w3.org/Archives/Public/www-validator/1999JulSep/0140.html">Steven Drake's hack</a>.
     </p>
 
     <p>
       The link checker honors proxy settings from the
       <code><em>scheme</em>_proxy</code> environment variables.  See
-      <a href="http://search.cpan.org/dist/libwww-perl/lib/LWP.pm#ENVIRONMENT">LWP(3)</a> and
-      <a href="http://search.cpan.org/dist/libwww-perl/lib/LWP/UserAgent.pm#%24ua-%3Eenv_proxy">LWP::UserAgent(3)'s
+      <a href="https://search.cpan.org/dist/libwww-perl/lib/LWP.pm#ENVIRONMENT">LWP(3)</a> and
+      <a href="https://search.cpan.org/dist/libwww-perl/lib/LWP/UserAgent.pm#%24ua-%3Eenv_proxy">LWP::UserAgent(3)'s
 	<code>env_proxy</code></a> method for more information.
     </p>
 
     <p>
       Some environment variables affect the way how the link checker uses
-      <a href="http://www.ietf.org/rfc/rfc959.txt"><abbr title="File Transfer Protocol">FTP</abbr></a>.
+      <a href="https://www.ietf.org/rfc/rfc959.txt"><abbr title="File Transfer Protocol">FTP</abbr></a>.
       In particular, passive mode is the default.  See
-      <a href="http://search.cpan.org/dist/libnet/Net/FTP.pm#CONSTRUCTOR">Net::FTP(3)</a>
+      <a href="https://search.cpan.org/dist/libnet/Net/FTP.pm#CONSTRUCTOR">Net::FTP(3)</a>
       for more information.
     </p>
 
     <p>
       There are multiple alternatives for configuring the default
-      <a href="http://www.ietf.org/rfc/rfc977.txt"><abbr title="Network News Transfer Protocol">NNTP</abbr></a>
+      <a href="https://www.ietf.org/rfc/rfc977.txt"><abbr title="Network News Transfer Protocol">NNTP</abbr></a>
       server for use with <code>news:</code> URIs without explicit hostnames,
       see
-      <a href="http://search.cpan.org/dist/libnet/Net/NNTP.pm#CONSTRUCTOR">Net::NNTP(3)</a>
+      <a href="https://search.cpan.org/dist/libnet/Net/NNTP.pm#CONSTRUCTOR">Net::NNTP(3)</a>
       for more information.
     </p>
 
@@ -246,7 +244,7 @@
 
     <p>
       The link checker honors
-      <a href="http://www.robotstxt.org/robotstxt.html">robots exclusion
+      <a href="https://www.robotstxt.org/robotstxt.html">robots exclusion
         rules</a>.  To place rules specific to the W3C Link Checker in
       <code>/robots.txt</code> files, sites can use the
       <code>W3C-checklink</code> user agent string.  For example, to allow
@@ -264,9 +262,9 @@ Disallow:
 
     <p>
       Robots exlusion support in the link checker is based on the
-      <a href="http://search.cpan.org/dist/libwww-perl/lib/LWP/RobotUA.pm">LWP::RobotUA</a>
+      <a href="https://search.cpan.org/dist/libwww-perl/lib/LWP/RobotUA.pm">LWP::RobotUA</a>
       Perl module.  It currently supports the
-      "<a href="http://www.robotstxt.org/orig.html">original 1994 version</a>"
+      "<a href="https://www.robotstxt.org/orig.html">original 1994 version</a>"
       of the standard.  The robots META tag, ie.
       <code>&lt;meta name="robots" content="..."&gt;</code>, is not supported.
       Other than that, the link checker's implementation goes all the way
@@ -284,63 +282,35 @@ Disallow:
 
     <p>
       The current version has proven to be stable. It could however be
-      improved, see the <a href="http://www.w3.org/Bugs/Public/buglist.cgi?product=LinkChecker&amp;bug_status=NEW&amp;bug_status=ASSIGNED&amp;bug_status=REOPENED">list of open enhancement ideas and bugs</a> for details.
+      improved, see the <a href="https://github.com/w3c/link-checker/issues">list of open enhancement ideas and bugs</a> for details.
     </p>
-
-    <p>
-      Please send comments, suggestions and bug reports about the link checker
-      to the <a href="mailto:www-validator@w3.org?subject=checklink%3A%20">www-validator mailing list</a>
-      (<a href="http://lists.w3.org/Archives/Public/www-validator/">archives</a>),
-      with 'checklink' in the subject. See examples below
-    </p>
-
-	<dl>
-		<dt>Good</dt>
-		<dd>Subject: online checklink times out when accessed with Iceweasel 2.1.12</dd>
-		<dt>Bad</dt>
-		<dd>Subject: checklink</dd>
-		<dt>Bad</dt>
-		<dd>Subject: checklink does not work</dd>
-	</dl>
-
-    <h3><a name="issues" id="issues">Known issues</a></h3>
-
-    <p>
-      If a link checker run in "summary only" mode takes a long time, some
-      user agents may stop loading the results page due to a timeout.  We
-      have placed workarounds hoping to avoid this in the code, but have not
-      yet found one that would work reliably for all browsers.  If you
-      experience these timeouts, try avoiding "summary only" mode, or try
-      using the link checker with another browser.
-    </p>
-
     </div>
 
     <ul class="navbar" id="menu">
-	<li><a href="http://validator.w3.org/checklink" accesskey="1" title="The Link Checker Service at W3C">Link Checker</a></li>
-	<li><a href="http://search.cpan.org/dist/W3C-LinkChecker/" accesskey="2" title="Download the source / Install this service">Download</a></li>
-	<li><a href="https://github.com/w3c/link-checker" title="feedback: comments, suggestions and bugs" accesskey="4">Feedback</a></li>
-	<li><a href="http://validator.w3.org" title="Validate your markup with the W3C Markup Validation Service">Validator</a></li>
+	<li><a href="https://validator.w3.org/checklink" accesskey="1" title="The Link Checker Service at W3C">Link Checker</a></li>
+	<li><a href="https://search.cpan.org/dist/W3C-LinkChecker/" accesskey="2" title="Download the source / Install this service">Download</a></li>
+	<li><a href="#csb" title="feedback: comments, suggestions and bugs" accesskey="4">Feedback</a></li>
+	<li><a href="https://validator.w3.org" title="Validate your markup with the W3C Markup Validation Service">Validator</a></li>
     </ul>
 
     <address>
       <a title="Send Feedback for the W3C Link Checker"
-	href="http://validator.w3.org/feedback.html">The W3C QA-dev Team</a>
+	href="https://validator.w3.org/feedback.html">The W3C QA-dev Team</a>
     </address>
     <p class="copyright">
-      <a rel="Copyright" href="http://www.w3.org/Consortium/Legal/ipr-notice#Copyright">Copyright</a> &copy; 1994-2011
-      <a href="http://www.w3.org/"><acronym title="World Wide Web Consortium">W3C</acronym></a>&reg;
-      (<a href="http://www.csail.mit.edu/"><acronym title="Massachusetts Institute of Technology">MIT</acronym></a>,
-      <a href="http://www.ercim.eu/"><acronym title="European Research Consortium for Informatics and Mathematics">ERCIM</acronym></a>,
-      <a href="http://www.keio.ac.jp/">Keio</a>),
+      <a rel="Copyright" href="https://www.w3.org/Consortium/Legal/ipr-notice#Copyright">Copyright</a> &copy; 1994-2020
+      <a href="https://www.w3.org/"><acronym title="World Wide Web Consortium">W3C</acronym></a>&reg;
+      (<a href="https://www.csail.mit.edu/"><acronym title="Massachusetts Institute of Technology">MIT</acronym></a>,
+      <a href="https://www.ercim.eu/"><acronym title="European Research Consortium for Informatics and Mathematics">ERCIM</acronym></a>,
+      <a href="https://www.keio.ac.jp/">Keio</a>, <a href="https://ev.buaa.edu.cn/">Beihang</a>),
       All Rights Reserved.
-      W3C <a href="http://www.w3.org/Consortium/Legal/ipr-notice#Legal_Disclaimer">liability</a>,
-      <a href="http://www.w3.org/Consortium/Legal/ipr-notice#W3C_Trademarks">trademark</a>,
-      <a rel="Copyright" href="http://www.w3.org/Consortium/Legal/copyright-documents">document use</a>
-      and <a rel="Copyright" href="http://www.w3.org/Consortium/Legal/copyright-software">software licensing</a>
+      W3C <a href="https://www.w3.org/Consortium/Legal/ipr-notice#Legal_Disclaimer">liability</a>,
+      <a href="https://www.w3.org/Consortium/Legal/ipr-notice#W3C_Trademarks">trademark</a>,
+      <a rel="Copyright" href="https://www.w3.org/Consortium/Legal/copyright-documents">document use</a>
+      and <a rel="Copyright" href="https://www.w3.org/Consortium/Legal/copyright-software">software licensing</a>
       rules apply. Your interactions with this site are in accordance
-      with our <a href="http://www.w3.org/Consortium/Legal/privacy-statement#Public">public</a> and
-      <a href="http://www.w3.org/Consortium/Legal/privacy-statement#Members">Member</a> privacy
+      with our <a href="https://www.w3.org/Consortium/Legal/privacy-statement#Public">public</a> and
+      <a href="https://www.w3.org/Consortium/Legal/privacy-statement#Members">Member</a> privacy
       statements.
     </p>
   </body>
