@@ -2675,7 +2675,7 @@ sub show_link_report (\%\%\%\%\@;$\%)
         $c = &code_shown($u, $results);
 
         # What to do
-        my $whattodo;
+        my $whattodo = '';
         my $redirect_too;
         if ($todo) {
             if ($u =~ m/^javascript:/) {
