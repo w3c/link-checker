@@ -364,7 +364,7 @@ EOF
     $Cfg{Markup_Validator_URI} ||= 'https://validator.w3.org/check?uri=%s';
     $Cfg{CSS_Validator_URI} ||=
         'https://jigsaw.w3.org/css-validator/validator?uri=%s';
-    $Cfg{Doc_URI} ||= 'https://validator.w3.org/docs/checklink.html';
+    $Cfg{Doc_URI} ||= 'https://validator.w3.org/checklink/docs/checklink.html';
     $Cfg{Doc_Base_URI} ||= '/checklink/docs/';
     $Cfg{Doc_Images_URI} ||= '/checklink/images/';
 
