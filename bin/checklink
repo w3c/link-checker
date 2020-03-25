@@ -1277,7 +1277,7 @@ EOF
                 $hostport = '' unless defined $hostport;
                 push(@{$hostlinks{$hostport}}, $canon_uri);
             }
-            for my $line_num (keys(%$lines)) {
+            for my $line_num (keys(%{$lines})) {
                 my @mixedcontent = keys(%{%$lines{$line_num}});
                 my $mc_block = MC_BLOCK;
                 if (grep(/^$mc_block$/, @mixedcontent)) {
@@ -1285,8 +1285,8 @@ EOF
                 }
                 # take optional into account if CSP: block-all-mixed-content is set
                 my $mc_optional = MC_OPTIONAL;
-                if (grep(/^block-all-mixed-content$/, $p->{csp})
-                    && grep(/^$mc_optional$/, @mixedcontent)) {
+                if (grep(/^block-all-mixed-content$/, @{$p->{csp}})
+                    && grep(/^mc_optional$/, @mixedcontent)) {
                     push(@{$links{$canon_uri}{mixedcontent}}, $line_num);
                 }
                 if (!defined($fragment) || !length($fragment)) {
