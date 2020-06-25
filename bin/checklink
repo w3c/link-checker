@@ -318,11 +318,8 @@ BEGIN {
     $VERSION  = '5.0.0';
     $REVISION = sprintf('version %s (c) 1999-2019 W3C', $VERSION);
     $AGENT    = sprintf(
-        '%s/%s %s',
-        $PROGRAM, $VERSION,
-        (   W3C::UserAgent::USE_ROBOT_UA ? LWP::RobotUA->_agent() :
-                LWP::UserAgent->_agent()
-        )
+        '%s/%s',
+        $PROGRAM, $VERSION
     );
 
     # Pull in mod_perl modules if applicable.
