@@ -2547,7 +2547,8 @@ sub sort_unique (@)
 {
     my %saw;
     @saw{@_} = ();
-    return (sort { $a <=> $b } keys %saw);
+    # Treat "(N/A)" as 0
+    return sort { (($a =~ /(\d+)/)[0] || 0) <=> (($b =~ /(\d+)/)[0] || 0) } keys %saw;
 }
 
 #####################
