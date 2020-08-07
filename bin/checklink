@@ -2910,6 +2910,8 @@ sub links_summary (\%\%\%\%\%)
             'This rare status code points to a "See Other" resource. There is generally nothing to be done.',
         307 =>
             'This is a temporary redirect. Update the link if you believe it makes sense, or leave it as is.',
+        308 =>
+            'This is a permanent redirect. The link should be updated to point to the more recent URI.',
         400 =>
             'This is usually the sign of a malformed URL that cannot be parsed by the server. Check the syntax of the link.',
         401 =>
