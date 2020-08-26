@@ -70,11 +70,11 @@ WriteMakefile(
         {'bin/checklink.pod' => '$(INST_MAN1DIR)/checklink.$(MAN1EXT)',},
     META_MERGE => {
         resources => {
-            homepage   => 'http://validator.w3.org/checklink',
-            bugtracker => 'http://www.w3.org/Bugs/Public/',
-            repository => 'http://dvcs.w3.org/hg/link-checker/',
+            homepage   => 'https://validator.w3.org/checklink',
+            bugtracker => 'https://github.com/w3c/link-checker/issues/',
+            repository => 'https://github.com/w3/link-checker/',
             MailingList =>
-                'http://lists.w3.org/Archives/Public/www-validator/',
+                'https://lists.w3.org/Archives/Public/www-validator/',
         },
     },
     depend => {distdir  => 'lib/W3C/LinkChecker.pm'},
