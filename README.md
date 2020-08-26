@@ -51,7 +51,7 @@ $ docker run -it --rm -v "$PWD":/home/checklink link-checker checklink -H https:
 
 ## Useful links
 
-- [Archivied bug list](https://www.w3.org/Bugs/Public/buglist.cgi?product=LinkChecker&component=checklink) (Decommissioned Bugzilla) 
+- [Archived bug list](https://www.w3.org/Bugs/Public/buglist.cgi?product=LinkChecker&component=checklink) (Decommissioned Bugzilla) 
 - [www-validator MailingList](https://lists.w3.org/Archives/Public/www-validator/) used to discuss the W3C Markup Validation Service, Link Checker and Log Validator. 
 
 ## Copyright and License
