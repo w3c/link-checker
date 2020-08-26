@@ -49,6 +49,11 @@ $ docker run -it --rm link-checker checklink https://foo.bar                    
 $ docker run -it --rm -v "$PWD":/home/checklink link-checker checklink -H https://foo.bar > report.html # Write to HTML file
 ```
 
+## Useful links
+
+- [Archived bug list](https://www.w3.org/Bugs/Public/buglist.cgi?product=LinkChecker&component=checklink) (Decommissioned Bugzilla) 
+- [www-validator MailingList](https://lists.w3.org/Archives/Public/www-validator/) used to discuss the W3C Markup Validation Service, Link Checker and Log Validator. 
+
 ## Copyright and License
 
 Written by the following people for the W3C:
