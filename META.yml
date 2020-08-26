@@ -46,10 +46,10 @@ requires:
     URI::Escape:          0
     URI::file:            0
 resources:
-    bugtracker:   http://www.w3.org/Bugs/Public/
-    homepage:     http://validator.w3.org/checklink
-    MailingList:  http://lists.w3.org/Archives/Public/www-validator/
-    repository:   http://dvcs.w3.org/hg/link-checker/
+    bugtracker:   https://github.com/w3c/link-checker/issues/
+    homepage:     https://validator.w3.org/checklink
+    MailingList:  https://lists.w3.org/Archives/Public/www-validator/
+    repository:   https://github.com/w3c/link-checker/
 no_index:
     directory:
         - t
