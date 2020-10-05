@@ -292,10 +292,10 @@ use constant LINK_LIST_ATTRS => {
     a      => [qr/\s+/, qr/$/,      [MC_BLOCK, 'ping']],
     applet => [qr/[\s,]+/, qr/$/,   [MC_BLOCK, 'archive']],
     area   => [qr/\s+/, qr/$/,      [MC_BLOCK, 'ping']],
-    img    => [qr/\s*,/, qr/\s+/,   [MC_BLOCK, 'srcset']],
+    img    => [qr/\s*,\s*/, qr/\s.*$/,   [MC_BLOCK, 'srcset']],
     head   => [qr/\s+/,  qr/$/,     [MC_NONE, 'profile']],
     object => [qr/\s+/,  qr/$/,     [MC_BLOCK, 'archive']],
-    source => [qr/[\s,]+/, qr/\s+/, [MC_BLOCK, 'srcset']]
+    source => [qr/\s*,\s*/, qr/\s.*$/, [MC_BLOCK, 'srcset']]
 };
 
 # TBD/TODO:
