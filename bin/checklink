@@ -339,7 +339,7 @@ BEGIN {
     $ContentTypes = qr{\b(?:$re)\b}io;
 
     # Regexp for matching URL values in CSS.
-    $CssUrl = qr/(?:\s|^)url\(\s*(['"]?)(.*?)\1\s*\)(?=\s|$)/;
+    $CssUrl = qr/url\(\s*(['"]?)(.*?)\1\s*\)/;
 
     #
     # Read configuration.  If the W3C_CHECKLINK_CFG environment variable has
@@ -734,7 +734,7 @@ sub parse_arguments ()
                 if $Opts{Depth} == 0;
         },
         'l|location=s'                => \@locs,
-        'X|exclude=s'                 => \$Opts{Exclude},
+        'X|exclude=s@'                => \@{$Opts{Exclude}},
         'exclude-docs=s@'             => \@{$Opts{Exclude_Docs}},
         'follow-file-links'           => \$Opts{Follow_File_Links},
         'https'                       => \$Opts{Https},
@@ -799,8 +799,8 @@ sub parse_arguments ()
     $Opts{Depth} = -1 if ($Opts{Depth} == 0 && @locs);
 
     # Precompile/error-check regular expressions.
-    if (defined($Opts{Exclude})) {
-        eval { $Opts{Exclude} = qr/$Opts{Exclude}/o; };
+    for my $i (0 .. $#{$Opts{Exclude}}) {
+        eval { $Opts{Exclude}->[$i] = qr/$Opts{Exclude}->[$i]/; };
         &usage(1, "Error in exclude regexp: $@") if $@;
     }
     for my $i (0 .. $#{$Opts{Exclude_Docs}}) {
@@ -891,6 +891,7 @@ Options:
  -X, --exclude REGEXP       Do not check links whose full, canonical URIs
                             match REGEXP; also limits recursion the same way
                             as --exclude-docs with the same regexp would.
+                            This option may be specified multiple times.
  --exclude-docs REGEXP      In recursive mode, do not check links in documents
                             whose full, canonical URIs match REGEXP.  This
                             option may be specified multiple times.
@@ -1047,6 +1048,15 @@ sub urize ($)
     return $uri->canonical();
 }
 
+sub should_exclude ($)
+{
+    my ($canon_uri) = @_;
+    for my $ex (@{$Opts{Exclude}}) {
+        return 1 if ($canon_uri =~ $ex);
+    }
+    return 0;
+}
+
 ########################################
 # Check for broken links in a resource #
 ########################################
@@ -1146,8 +1156,9 @@ Settings used:
 - Upgrade-Insecure-Requets: 1
 - Sleeping %d second%s between requests to each server
 EOF
-        printf("- Excluding links matching %s\n", $Opts{Exclude})
-            if defined($Opts{Exclude});
+        printf("- Excluding links matching %s\n",
+            join(', ', @{$Opts{Exclude}}))
+            if @{$Opts{Exclude}};
         printf("- Excluding links in documents whose URIs match %s\n",
             join(', ', @{$Opts{Exclude_Docs}}))
             if @{$Opts{Exclude_Docs}};
@@ -1266,7 +1277,7 @@ EOF
 
         my $canon_uri = URI->new($abs_link_uri->canonical());
         my $fragment  = $canon_uri->fragment(undef);
-        if (!defined($Opts{Exclude}) || $canon_uri !~ $Opts{Exclude}) {
+        if (!should_exclude($canon_uri)) {
             if (!exists($links{$canon_uri})) {
                 my $hostport;
                 $hostport = $canon_uri->host_port()
@@ -1623,7 +1634,7 @@ sub in_recursion_scope (\$)
 
     my $candidate = $uri->canonical();
 
-    return 0 if (defined($Opts{Exclude}) && $candidate =~ $Opts{Exclude});
+    return 0 if should_exclude($candidate);
 
     for my $excluded_doc (@{$Opts{Exclude_Docs}}) {
         return 0 if ($candidate =~ $excluded_doc);
