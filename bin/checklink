@@ -2153,6 +2153,7 @@ sub start
             for my $attrdesc (@$link_attrs) {
                 my ($mixedcontent, $la) = @$attrdesc;
                 my $attributes = [];
+                my $skip = 0;
                 if ($mixedcontent == MC_CONDITIONAL) {
                     if ($tag eq 'img') {
                         if ($attr->{crossorigin}) {
@@ -2174,7 +2175,19 @@ sub start
                         }
                     }
                 }
-                $self->add_link($attr->{$la}, $tag_local_base, $line, $mixedcontent);
+                if ($tag eq 'link') {
+                    my @skipped_link_types = ('preconnect', 'dns-prefetch');
+                    my @link_types = map{ lc($_)} split(/\s+/, $attr->{rel});
+                    for my $type (@link_types) {
+                        if ( grep (/^$type$/, @skipped_link_types)) {
+                            $skip = 1;
+                            last;
+                        }
+                    }
+                }
+                if (!$skip) {
+                    $self->add_link($attr->{$la}, $tag_local_base, $line, $mixedcontent);
+                }
             }
         }
 
