@@ -12,6 +12,8 @@ seen at [http://validator.w3.org/checklink](http://validator.w3.org/checklink).
 To install the distribution for command line use:
 
 ```sh
+git clone https://github.com/w3c/link-checker.git
+cd link-checker
 #if you have cpanminus installed
 cpanm --installdeps .
 perl Makefile.PL
