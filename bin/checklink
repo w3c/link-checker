@@ -2399,6 +2399,10 @@ sub check_validity (\$\$$\%\%\$\$)
     for my $fragment (keys %$fragments) {
         if (defined($p->{Anchors}{$fragment}) ||
             &escape_match($fragment, $p->{Anchors}) ||
+            # per https://html.spec.whatwg.org/multipage/browsing-the-web.html#scroll-to-fragid:ascii-case-insensitive
+            # 'top' is always a valid fragment in HTML
+            (!$response->{IsCss} && $fragment eq 'top') ||
+            # TODO #top is OK in HTML documents
             grep { $_ eq "$uri#$fragment" } @{$Opts{Suppress_Fragment}})
         {
             $results{$uri}{fragments}{$fragment} = 1;
