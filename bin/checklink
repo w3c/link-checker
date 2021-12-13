@@ -1289,12 +1289,13 @@ EOF
                 my @mixedcontent = keys(%{%$lines{$line_num}});
                 my $mc_block = MC_BLOCK;
                 if (grep(/^$mc_block$/, @mixedcontent)) {
+
                     push(@{$links{$canon_uri}{mixedcontent}}, $line_num);
                 }
                 # take optional into account if CSP: block-all-mixed-content is set
                 my $mc_optional = MC_OPTIONAL;
-                if (grep(qr/^block-all-mixed-content$/, $p->{csp})
-                    && grep(qr/^mc_optional$/, @mixedcontent)) {
+                if ($#{$p->{csp}} > 0 && grep(qr/^block-all-mixed-content$/, $p->{csp})
+                    && grep(/^$mc_optional$/, @mixedcontent)) {
                     push(@{$links{$canon_uri}{mixedcontent}}, $line_num);
                 }
                 if (!defined($fragment) || !length($fragment)) {
@@ -1834,7 +1835,7 @@ sub record_results (\$$$$\@)
     # dealing with mixed content
     if ($mixedcontent_lines && $uri->scheme ne 'https') {
         # Check headers of CSP: upgrade-insecure-request
-        if (! ($uri->scheme eq 'http' && grep(/^upgrade-insecure-requests$/, @csp))) {
+        if (! ($uri->scheme eq 'http' && $#csp != 0 && grep(/^upgrade-insecure-requests$/, @csp))) {
             # Set this the lines where the URL is used in mixedcontent_block context
             $results{$uri}{mixedcontent_blocked} = $mixedcontent_lines;
         }
@@ -2171,7 +2172,7 @@ sub start
                             }
                         }
                         if ($mixedcontent == MC_CONDITIONAL) {
-                            $mixedcontent = MC_OPTIONAL;
+                            $mixedcontent = MC_NONE;
                         }
                     }
                 }
