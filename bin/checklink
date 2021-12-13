@@ -1293,8 +1293,8 @@ EOF
                 }
                 # take optional into account if CSP: block-all-mixed-content is set
                 my $mc_optional = MC_OPTIONAL;
-                if (grep(/^block-all-mixed-content$/, $p->{csp})
-                    && grep(/^mc_optional$/, @mixedcontent)) {
+                if (grep(qr/^block-all-mixed-content$/, $p->{csp})
+                    && grep(qr/^mc_optional$/, @mixedcontent)) {
                     push(@{$links{$canon_uri}{mixedcontent}}, $line_num);
                 }
                 if (!defined($fragment) || !length($fragment)) {
@@ -1361,7 +1361,7 @@ EOF
 
             # List the broken fragments
             while (my ($fragment, $lines) = each(%{$ulinks->{fragments}})) {
-                my $fragment_ok = $results{$u}{fragments}{$fragment}
+                my $fragment_broken = $results{$u}{fragments}{$fragment} == 0
                 # 100 matches what we get for ignored error codes
                 || $results{$u}{location}{code} == 100;
                 if ($Opts{Verbose}) {
@@ -1369,14 +1369,14 @@ EOF
                     &hprintf(
                         "\t\t%s %s - Line%s: %s\n",
                         $fragment,
-                        $fragment_ok             ? 'OK' : 'Not found',
+                        $fragment_broken             ? 'Not found' : ( $results{$u}{fragments}{$fragment} > 0 ? 'OK' : 'Not checked'),
                         (scalar(@line_nums) > 1) ? 's'  : '',
                         join(', ', @line_nums)
                     );
                 }
 
                 # A broken fragment?
-                $broken{$u}{fragments}{$fragment} += 2 unless $fragment_ok;
+                $broken{$u}{fragments}{$fragment} += 2 if $fragment_broken;
             }
         }
         elsif (!($Opts{Quiet} && defined($results{$u}{location}{code}) && &informational($results{$u}{location}{code})))
@@ -2315,6 +2315,24 @@ sub end_document
     return;
 }
 
+sub validate_pdf_fragment
+{
+    my ($uri, $fragments) = @_;
+    mark_fragments_as_not_checked($uri, $fragments);
+    # TODO: Check the rules defined in
+    # https://pdfobject.com/pdf/pdf_open_parameters_acro8.pdf
+    return;
+}
+
+sub mark_fragments_as_not_checked
+{
+    my ($uri, $fragments) = @_;
+    for my $fragment (keys %$fragments) {
+        $results{$uri}{fragments}{$fragment} = -1;
+    }
+    return;
+}
+
 ################################
 # Check the validity of a link #
 ################################
@@ -2363,18 +2381,23 @@ sub check_validity (\$\$$\%\%\$\$)
     # There are fragments. Parse the document.
     my $p;
     if ($being_processed) {
-
-        # Can we really parse the document?
         if (!defined($results{$uri}{location}{type})) {
             &hprintf("Can't check content: Content-Type for '%s' is undefined.\n",
                 $uri)
                 if ($Opts{Verbose});
             $response->content("");
             return;
+        } elsif ($results{$uri}{location}{type} =~ "application/pdf") {
+            validate_pdf_fragment($uri, $fragments);
+            $response->content("");
+            return;
         } elsif ($results{$uri}{location}{type} !~ $ContentTypes) {
             &hprintf("Can't check content: Content-Type for '%s' is '%s'.\n",
                 $uri, $results{$uri}{location}{type})
                 if ($Opts{Verbose});
+            # TODO: find content types for which fragment are defined
+            # Maybe starting from https://en.wikipedia.org/wiki/URI_fragment#Examples
+            mark_fragments_as_not_checked($uri, $fragments);
             $response->content("");
             return;
         }
@@ -2383,7 +2406,6 @@ sub check_validity (\$\$$\%\%\$\$)
         if (my $error = decode_content($response)) {
             &hprintf("%s\n.", $error);
         }
-
         # @@@TODO: this isn't the best thing to do if a decode error occurred
         $p =
             &parse_document($uri, $response->base(), $response, 0,
