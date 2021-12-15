@@ -1,0 +1,39 @@
+name: Run test suite
+
+on:
+  push:
+    branches:
+      - main
+  pull_request: {}
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          repository: w3c/linkchecker-testsuite
+          path: test-suite
+      - uses: actions/setup-python@v2
+        with:
+          python-version: '3.7'
+      - name: Install test suite dependencies
+        working-directory: test-suite/harness
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - uses: actions/checkout@v2
+        with:
+          path: link-checker
+      - uses: shogo82148/actions-setup-perl@v1
+      - name: Install checker dependencies
+        working-directory: link-checker
+        run: cpanm --installdeps .
+      - name: run test server
+        working-directory: test-suite
+        run: python server.py &
+      - name: install bubblewrap
+        run: sudo apt-get install -y bubblewrap
+      - name: run test suite
+        working-directory: test-suite/harness
+        run: bwrap --dev-bind / / --ro-bind ../hosts /etc/hosts sh -c "python linktest.py --checker_path ../../link-checker/bin/checklink run"
