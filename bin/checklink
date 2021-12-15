@@ -1223,6 +1223,9 @@ EOF
     my $p =
         &parse_document($uri, $response->base(), $response, 1, ($depth != 0));
     my $base = URI->new($p->{base});
+    if (!defined($base->scheme)) {
+        $base = URI->new_abs($p->{base}, $uri);
+    }
     my $check_mixed_content = ($base->scheme eq 'https' || $Opts{Https});
 
     # Check anchors
