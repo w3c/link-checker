@@ -2847,7 +2847,7 @@ will <em>not</em> be able to follow this link.';
                 $http_message,
 
                 # What to do
-                $whattodo,
+                $whattodo || "?",
 
                 # Redirect too?
                 $redirect_too ?
@@ -3112,7 +3112,7 @@ EOF
                 printf('<td><a href="#d%scode_%s">%s</a></td>',
                     $doc_count, $code, http_rc($code));
                 printf('<td>%s</td>', $code_summary{$code});
-                printf('<td>%s</td>', $todo{$code});
+                printf('<td>%s</td>', $todo{$code} || "?");
                 print "</tr>\n";
             }
             print "</tbody>\n</table>\n";
