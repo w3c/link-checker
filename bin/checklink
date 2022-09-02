@@ -2292,9 +2292,6 @@ sub declaration
             # Store the doctype
             $self->doctype($1) if $1;
 
-            # If there is a link to the DTD, record it
-            $self->add_link($3, undef, $line, MC_NONE)
-                if (!$self->{only_anchors} && $3);
         }
     }
 
