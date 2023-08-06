@@ -1175,9 +1175,9 @@ EOF
 <div class="settings">
 Settings used:
  <ul>
-  <li><tt><a href="https://tools.ietf.org/html/rfc7231#section-5.3.2">Accept</a></tt>: %s</li>
-  <li><tt><a href="https://tools.ietf.org/html/rfc7231#section-5.3.5">Accept-Language</a></tt>: %s</li>
-  <li><tt><a href="https://tools.ietf.org/html/rfc7231#section-5.5.2">Referer</a></tt>: %s</li>
+  <li><code><a href="https://tools.ietf.org/html/rfc7231#section-5.3.2">Accept</a></code>: %s</li>
+  <li><code><a href="https://tools.ietf.org/html/rfc7231#section-5.3.5">Accept-Language</a></code>: %s</li>
+  <li><code><a href="https://tools.ietf.org/html/rfc7231#section-5.5.2">Referer</a></code>: %s</li>
   <li>Sleeping %d second%s between requests to each server</li>
  </ul>
 </div>
@@ -3396,11 +3396,11 @@ of a document that you would like to check:</label></p>
     <br>
     <label for=\"no_accept_language_$check_num\"><input type=\"checkbox\" id=\"no_accept_language_$check_num\" name=\"no_accept_language\" value=\"on\"",
         $acc,
-        "> Don't send the <tt><a href=\"https://tools.ietf.org/html/rfc7231#section-5.3.5\">Accept-Language</a></tt> header</label>
+        "> Don't send the <code><a href=\"https://tools.ietf.org/html/rfc7231#section-5.3.5\">Accept-Language</a></code> header</label>
     <br>
     <label for=\"no_referer_$check_num\"><input type=\"checkbox\" id=\"no_referer_$check_num\" name=\"no_referer\" value=\"on\"",
         $ref,
-        "> Don't send the <tt><a href=\"https://tools.ietf.org/html/rfc7231#section-5.5.2\">Referer</a></tt> header</label>
+        "> Don't send the <code><a href=\"https://tools.ietf.org/html/rfc7231#section-5.5.2\">Referer</a></code> header</label>
     <br>
     <label title=\"Check linked documents recursively (maximum: ",
         $Opts{Max_Documents},
