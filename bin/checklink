@@ -1410,7 +1410,7 @@ EOF
     # Display results
     if ($Opts{HTML} && !$Opts{Summary_Only}) {
         print("</pre>\n</div>\n");
-        printf("<h2><a name=\"%s\">Results</a></h2>\n", $result_anchor);
+        printf("<h2 id=\"%s\">Results</h2>\n", $result_anchor);
     }
     print "\n" unless $Opts{Quiet};
 
