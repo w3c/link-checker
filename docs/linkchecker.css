@@ -40,15 +40,15 @@ a:hover, a:active {
     color: #1F2126;
 }
 
-acronym:hover, abbr:hover {
+abbr:hover {
     cursor: help;
 }
-abbr[title], acronym[title], span[title], strong[title] {
+abbr[title], span[title], strong[title] {
     border-bottom: thin dotted;
     cursor: help;
 }
 
-pre, code, tt {
+pre, code {
     font-family: "Bitstream Vera Sans Mono", monospace;
     line-height: 100%;
     white-space: pre;
