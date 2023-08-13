@@ -15,11 +15,11 @@ html, body {
     border: 0;
 }
 
-div#main {
+#main {
     margin: 1em 2em;
 }
 
-div#main form {
+#main form {
     clear: both;
     background: #EAEBEE url(../images/round-tr.png) no-repeat top right;
     padding: 0.5em 1.3em;

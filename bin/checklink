@@ -3210,10 +3210,11 @@ sub banner ($)
 
     printf(
         <<'EOF', $Cfg{Doc_Images_URI} . 'w3c.png', $tagline);
-<div id="banner"><h1 id="title"><a href="https://www.w3.org/" title="W3C"><img alt="W3C" id="logo" src="%s" width="110" height="61"></a>
+<header id="banner"><h1 id="title"><a href="https://www.w3.org/" title="W3C"><img alt="W3C" id="logo" src="%s" width="110" height="61"></a>
 <a href="checklink"><span>Link Checker</span></a></h1>
-<p id="tagline">%s</p></div>
-<div id="main">
+<p id="tagline">%s</p>
+</header>
+<main id="main">
 EOF
     return;
 }
@@ -3305,18 +3306,20 @@ sub html_footer ()
 EOF
     }
     printf(<<'EOF', $Cfg{Doc_URI}, $PACKAGE, $REVISION);
-</div><!-- main -->
+</main><!-- main -->
+<footer>
+<nav>
 <ul class="navbar" id="menu">
   <li><a href="%s" accesskey="3" title="Documentation for this Link Checker Service">Docs</a></li>
   <li><a href="http://search.cpan.org/dist/W3C-LinkChecker/" accesskey="2" title="Download the source / Install this service">Download</a></li>
   <li><a href="https://github.com/w3c/link-checker" title="feedback: comments, suggestions and bugs" accesskey="4">Feedback</a></li>
   <li><a href="https://validator.w3.org/" title="Validate your markup with the W3C Markup Validation Service">Validator</a></li>
 </ul>
-<div>
+</nav>
 <address>
 %s<br> %s
 </address>
-</div>
+</footer>
 </body>
 </html>
 EOF
