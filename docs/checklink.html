@@ -31,11 +31,11 @@
           publishes, the Systems Team has developed a link checker.
         </p>
         <p>
-          A first version was developed in August 1998 by
+          A first version was developed in <time datetime="1998-08">August 1998</time> by
           <a href="https://www.w3.org/People/Renaud/">Renaud Bruyeron</a>.
           Since it was lacking some functionalities,
           <a href="https://www.w3.org/People/Hugo/">Hugo Haas</a>
-          rewrote it more or less from scratch in November 1999.
+          rewrote it more or less from scratch in <time datetime="1999-11">November 1999</time>.
           It has been improved by Ville Skyttä and many other volunteers since.
         </p>
         <p>
@@ -104,11 +104,11 @@
           site in an attempt to help users using screen readers.
         </p>
         <ol>
-          <li>Home: access key "1" leads back to the service's home page.</li>
-          <li>Downloads: access key "2" leads to downloads.</li>
-          <li>Documentation: access key "3" leads to the documentation index for
+          <li>Home: access key <kbd>1</kbd> leads back to the service's home page.</li>
+          <li>Downloads: access key <kbd>2</kbd> leads to downloads.</li>
+          <li>Documentation: access key <kbd>3</kbd> leads to the documentation index for
           the service.</li>
-          <li>Feedback: access key "4" leads to the feedback instructions.</li>
+          <li>Feedback: access key <kbd>4</kbd> leads to the feedback instructions.</li>
         </ol>
       </section>
 
@@ -119,10 +119,12 @@
           <a href="https://www.cpan.org/">CPAN</a> distribution, and depends on
           a few other modules which are also available from CPAN.
         </p>
+
         <h3 id="install-CPAN">Install with the CPAN utility</h3>
         <p>If you system has a working installation of Perl, you should be able to install the link checker and its dependencies with a single line from the commandline shell:</p>
-        <p><kbd>sudo perl -MCPAN -e 'install W3C::LinkChecker'</kbd> (use without the <kbd>sudo</kbd> command if installing from an administrator account).</p>
+        <p><code>sudo perl -MCPAN -e 'install W3C::LinkChecker'</code> (use without the <code>sudo</code> command if installing from an administrator account).</p>
         <p>If this is the first time you use the CPAN utility, you may have to answer a few setup questions before the tool downloads, builds and installs the link checker.</p>
+
         <h3 id="install-manual">Install by hand</h3>
         <p>If for any reason the technique described above is not working or if you prefer installing each package by hand, follow the instructions below:</p>
         <ol>
@@ -173,11 +175,11 @@
           </li>
         </ol>
         <p>
-          Running <kbd>checklink --help</kbd> shows how to
+          Running <code>checklink --help</code> shows how to
           use the command line version.  The distribution package also includes
           more extensive <abbr title="Plain Old Documentation">POD</abbr>
           documentation, use
-          <kbd><a href="https://search.cpan.org/dist/Pod-Perldoc/lib/perldoc.pod">perldoc</a> checklink</kbd> (or <kbd>man checklink</kbd> on Unixish systems)
+          <code><a href="https://search.cpan.org/dist/Pod-Perldoc/lib/perldoc.pod">perldoc</a> checklink</code> (or <kbd>man checklink</kbd> on Unixish systems)
           to view it.
         </p>
         <p>
@@ -191,18 +193,18 @@
           In online mode, link checker's output should not be buffered to avoid
           browser timeouts.  The link checker itself does not buffer its output,
           but in some cases output buffering needs to be explicitly disabled for
-          it in the web server running it.  One such case is Apache's mod_deflate
+          it in the web server running it.  One such case is Apache's <code>mod_deflate</code>
           compression module which as a side effect results in output buffering;
           one way to disable it for the link checker (while leaving it enabled for
           other resources if configured so elsewhere) is to add the following
           section to an appropriate place in the Apache configuration (assuming the
           link checker script's filename is <code>checklink</code>):
         </p>
-        <blockquote><pre>
+        <code><pre>
         &lt;Files checklink&gt;
         SetEnv no-gzip
         &lt;/Files&gt;
-        </pre></blockquote>
+        </pre></code>
         <p>
           If you want to enable the authentication capabilities with Apache,
           have a look at
@@ -210,7 +212,7 @@
         </p>
         <p>
           The link checker honors proxy settings from the
-          <code><em>scheme</em>_proxy</code> environment variables.  See
+          <code><var>scheme</var>_proxy</code> environment variables.  See
           <a href="https://search.cpan.org/dist/libwww-perl/lib/LWP.pm#ENVIRONMENT">LWP(3)</a> and
           <a href="https://search.cpan.org/dist/libwww-perl/lib/LWP/UserAgent.pm#%24ua-%3Eenv_proxy">LWP::UserAgent(3)'s
           <code>env_proxy</code></a> method for more information.
@@ -243,13 +245,12 @@
           the link checker to access all documents on a server and to disallow
           all other robots, one could use the following:
         </p>
-        <pre>
-        User-Agent: *
-        Disallow: /
-
-        User-Agent: W3C-checklink
-        Disallow:
-        </pre>
+        <code><pre>
+          User-Agent: *
+          Disallow: /
+          User-Agent: W3C-checklink
+          Disallow:
+        </pre></code>
         <p>
           Robots exclusion support in the link checker is based on the
           <a href="https://search.cpan.org/dist/libwww-perl/lib/LWP/RobotUA.pm">LWP::RobotUA</a>

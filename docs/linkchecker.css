@@ -249,7 +249,7 @@ p#tagline {
     background-color: transparent;
 }
 
-div#banner {
+#banner {
     background: #365D95 url(../images/head-br.png) bottom right no-repeat;
     margin: 1.5em 2em;
 }
