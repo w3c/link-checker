@@ -1106,7 +1106,7 @@ sub check_uri (\%\$$$$;\$$)
 
     if ($check_num != 1) {
         if ($Opts{HTML}) {
-            $doc_header = "\n<hr>\n";
+            $doc_header = "\n</section>\n";
         }
         else {
             $doc_header = "\n" . ('-' x 40) . "\n";
@@ -1115,7 +1115,7 @@ sub check_uri (\%\$$$$;\$$)
 
     if ($Opts{HTML}) {
         $doc_header .=
-            ("<h2>\nProcessing\t" . &show_url($response->{absolute_uri}) .
+            ("<section data-url-checked=\"" . &encode($response->{absolute_uri}) . "\">\n\t<h2>\nProcessing\t" . &show_url($response->{absolute_uri}) .
                 "\n</h2>\n\n");
     }
     else {
@@ -1202,7 +1202,10 @@ EOF
             printf(<<'EOF', $result_anchor);
 <div class="progress" id="progress%s">
 <h3>Status: <span></span></h3>
-<div class="progressbar"><div></div></div>
+<label>
+    <span></span>
+    <progress value="0" max="100"></progress>
+</label>
 <pre>
 EOF
         }

@@ -73,15 +73,12 @@ div.progress h3 {
     overflow: hidden;
 }
 
-div.progressbar {
-    border: 1px solid #DCDDE0;
-    border-bottom: 0;
-}
+progress {
 
-div.progressbar div {
-    height: .15em;
-    width: 0;
-    background-color: #55B05A;
+    inline-size:    100%;
+    block-size:     0.15em;
+    border:         1px solid #DCDDE0;
+    border-bottom:  0;
 }
 
 fieldset {
@@ -163,6 +160,11 @@ th {
 
 .hideme {
     display: none;
+}
+
+@media screen {
+    /* only hidden visually */
+    .progress label span { display: none }
 }
 
 /* These are usually targets and not links */

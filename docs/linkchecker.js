@@ -30,9 +30,13 @@ function show_progress(progress_id, progress_text, progress_percentage)
     span.appendChild(text);
     head.replaceChild(span, head.getElementsByTagName("span")[0]);
 
-    var bar = div.getElementsByTagName("div")[0];
-    bar.firstChild.style.width = progress_percentage;
-    bar.title = progress_percentage;
+    var label = div.getElementsByTagName("label")[0];
+    var labelText = label.getElementsByTagName("span")[0];
+    labelText.textContent = "Progress: " + progress_percentage;
+
+    var bar = label.getElementsByTagName("progress")[0];
+    bar.value = Number.parseFloat(progress_percentage);
+    bar.textContent = progress_percentage;
 
     var pre = div.getElementsByTagName("pre")[0];
     pre.scrollTop = pre.scrollHeight;
