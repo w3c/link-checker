@@ -2770,7 +2770,7 @@ will <em>not</em> be able to follow this link.';
                 $whattodo =
                     'This is a temporary redirect. Update the link if you believe it makes sense, or leave it as is.';
             }
-            elsif ($c == 301) {
+            elsif ($c == 301 || $c == 308) {
                 $whattodo =
                     'This is a permanent redirect. The link should be updated.';
             }
