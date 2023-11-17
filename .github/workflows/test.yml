@@ -25,7 +25,13 @@ jobs:
       - uses: actions/checkout@v4
         with:
           path: link-checker
-      - uses: shogo82148/actions-setup-perl@v1
+      # using https://github.com/shogo82148/actions-setup-perl created
+      # issue with installing libcss-dom-perl due to
+      # old syntax in package
+      # see https://rt.cpan.org/Public/Bug/Display.html?id=146661
+      - name: Install perl
+        run: sudo apt-get install -y perl cpanminus libcss-dom-perl libwww-perl
+
       - name: Install checker dependencies
         working-directory: link-checker
         run: cpanm --installdeps .
