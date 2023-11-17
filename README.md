@@ -64,9 +64,8 @@ Written by the following people for the W3C:
 - Ville Skyttä <ville.skytta@iki.fi>
 - W3C QA-dev Team <public-qa-dev@w3.org>
 
-Copyright (C) 1994-2015 World Wide Web Consortium, (Massachusetts
-Institute of Technology, European Research Consortium for Informatics
-and Mathematics, Keio University). All Rights Reserved. This work is
+Copyright (C) 1994-2023 World Wide Web Consortium Inc.
+All Rights Reserved. This work is
 distributed under the [W3C Software License](http://www.w3.org/Consortium/Legal/2015/copyright-software-and-document) in the hope that it
 will be useful, but WITHOUT ANY WARRANTY; without even the implied
 warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
