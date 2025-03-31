@@ -3212,8 +3212,8 @@ sub banner ($)
     my $tagline = "Check links and anchors in Web pages or full Web sites";
 
     printf(
-        <<'EOF', $Cfg{Doc_Images_URI} . 'w3c.png', $tagline);
-<header id="banner"><h1 id="title"><a href="https://www.w3.org/" title="W3C"><img alt="W3C" id="logo" src="%s" width="110" height="61"></a>
+        <<'EOF', 'https://www.w3.org/assets/logos/w3c-2025/svg/margins/w3c-letters-bg-white.svg', $tagline);
+<header id="banner"><h1 id="title"><a href="https://www.w3.org/" title="W3C"><img alt="W3C" id="logo" src="%s"></a>
 <a href="checklink"><span>Link Checker</span></a></h1>
 <p id="tagline">%s</p>
 </header>
