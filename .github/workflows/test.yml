@@ -14,9 +14,9 @@ jobs:
         with:
           repository: w3c/linkchecker-testsuite
           path: test-suite
-      - uses: actions/setup-python@v4
+      - uses: actions/setup-python@v5
         with:
-          python-version: '3.7'
+          python-version: '3.11'
       - name: Install test suite dependencies
         working-directory: test-suite/harness
         run: |
