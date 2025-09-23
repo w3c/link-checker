@@ -40,6 +40,10 @@ jobs:
         run: python server.py &
       - name: install bubblewrap
         run: sudo apt-get install -y bubblewrap
+      - name: disable unprivileged user namespaces restriction
+        run: |
+          sudo sysctl -w kernel.apparmor_restrict_unprivileged_unconfined=0
+          sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
       - name: run test suite
         working-directory: test-suite/harness
         run: bwrap --dev-bind / / --ro-bind ../hosts /etc/hosts sh -c "python linktest.py --checker_path ../../link-checker/bin/checklink run"
