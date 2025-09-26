@@ -230,6 +230,7 @@ h1#title a, h1#title a img {
 h1 span {
     border-bottom: 1px solid #6383B1;
     border-color: #4E6F9E;
+    vertical-align: 10px;
 }
 
 h1#title a:link, h1#title a:hover, h1#title a:visited, h1#title a:active {
@@ -244,15 +245,15 @@ h1#title img {
 
 #logo {
     border-radius: 10px;
-    width: 100px;
+    width: 80px;
     margin-left: 20px;
     margin-top: 10px;
-    height: 100px;
+    height: 80px;
 }
 
 p#tagline {
     font-size: 0.7em;
-    margin: -4em 0 4em 13em;
+    margin: -3em 0 0 11.5em;
     padding-bottom: 1em;
     letter-spacing: 0.1em;
     line-height: 100% !important;
