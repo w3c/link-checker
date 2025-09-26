@@ -10,4 +10,3 @@
 \.tar\.
 \bREADME\.cvs$
 \bdocs/tests\b
-\bimages/w3c\.png$

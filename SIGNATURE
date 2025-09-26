@@ -28,8 +28,6 @@ SHA1 92d01a8a6e7edcd200d70492f4e551984b97b7a0 etc/checklink.conf
 SHA1 87c74944dbc80b5d6ab8aac1d09419607b15efff etc/perltidyrc
 SHA1 bcb7896bee3764f85a03ab14495efc233f70e215 images/double.png
 SHA1 ff9a7be7fee245dd81a7dc4124544d692a140119 images/grad.png
-SHA1 61aeb3ea5616833678f66c7baa6db373eedcd86b images/head-bl.png
-SHA1 bcb7bf006b79106309350bfa578e94af80aed82d images/head-br.png
 SHA1 11243aa6b3463dd8d6a9b2e69027e42a1d9480ab images/info_icons/README
 SHA1 a54abf3d12f207b81e19ea8ce783d37c6200cf40 images/info_icons/error.png
 SHA1 3fd2638079cd0698655614a5a5afc97a976a4af4 images/info_icons/info.png
