@@ -13,8 +13,6 @@ docs/linkchecker.css    Cascading style sheet used in docs and generated HTML
 docs/linkchecker.js     JavaScript used in the generated HTML
 images/double.png
 images/grad.png
-images/head-bl.png
-images/head-br.png
 images/no_w3c.png
 images/round-br.png
 images/round-tr.png
